@@ -7,5 +7,6 @@ using UtilityMethods;
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
         MessageBox.Show("" + AddClass.Add(2, 3));
+        MessageBox.Show(Sony.Vegas.Script.File);
     }
 }
