@@ -22,7 +22,7 @@ public class AddRuler : ICustomCommandModule {
 	}
 
 	void HandleInvoked(Object sender, EventArgs args) {
-		if (!vegas.ActivateDockView("AddRulerView")) {
+		if (!vegas.ActivateDockView("Add Ruler")) {
 			DockableControl addRulerView = new DockableControl("Add Ruler");
 			
 			// create a label
