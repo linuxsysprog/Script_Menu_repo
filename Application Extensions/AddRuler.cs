@@ -148,10 +148,12 @@ public class CustomForm_ : Form {
 	private Label lblNumber = new Label();
 	private ComboBox cbNumber = new ComboBox();
 	private Label lblNotes = new Label();
-	private TextBox tbNotes = new TextBox();
+	private TextBox txtNotes = new TextBox();
+	private Button btnAdd = new Button();
+	private Button btnFillGaps = new Button();
 
 	public CustomForm_() {
-		gbLocation.Size = new Size(150, 50);
+		gbLocation.Size = new Size(170, 50);
 		gbLocation.Location = new Point(10, 10);
 		gbLocation.Text = "Location";
 		gbLocation.Controls.AddRange(new Control[] {
@@ -165,14 +167,14 @@ public class CustomForm_ : Form {
 		rbTop.CheckedChanged += new EventHandler(rbTop_CheckedChanged);
 		
 		rbBottom.Size = new Size(60, 20);
-		rbBottom.Location = new Point(80, 20);
+		rbBottom.Location = new Point(100, 20);
 		rbBottom.Text = "&Bottom";
 		
 		lblNumber.Location = new Point(10, 80);
 		lblNumber.Text = "&Number:";
 		
 		cbNumber.Size = new Size(40, 50);
-		cbNumber.Location = new Point(120, 80);
+		cbNumber.Location = new Point(140, 80);
 		cbNumber.Items.AddRange(TOP_RANGE);
 		cbNumber.SelectedIndex = 0;
 		cbNumber.Validated += new EventHandler(cbNumber_Validated);
@@ -181,19 +183,30 @@ public class CustomForm_ : Form {
 		lblNotes.Location = new Point(10, 120);
 		lblNotes.Text = "N&otes:";
 		
-		tbNotes.Multiline = true;
-		tbNotes.ScrollBars = ScrollBars.Vertical;
-		tbNotes.Size = new Size(100, 60);
-		tbNotes.Location = new Point(60, 120);
-		tbNotes.Text = "[Section]";
+		txtNotes.Multiline = true;
+		txtNotes.ScrollBars = ScrollBars.Vertical;
+		txtNotes.Size = new Size(120, 60);
+		txtNotes.Location = new Point(60, 120);
+		txtNotes.Text = "[Section]";
 		
+		// btnAdd.Size = new Size(75, 23);
+		btnAdd.Location = new Point(10, 200);
+		btnAdd.Text = "&Add";
+		btnAdd.Click += new EventHandler(btnAdd_Click);
+
+		btnFillGaps.Location = new Point(105, 200);
+		btnFillGaps.Text = "&Fill Gaps";
+		btnFillGaps.Click += new EventHandler(btnFillGaps_Click);
+
 		ClientSize = new Size(640, 480);
 		Controls.AddRange(new Control[] {
 			gbLocation,
 			lblNumber,
 			cbNumber,
 			lblNotes,
-			tbNotes});
+			txtNotes,
+			btnAdd,
+			btnFillGaps});
 	}
 	
 	void rbTop_CheckedChanged(object sender, EventArgs e) {
@@ -210,6 +223,14 @@ public class CustomForm_ : Form {
 	
 	void cbNumber_Validated(object sender, EventArgs e) {
 		Validate_cbNumber();
+	}
+	
+	void btnAdd_Click(object sender, EventArgs e) {
+		MessageBox.Show(txtNotes.Text);
+	}
+	
+	void btnFillGaps_Click(object sender, EventArgs e) {
+		MessageBox.Show(cbNumber.Text);
 	}
 	
 	private void Validate_cbNumber() {
