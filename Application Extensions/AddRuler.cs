@@ -68,7 +68,6 @@ public class CustomForm : Form {
 		this.radioButton2.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
 
 		this.radioButton1.Location = new System.Drawing.Point(31, 20);
-		this.radioButton1.Name = "radioButton1";
 		this.radioButton1.Size = new System.Drawing.Size(67, 17);
 		this.radioButton1.Text = "Choice 1";
 		this.radioButton1.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
@@ -134,30 +133,51 @@ public class CustomForm : Form {
 }
 
 public class CustomForm_ : Form {
+	private object[] TOP_RANGE = new object[] { "1", "2", "3", "4", "5",
+		"6", "7", "8", "9", "10",
+		"11", "12" };
+
+	private object[] BOTTOM_RANGE = new object[] { "1", "2", "3", "4", "5",
+		"6", "7", "8", "9", "10",
+		"11", "12", "13", "14", "15",
+		"16" };
+
 	private GroupBox gbLocation = new GroupBox();
 	private RadioButton rbTop = new RadioButton();
 	private RadioButton rbBottom = new RadioButton();
+	private Label lblNumber = new Label();
+	private ComboBox cbNumber = new ComboBox();
 
 	public CustomForm_() {
 		gbLocation.Size = new Size(150, 50);
 		gbLocation.Location = new Point(10, 10);
 		gbLocation.Text = "Location";
-		gbLocation.Controls.Add(rbTop);
-		gbLocation.Controls.Add(rbBottom);
+		gbLocation.Controls.AddRange(new Control[] {
+			rbTop,
+			rbBottom});
 		
 		rbTop.Size = new Size(50, 20);
 		rbTop.Location = new Point(20, 20);
-		rbTop.Name = "rbTop";
 		rbTop.Text = "&Top";
 		rbTop.Checked = true;
 		
 		rbBottom.Size = new Size(60, 20);
 		rbBottom.Location = new Point(80, 20);
-		rbBottom.Name = "rbBottom";
 		rbBottom.Text = "&Bottom";
 		
+		lblNumber.Location = new Point(10, 80);
+		lblNumber.Text = "&Number:";
+		
+		cbNumber.Size = new Size(40, 50);
+		cbNumber.Location = new Point(120, 80);
+		cbNumber.Items.AddRange(TOP_RANGE);
+		cbNumber.SelectedIndex = 0;
+		
 		ClientSize = new Size(640, 480);
-		Controls.Add(gbLocation);
+		Controls.AddRange(new Control[] {
+			gbLocation,
+			lblNumber,
+			cbNumber});
 	}
 	
 	public static void Main() {
