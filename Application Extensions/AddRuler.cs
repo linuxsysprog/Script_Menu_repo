@@ -147,6 +147,8 @@ public class CustomForm_ : Form {
 	private RadioButton rbBottom = new RadioButton();
 	private Label lblNumber = new Label();
 	private ComboBox cbNumber = new ComboBox();
+	private Label lblNotes = new Label();
+	private TextBox tbNotes = new TextBox();
 
 	public CustomForm_() {
 		gbLocation.Size = new Size(150, 50);
@@ -175,11 +177,23 @@ public class CustomForm_ : Form {
 		cbNumber.SelectedIndex = 0;
 		cbNumber.Validated += new EventHandler(cbNumber_Validated);
 		
+		lblNotes.Size = new Size(40, 60);
+		lblNotes.Location = new Point(10, 120);
+		lblNotes.Text = "N&otes:";
+		
+		tbNotes.Multiline = true;
+		tbNotes.ScrollBars = ScrollBars.Vertical;
+		tbNotes.Size = new Size(100, 60);
+		tbNotes.Location = new Point(60, 120);
+		tbNotes.Text = "[Section]";
+		
 		ClientSize = new Size(640, 480);
 		Controls.AddRange(new Control[] {
 			gbLocation,
 			lblNumber,
-			cbNumber});
+			cbNumber,
+			lblNotes,
+			tbNotes});
 	}
 	
 	void rbTop_CheckedChanged(object sender, EventArgs e) {
