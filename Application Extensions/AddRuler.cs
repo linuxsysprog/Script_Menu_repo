@@ -160,6 +160,7 @@ public class CustomForm_ : Form {
 		rbTop.Location = new Point(20, 20);
 		rbTop.Text = "&Top";
 		rbTop.Checked = true;
+		rbTop.CheckedChanged += new EventHandler(rbTop_CheckedChanged);
 		
 		rbBottom.Size = new Size(60, 20);
 		rbBottom.Location = new Point(80, 20);
@@ -172,12 +173,47 @@ public class CustomForm_ : Form {
 		cbNumber.Location = new Point(120, 80);
 		cbNumber.Items.AddRange(TOP_RANGE);
 		cbNumber.SelectedIndex = 0;
+		cbNumber.Validated += new EventHandler(cbNumber_Validated);
 		
 		ClientSize = new Size(640, 480);
 		Controls.AddRange(new Control[] {
 			gbLocation,
 			lblNumber,
 			cbNumber});
+	}
+	
+	void rbTop_CheckedChanged(object sender, EventArgs e) {
+		if (rbTop.Checked) {
+			cbNumber.Items.Clear();
+			cbNumber.Items.AddRange(TOP_RANGE);
+		} else {
+			cbNumber.Items.Clear();
+			cbNumber.Items.AddRange(BOTTOM_RANGE);
+		}
+		
+		Validate_cbNumber();
+	}
+	
+	void cbNumber_Validated(object sender, EventArgs e) {
+		Validate_cbNumber();
+	}
+	
+	private void Validate_cbNumber() {
+		int rulerNumber;
+		
+		try {
+			rulerNumber = Convert.ToInt32(cbNumber.Text);
+		} catch (Exception exception) {
+			MessageBox.Show("Invalid Ruler Number");
+			cbNumber.Focus();
+			return;
+		}
+		
+		if ((rbTop.Checked && (rulerNumber < 1 || rulerNumber > 12))
+			|| (rbBottom.Checked && (rulerNumber < 1 || rulerNumber > 16))) {
+			MessageBox.Show("Ruler Number out of range");
+			cbNumber.Focus();
+		}
 	}
 	
 	public static void Main() {
