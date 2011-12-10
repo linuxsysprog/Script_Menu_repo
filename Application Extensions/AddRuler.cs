@@ -28,6 +28,7 @@ public class AddRuler : ICustomCommandModule {
 			AddRulerControl addRulerControl = new AddRulerControl();
 			addRulerView.Controls.Add(addRulerControl);
 			
+			addRulerView.DefaultFloatingSize = new Size(200, 260);
 			vegas.LoadDockView(addRulerView);
 		}
 	}
