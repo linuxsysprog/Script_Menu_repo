@@ -38,6 +38,57 @@ public class Common {
 		}
 		return selectedEvents.ToArray();
 	}
+	
+	//
+	// 2.4: How do I add media to the timeline?
+	//
+	// 
+	//
+	
+	// insert a media file at a specific position on a specific track
+	public static void InsertFileAt(Vegas vegas, String fileName, int trackIndex, Timecode cursorPosition) {
+		// first clear all track selections
+		foreach (Track track in vegas.Project.Tracks) {
+			track.Selected = false;
+		}
+		// select the desired track
+		vegas.Project.Tracks[trackIndex].Selected = true;
+		// set the cursor position
+		vegas.Transport.CursorPosition = cursorPosition;
+		vegas.OpenFile(fileName);
+	}
+
+	// build events on the timeline by constructing media, tracks, events, and take objects individually
+	public static VideoEvent AddVideoEvent(Vegas vegas, String mediaFile, Timecode start, Timecode length)
+	{
+		Media media = new Media(mediaFile);
+		VideoTrack track = vegas.Project.AddVideoTrack();
+		VideoEvent videoEvent = track.AddVideoEvent(start, length);
+		Take take = videoEvent.AddTake(media.GetVideoStreamByIndex(0));
+		return videoEvent;
+	}
+	
+	//
+	// 2.5: How do I add a text event to the timeline?
+	//
+	// 
+	//
+	
+	// add a text event to the timeline
+	public static VideoEvent AddTextEvent(Vegas vegas, VideoTrack track, Timecode start, Timecode length)
+	{
+		// find the text generator plug-in
+		PlugInNode plugIn = vegas.Generators.GetChildByName("Sony Text");
+		// create a media object with the generator plug-in
+		Media media = new Media(plugIn);
+		// set the generator preset
+		media.Generator.Preset = "Banner";
+		// add the video event
+		VideoEvent videoEvent = track.AddVideoEvent(start, length);
+		// add the take using the generated video stream
+		Take take = videoEvent.AddTake(media.GetVideoStreamByIndex(0));
+		return videoEvent;
+	}
 
 }
 }
