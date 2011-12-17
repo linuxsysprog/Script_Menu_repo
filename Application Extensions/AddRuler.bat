@@ -14,7 +14,13 @@ IF NOT "%ERRORLEVEL%" == "0" (
 	EXIT
 )
 
-csc /target:library /reference:"D:\Program Files\Sony\Vegas Pro 8.0\Sony.Vegas.dll";Common.DLL;Video.DLL /out:AddRuler.DLL AddRuler.cs
+CALL Audio.bat
+IF NOT "%ERRORLEVEL%" == "0" (
+	pause
+	EXIT
+)
+
+csc /target:library /reference:"D:\Program Files\Sony\Vegas Pro 8.0\Sony.Vegas.dll";Common.DLL;Video.DLL;Audio.DLL /out:AddRuler.DLL AddRuler.cs
 IF "%ERRORLEVEL%" == "0" (
 	"D:\Program Files\Sony\Vegas Pro 8.0\vegas80.exe"
 ) ELSE (

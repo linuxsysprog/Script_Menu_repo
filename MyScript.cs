@@ -8,8 +8,8 @@ using AddRuler;
 
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
-		List<VideoTrack> videoTracks = Video.FindVideoTracks(vegas.Project);
-		MessageBox.Show("" + videoTracks.Count);
+		List<AudioTrack> audioTracks = Audio.FindAudioTracks(vegas.Project);
+		MessageBox.Show("" + audioTracks.Count);
     }
 
 }
