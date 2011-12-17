@@ -141,7 +141,14 @@ public class AddRulerControl : UserControl {
 		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
 			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
 		);
-		MessageBox.Show("" + selectedAudioTracks.Count);
+		
+		if (selectedAudioTracks.Count != 1) {
+			MessageBox.Show("Please make sure you have exactly one audio track selected",
+				"Add Ruler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		MessageBox.Show("Not yet implemented.");
 	}
 	
 	void btnFillGaps_Click(object sender, EventArgs e) {
