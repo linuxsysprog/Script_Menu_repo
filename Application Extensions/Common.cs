@@ -90,6 +90,61 @@ public class Common {
 		return videoEvent;
 	}
 
+	// returns all selected tracks
+	public static List<Track> FindSelectedTracks(List<Track> tracks) {
+		List<Track> selectedTracks = new List<Track>();
+		
+		foreach (Track track in tracks) {
+			if (track.Selected) {
+				selectedTracks.Add(track);
+			}
+		}
+		
+		return selectedTracks;
+	}
+		
+	//
+	// The "Four Horsemen" functions
+	//
+	// Functions to convert lists of Video/Audio tracks to and from list of Track
+	//
+	
+	// converts List<AudioTrack> to List<Track>
+	public static List<Track> AudioTracksToTracks(List<AudioTrack> audioTracks) {
+		return audioTracks.ConvertAll(new Converter<AudioTrack, Track>(AudioTrackToTrack));
+	}
+	
+	private static Track AudioTrackToTrack(AudioTrack audioTrack) {
+		return audioTrack;
+	}
+	
+	// converts List<Track> to List<AudioTrack>
+	public static List<AudioTrack> TracksToAudioTracks(List<Track> tracks) {
+		return tracks.ConvertAll(new Converter<Track, AudioTrack>(TrackToAudioTrack));
+	}
+	
+	private static AudioTrack TrackToAudioTrack(Track track) {
+		return (AudioTrack)track;
+	}
+	
+	// converts List<VideoTrack> to List<Track>
+	public static List<Track> VideoTracksToTracks(List<VideoTrack> videoTracks) {
+		return videoTracks.ConvertAll(new Converter<VideoTrack, Track>(VideoTrackToTrack));
+	}
+	
+	private static Track VideoTrackToTrack(VideoTrack videoTrack) {
+		return videoTrack;
+	}
+	
+	// converts List<Track> to List<VideoTrack>
+	public static List<VideoTrack> TracksToVideoTracks(List<Track> tracks) {
+		return tracks.ConvertAll(new Converter<Track, VideoTrack>(TrackToVideoTrack));
+	}
+	
+	private static VideoTrack TrackToVideoTrack(Track track) {
+		return (VideoTrack)track;
+	}
+	
 }
 }
 
