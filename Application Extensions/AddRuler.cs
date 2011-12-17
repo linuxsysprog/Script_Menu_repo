@@ -138,12 +138,12 @@ public class AddRulerControl : UserControl {
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
-		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
-			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
+		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
+			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
 		);
 		
-		if (selectedAudioTracks.Count != 1) {
-			MessageBox.Show("Please make sure you have exactly one audio track selected",
+		if (selectedVideoTracks.Count != 1) {
+			MessageBox.Show("Please make sure you have exactly one video track selected",
 				"Add Ruler", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
