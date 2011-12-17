@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sony.Vegas;
 
-namespace AddRuler
+namespace AddRulerNamespace
 {
 public class Common {
 

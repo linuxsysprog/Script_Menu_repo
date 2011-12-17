@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Sony.Vegas;
 
-namespace AddRuler
+namespace AddRulerNamespace
 {
 public class Video {
 	// returns all video tracks

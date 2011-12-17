@@ -3,8 +3,10 @@
 using System;
 using System.Drawing;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Sony.Vegas;
+using AddRulerNamespace;
 
 public class AddRuler : ICustomCommandModule {
 	private Vegas vegas;
@@ -25,7 +27,7 @@ public class AddRuler : ICustomCommandModule {
 		if (!vegas.ActivateDockView("Add Ruler")) {
 			DockableControl addRulerView = new DockableControl("Add Ruler");
 			
-			AddRulerControl addRulerControl = new AddRulerControl();
+			AddRulerControl addRulerControl = new AddRulerControl(vegas);
 			addRulerView.Controls.Add(addRulerControl);
 			
 			addRulerView.DefaultFloatingSize = new Size(200, 260);
@@ -48,6 +50,8 @@ public class AddRulerControl : UserControl {
 		"11", "12", "13", "14", "15",
 		"16" };
 
+	private Vegas vegas;
+
 	private GroupBox gbLocation = new GroupBox();
 	private RadioButton rbTop = new RadioButton();
 	private RadioButton rbBottom = new RadioButton();
@@ -58,7 +62,9 @@ public class AddRulerControl : UserControl {
 	private Button btnAdd = new Button();
 	private Button btnFillGaps = new Button();
 
-	public AddRulerControl() {
+	public AddRulerControl(Vegas vegas) {
+		this.vegas = vegas;
+	
 		gbLocation.Size = new Size(170, 50);
 		gbLocation.Location = new Point(10, 10);
 		gbLocation.Text = "Location";
@@ -132,7 +138,10 @@ public class AddRulerControl : UserControl {
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
-		MessageBox.Show(txtNotes.Text);
+		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
+			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
+		);
+		MessageBox.Show("" + selectedAudioTracks.Count);
 	}
 	
 	void btnFillGaps_Click(object sender, EventArgs e) {
@@ -160,7 +169,7 @@ public class AddRulerControl : UserControl {
 }
 
 public class AddRulerControlTest : Form {
-	private AddRulerControl addRulerControl = new AddRulerControl();
+	private AddRulerControl addRulerControl = new AddRulerControl(null);
 	
 	public AddRulerControlTest() {
 		ClientSize = new Size (190, 240);

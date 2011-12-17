@@ -5,11 +5,13 @@ using System.Windows.Forms;
 using Sony.Vegas;
 using UtilityMethods;
 using System.Collections.Generic;
-using AddRuler;
+using AddRulerNamespace;
 
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
-		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project))));
+		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
+			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
+		);
 		MessageBox.Show("" + selectedAudioTracks.Count);
     }
 	
