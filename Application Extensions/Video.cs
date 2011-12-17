@@ -9,9 +9,17 @@ using Sony.Vegas;
 namespace AddRuler
 {
 public class Video {
-	// 
-	public static void Foo(Project project) {
-		MessageBox.Show("AddRuler.Video.Foo() Entry.");
+	// returns all video tracks
+	public static List<VideoTrack> FindVideoTracks(Project project) {
+		List<VideoTrack> videoTracks = new List<VideoTrack>();
+		
+		foreach (Track track in project.Tracks) {
+			if (track is VideoTrack) {
+				videoTracks.Add((VideoTrack)track);
+			}
+		}
+		
+		return videoTracks;
 	}
 	
 }
