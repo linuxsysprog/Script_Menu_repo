@@ -148,6 +148,20 @@ public class AddRulerControl : UserControl {
 			return;
 		}
 		
+		List<TrackEvent> events = Common.FindEventsByPosition(selectedVideoTracks[0],
+			vegas.Transport.CursorPosition);
+		
+		if (events.Count > 0) {
+			DialogResult result = MessageBox.Show("There are already " + events.Count + " event(s) at frame " +
+				vegas.Transport.CursorPosition.ToString(RulerFormat.AbsoluteFrames) +
+				". Would you like to continue?", Common.ADD_RULER, MessageBoxButtons.OKCancel,
+				MessageBoxIcon.Warning);
+				
+			if (result != DialogResult.OK) {
+				return;
+			}
+		}
+		
 		MessageBox.Show("Not yet implemented.");
 	}
 	
