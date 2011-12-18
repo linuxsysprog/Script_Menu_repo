@@ -152,11 +152,16 @@ public class AddRulerControl : UserControl {
 			vegas.Transport.CursorPosition);
 		
 		if (events.Count > 0) {
-			DialogResult result = MessageBox.Show("There are already " + events.Count + " event(s) at frame " +
-				vegas.Transport.CursorPosition.ToString(RulerFormat.AbsoluteFrames) +
-				". Would you like to continue?", Common.ADD_RULER, MessageBoxButtons.OKCancel,
+			string msg = "";
+			if (events.Count == 1) {
+				msg += "There is already " + events.Count + " event at position ";
+			} else {
+				msg += "There are already " + events.Count + " events at position ";
+			}
+			msg += vegas.Transport.CursorPosition + ". Would you like to continue?";
+		
+			DialogResult result = MessageBox.Show(msg, Common.ADD_RULER, MessageBoxButtons.OKCancel,
 				MessageBoxIcon.Warning);
-				
 			if (result != DialogResult.OK) {
 				return;
 			}
