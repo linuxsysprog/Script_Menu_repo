@@ -145,6 +145,19 @@ public class Common {
 		return (VideoTrack)track;
 	}
 	
+	// finds events by track and position
+	public static List<TrackEvent> FindEventsByPosition(Track track, Timecode position) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent @event in track.Events) {
+			if (@event.Start == position) {
+				events.Add(@event);
+			}
+		}
+		
+		return events;
+	}
+	
 }
 }
 
