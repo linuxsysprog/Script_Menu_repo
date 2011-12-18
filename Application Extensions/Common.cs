@@ -8,6 +8,7 @@ using Sony.Vegas;
 namespace AddRulerNamespace
 {
 public class Common {
+	public const string ADD_RULER = "Add Ruler";
 
 	//
 	// 2.1: How do I find the currently selected track or event?

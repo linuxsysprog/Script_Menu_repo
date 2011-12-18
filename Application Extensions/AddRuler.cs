@@ -17,15 +17,15 @@ public class AddRuler : ICustomCommandModule {
 	}
 
 	public ICollection GetCustomCommands() {
-		addRulerCmd.DisplayName = "Add Ruler View";
+		addRulerCmd.DisplayName = Common.ADD_RULER + " View";
 		addRulerCmd.Invoked += this.HandleInvoked;
 		addRulerCmd.MenuPopup += this.HandleMenuPopup;
 		return new CustomCommand[] { addRulerCmd };
 	}
 
 	void HandleInvoked(Object sender, EventArgs args) {
-		if (!vegas.ActivateDockView("Add Ruler")) {
-			DockableControl addRulerView = new DockableControl("Add Ruler");
+		if (!vegas.ActivateDockView(Common.ADD_RULER)) {
+			DockableControl addRulerView = new DockableControl(Common.ADD_RULER);
 			
 			AddRulerControl addRulerControl = new AddRulerControl(vegas);
 			addRulerView.Controls.Add(addRulerControl);
@@ -36,7 +36,7 @@ public class AddRuler : ICustomCommandModule {
 	}
 
 	void HandleMenuPopup(Object sender, EventArgs args) {
-		addRulerCmd.Checked = vegas.FindDockView("Add Ruler");
+		addRulerCmd.Checked = vegas.FindDockView(Common.ADD_RULER);
 	}
 }
 
@@ -144,7 +144,7 @@ public class AddRulerControl : UserControl {
 		
 		if (selectedVideoTracks.Count != 1) {
 			MessageBox.Show("Please make sure you have exactly one video track selected",
-				"Add Ruler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
