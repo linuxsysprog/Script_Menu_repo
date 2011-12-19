@@ -21,8 +21,31 @@ public class EntryPoint {
 			return;
 		}
 		
-		Video.AddRuler(selectedVideoTracks[0], vegas.Transport.CursorPosition,
-			true, 1, "blah-blah");
+		// Video.AddRuler(selectedVideoTracks[0], vegas.Transport.CursorPosition,
+			// true, 1, "blah-blah");
+			
+		string path = Common.vegas.InstallationDirectory + "\\Application Extensions\\AddRuler.png\\" +
+			"ruler_bot_01.png";
+			
+		// save cursor position
+		Timecode cursorPosition = vegas.Transport.CursorPosition;
+
+		try {
+			vegas.OpenFile(path);
+		} catch (Exception e) {
+			vegas.ShowError(e);
+			return;
+		}
+		
+		// restore cursor position
+		vegas.Transport.CursorPosition = cursorPosition;
+		
+		List<TrackEvent> events = Common.FindEventsByPosition(selectedVideoTracks[0],
+			vegas.Transport.CursorPosition);
+			
+		events[0].Length = Timecode.FromFrames(1);
+		events[0].Takes[0].Name = "1 B";
+		vegas.DebugOut(events[0].Takes[0].Media.FilePath);
     }
 	
 }
