@@ -22,6 +22,19 @@ public class Video {
 		return videoTracks;
 	}
 	
+	// add a ruler 1 frame long onto the track specified at the position specified
+	public static VideoEvent AddRuler(VideoTrack videoTrack, Timecode position,
+		bool top, int number, string notes) {
+		Media media = new Media(Common.vegas.InstallationDirectory + "\\Application Extensions\\AddRuler.png\\" +
+			Common.LocationNumber2Basename(top, number));
+		VideoEvent videoEvent = videoTrack.AddVideoEvent(position, Timecode.FromFrames(1));
+		
+		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = number + " " + (top ? "T" : "B");
+		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = notes;
+		
+		return videoEvent;
+	}
+	
 }
 }
 

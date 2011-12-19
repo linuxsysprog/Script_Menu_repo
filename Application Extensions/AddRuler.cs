@@ -14,6 +14,7 @@ public class AddRuler : ICustomCommandModule {
 	
 	public void InitializeModule(Vegas vegas) {
 		this.vegas = vegas;
+		Common.vegas = vegas;
 	}
 
 	public ICollection GetCustomCommands() {
@@ -167,7 +168,8 @@ public class AddRulerControl : UserControl {
 			}
 		}
 		
-		MessageBox.Show("Not yet implemented.");
+		Video.AddRuler(selectedVideoTracks[0], vegas.Transport.CursorPosition,
+			rbTop.Checked, Convert.ToInt32(cbNumber.Text), txtNotes.Text);
 	}
 	
 	void btnFillGaps_Click(object sender, EventArgs e) {

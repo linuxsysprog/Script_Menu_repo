@@ -9,6 +9,7 @@ namespace AddRulerNamespace
 {
 public class Common {
 	public const string ADD_RULER = "Add Ruler";
+	public static Vegas vegas;
 
 	//
 	// 2.1: How do I find the currently selected track or event?
@@ -159,6 +160,11 @@ public class Common {
 		return events;
 	}
 	
+	// convert Location&Number to basename
+	public static string LocationNumber2Basename(bool top, int number) {
+		return "ruler_" + (top ? "top" : "bot") + "_" +  number.ToString("D2") + ".png";
+	}
+
 }
 }
 
