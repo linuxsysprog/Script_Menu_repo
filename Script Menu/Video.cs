@@ -73,8 +73,9 @@ public class Video {
 		
 		VideoEvent videoEvent = videoTrack.AddVideoEvent(position, Timecode.FromFrames(1));
 		
-		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = notes;
-		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = number + " " + (top ? "T" : "B");
+		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = notes + Common.SPACER;
+		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = number +
+			" " + (top ? "T" : "B") + Common.SPACER;
 		
 		return videoEvent;
 	}

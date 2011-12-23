@@ -216,7 +216,7 @@ public class AddRulerControl : UserControl {
 		
 		Video.AddRuler(selectedVideoTracks[0], vegas.Transport.CursorPosition,
 			rbTop.Checked, Convert.ToInt32(cbNumber.Text),
-			txtNotes.Text == "[Section]" ? "_____" + "_____" + "_____" + "_____" : txtNotes.Text);
+			txtNotes.Text == "[Section]" ? "." : txtNotes.Text);
 			
 		form.Close();
 	}
