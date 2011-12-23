@@ -192,6 +192,7 @@ public class AddRulerControl : UserControl {
 		if (selectedVideoTracks.Count != 1) {
 			MessageBox.Show("Please make sure you have exactly one video track selected",
 				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			form.Close();
 			return;
 		}
 		
