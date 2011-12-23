@@ -42,16 +42,44 @@ public class AddRuler : ICustomCommandModule {
 }
 
 public class EntryPoint {
+	private Form form = new Form();
+
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 
-		Form form = new Form();
+		Button btnCancel = new Button();		
+		btnCancel.Click += new EventHandler(btnCancel_Click);
+		btnCancel.Size = new Size(0, 0);
 
 		AddRulerControl addRulerControl = new AddRulerControl(vegas);
 		form.Controls.Add(addRulerControl);
+		form.Controls.Add(btnCancel);
 		
-		Application.Run(form);
+	   form.Text = Common.ADD_RULER;
+	   form.FormBorderStyle = FormBorderStyle.FixedDialog;
+	   form.MaximizeBox = false;
+	   form.MinimizeBox = false;
+	   form.AcceptButton = addRulerControl.btnAdd;
+	   form.CancelButton = btnCancel;
+	   form.StartPosition = FormStartPosition.CenterParent;
+	   form.Size = new Size(200, 260);
+	   
+	   // the icon is ugly
+	   // Bitmap bitmap;
+	   // try {
+		   // bitmap = new Bitmap(vegas.InstallationDirectory +
+				// "\\Script Menu\\AddRuler.cs.png");
+		   // form.Icon = Icon.FromHandle(bitmap.GetHicon());
+	   // } catch (Exception e) { vegas.ShowError(e); }
+			
+		// Application.Run(form);
+		form.ShowDialog();
 	}
+
+	void btnCancel_Click(object sender, EventArgs e) {
+		form.Close();
+	}
+	
 }
 
 public class AddRulerControl : UserControl {
@@ -73,7 +101,7 @@ public class AddRulerControl : UserControl {
 	private ComboBox cbNumber = new ComboBox();
 	private Label lblNotes = new Label();
 	private TextBox txtNotes = new TextBox();
-	private Button btnAdd = new Button();
+	public Button btnAdd = new Button();
 	private Button btnFillGaps = new Button();
 
 	public AddRulerControl(Vegas vegas) {
