@@ -28,7 +28,7 @@ public class AddRuler : ICustomCommandModule {
 		if (!vegas.ActivateDockView(Common.ADD_RULER)) {
 			DockableControl addRulerView = new DockableControl(Common.ADD_RULER);
 			
-			AddRulerControl addRulerControl = new AddRulerControl(vegas);
+			AddRulerControl addRulerControl = new AddRulerControl(vegas, null);
 			addRulerView.Controls.Add(addRulerControl);
 			
 			addRulerView.DefaultFloatingSize = new Size(200, 260);
@@ -51,7 +51,7 @@ public class EntryPoint {
 		btnCancel.Click += new EventHandler(btnCancel_Click);
 		btnCancel.Size = new Size(0, 0);
 
-		AddRulerControl addRulerControl = new AddRulerControl(vegas);
+		AddRulerControl addRulerControl = new AddRulerControl(vegas, form);
 		form.Controls.Add(addRulerControl);
 		form.Controls.Add(btnCancel);
 		
@@ -74,6 +74,9 @@ public class EntryPoint {
 			
 		// Application.Run(form);
 		form.ShowDialog();
+		
+		// this causes the script to crash
+		// form.Show();
 	}
 
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -93,6 +96,7 @@ public class AddRulerControl : UserControl {
 		"16" };
 
 	private Vegas vegas;
+	private Form form;
 
 	private GroupBox gbLocation = new GroupBox();
 	private RadioButton rbTop = new RadioButton();
@@ -104,8 +108,9 @@ public class AddRulerControl : UserControl {
 	public Button btnAdd = new Button();
 	private Button btnFillGaps = new Button();
 
-	public AddRulerControl(Vegas vegas) {
+	public AddRulerControl(Vegas vegas, Form form) {
 		this.vegas = vegas;
+		this.form = form;
 	
 		gbLocation.Size = new Size(170, 50);
 		gbLocation.Location = new Point(10, 10);
@@ -203,7 +208,7 @@ public class AddRulerControl : UserControl {
 			msg += vegas.Transport.CursorPosition + ". Would you like to continue?";
 		
 			DialogResult result = MessageBox.Show(msg, Common.ADD_RULER, MessageBoxButtons.OKCancel,
-				MessageBoxIcon.Warning);
+				MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 			if (result != DialogResult.OK) {
 				return;
 			}
@@ -211,6 +216,8 @@ public class AddRulerControl : UserControl {
 		
 		Video.AddRuler(selectedVideoTracks[0], vegas.Transport.CursorPosition,
 			rbTop.Checked, Convert.ToInt32(cbNumber.Text), txtNotes.Text);
+			
+		form.Close();
 	}
 	
 	void btnFillGaps_Click(object sender, EventArgs e) {
@@ -238,7 +245,7 @@ public class AddRulerControl : UserControl {
 }
 
 public class AddRulerControlTest : Form {
-	private AddRulerControl addRulerControl = new AddRulerControl(null);
+	private AddRulerControl addRulerControl = new AddRulerControl(null, null);
 	
 	public AddRulerControlTest() {
 		ClientSize = new Size (190, 240);
