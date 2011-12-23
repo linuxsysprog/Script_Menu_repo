@@ -1,4 +1,6 @@
-csc /target:exe /reference:"D:\Program Files\Sony\Vegas Pro 8.0\Sony.Vegas.dll" /out:AddRuler.EXE AddRuler.cs
+REM This bat file produces a broken AddRuler.EXE (can't find Sony.Vegas.dll at runtime)
+
+csc /target:exe /reference:..\Sony.Vegas.dll;Common.DLL;Video.DLL;Audio.DLL /out:AddRuler.EXE AddRuler.cs
 IF "%ERRORLEVEL%" == "0" (
 	AddRuler.EXE
 ) ELSE (

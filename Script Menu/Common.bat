@@ -1,1 +1,1 @@
-csc /target:library /reference:"D:\Program Files\Sony\Vegas Pro 8.0\Sony.Vegas.dll" /out:Common.DLL Common.cs
+csc /target:library /reference:..\Sony.Vegas.dll /out:Common.DLL Common.cs

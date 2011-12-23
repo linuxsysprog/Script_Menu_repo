@@ -41,6 +41,19 @@ public class AddRuler : ICustomCommandModule {
 	}
 }
 
+public class EntryPoint {
+    public void FromVegas(Vegas vegas) {
+		Common.vegas = vegas;
+
+		Form form = new Form();
+
+		AddRulerControl addRulerControl = new AddRulerControl(vegas);
+		form.Controls.Add(addRulerControl);
+		
+		Application.Run(form);
+	}
+}
+
 public class AddRulerControl : UserControl {
 	private object[] TOP_RANGE = new object[] { "1", "2", "3", "4", "5",
 		"6", "7", "8", "9", "10",

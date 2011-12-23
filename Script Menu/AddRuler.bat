@@ -1,3 +1,6 @@
+REM Since AddRuler has stopped being an app ext and become a script
+REM this bat file has no use anymore
+
 @echo off
 D:
 cd "D:\Program Files\Sony\Vegas Pro 8.0\Application Extensions"
