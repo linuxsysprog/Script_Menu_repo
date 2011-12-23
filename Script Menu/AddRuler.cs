@@ -71,7 +71,19 @@ public class EntryPoint {
 				// "\\Script Menu\\AddRuler.cs.png");
 		   // form.Icon = Icon.FromHandle(bitmap.GetHicon());
 	   // } catch (Exception e) { vegas.ShowError(e); }
-			
+		
+		// check for the user has selected exactly one track
+		// and that track is of type video
+		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
+			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
+		);
+		if (selectedVideoTracks.Count != 1) {
+			MessageBox.Show("Please make sure you have exactly one video track selected",
+				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			form.Close();
+			return;
+		}
+		
 		// Application.Run(form);
 		form.ShowDialog();
 		
@@ -188,13 +200,6 @@ public class AddRulerControl : UserControl {
 		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
 			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
 		);
-		
-		if (selectedVideoTracks.Count != 1) {
-			MessageBox.Show("Please make sure you have exactly one video track selected",
-				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			form.Close();
-			return;
-		}
 		
 		List<TrackEvent> events = Common.FindEventsByPosition(selectedVideoTracks[0],
 			vegas.Transport.CursorPosition);
