@@ -14,6 +14,10 @@ public class EntryPoint {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 		
+		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
+		MessageBox.Show("" + selection.Normalize());
+		return;
+		
 		// check for the user has selected exactly one track
 		// either audio or video
 		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);

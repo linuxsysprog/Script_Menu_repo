@@ -186,5 +186,61 @@ public class Common {
 	}
 	
 }
+
+public class Selection {
+	private Timecode selectionStart;
+	private Timecode selectionLength;
+
+	private Timecode selectionEnd;
+
+	public Selection(Timecode selectionStart, Timecode selectionLength) {
+		this.selectionStart = this.selectionEnd = selectionStart;
+		this.selectionLength = selectionLength;
+	}
+	
+	public Timecode SelectionStart {
+		get {
+			return selectionStart;
+		}
+		set {
+			selectionStart = value;
+		}
+	}
+	
+	public Timecode SelectionLength {
+		get {
+			return selectionLength;
+		}
+		set {
+			selectionLength = value;
+		}
+	}
+	
+	public Timecode SelectionEnd {
+		get {
+			return selectionEnd;
+		}
+		set {
+			selectionEnd = value;
+		}
+	}
+	
+	public Selection Normalize() {
+		if (selectionLength > new Timecode()) {
+			selectionEnd = selectionStart + selectionLength;
+		} else {
+			selectionStart = selectionStart + selectionLength;
+			selectionLength = new Timecode() - selectionLength;
+		}
+	
+		return this;
+	}
+	
+	public override string ToString() {
+		return selectionStart + " " + selectionLength + " " + selectionEnd;
+	}
+	
+}
+
 }
 
