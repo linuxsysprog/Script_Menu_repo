@@ -106,6 +106,19 @@ public class Common {
 		return selectedTracks;
 	}
 		
+	// returns all selected tracks II
+	public static List<Track> FindSelectedTracks(Tracks projectTracks) {
+		List<Track> tracks = new List<Track>();
+		
+		foreach (Track track in projectTracks) {
+			if (track.Selected) {
+				tracks.Add(track);
+			}
+		}
+		
+		return tracks;
+	}
+	
 	//
 	// The "Four Horsemen" functions
 	//
