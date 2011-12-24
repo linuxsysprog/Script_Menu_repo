@@ -23,7 +23,16 @@ public class EntryPoint {
 		}
 		
 		vegas.DebugClear();
-		vegas.DebugOut("yo");
+
+		foreach (TrackEvent @event in tracks[0].Events) {
+			vegas.DebugOut("Event " + @event.Index + " " + @event.Start + " " +
+				@event.Length + " " + @event.End + " ");
+		
+			foreach (Take take in @event.Takes) {
+				vegas.DebugOut("    Take " + take.Index + " " + take.Name + " " +
+					take.Media.FilePath);
+			}
+		}
 	}
 }
 
