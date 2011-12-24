@@ -15,8 +15,7 @@ public class EntryPoint {
 		Common.vegas = vegas;
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
-		MessageBox.Show("" + selection.Normalize());
-		return;
+		selection.Normalize();
 		
 		// check for the user has selected exactly one track
 		// either audio or video
@@ -27,10 +26,24 @@ public class EntryPoint {
 			return;
 		}
 		
-		vegas.DebugClear();
-		string spacer = "    " + "    ";
+		// find events
+		List<TrackEvent> events;
+		if (selection.SelectionLength == new Timecode()) {
+			events = Common.TrackEventsToTrackEvents(tracks[0].Events);
+		} else {
+			events = Common.FindEventsBySelection(tracks[0], selection);
+		}
 
-		foreach (TrackEvent @event in tracks[0].Events) {
+		// clear output window
+		vegas.DebugClear();
+		
+		if (events.Count < 1) {
+			vegas.DebugOut("No events found.");
+			return;
+		}
+		
+		string spacer = "    " + "    ";
+		foreach (TrackEvent @event in events) {
 			vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
 				@event.Length + " " + @event.End + " ");
 		

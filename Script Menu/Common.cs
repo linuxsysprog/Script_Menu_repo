@@ -161,12 +161,38 @@ public class Common {
 		return (VideoTrack)track;
 	}
 	
+	// the 5th horseman
+	// converts TrackEvents to List<TrackEvent>
+	public static List<TrackEvent> TrackEventsToTrackEvents(TrackEvents trackEvents) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent @event in trackEvents) {
+			events.Add(@event);
+		}
+		
+		return events;
+	}
+	
 	// finds events by track and position
 	public static List<TrackEvent> FindEventsByPosition(Track track, Timecode position) {
 		List<TrackEvent> events = new List<TrackEvent>();
 		
 		foreach (TrackEvent @event in track.Events) {
 			if (@event.Start == position) {
+				events.Add(@event);
+			}
+		}
+		
+		return events;
+	}
+	
+	// finds events by track and selection
+	public static List<TrackEvent> FindEventsBySelection(Track track, Selection selection) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent @event in track.Events) {
+			if (@event.Start >= selection.SelectionStart
+					&& @event.Start < selection.SelectionEnd) {
 				events.Add(@event);
 			}
 		}
