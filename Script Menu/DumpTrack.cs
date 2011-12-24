@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using Sony.Vegas;
 using AddRulerNamespace;
 
@@ -23,16 +24,19 @@ public class EntryPoint {
 		}
 		
 		vegas.DebugClear();
+		string spacer = "    " + "    ";
 
 		foreach (TrackEvent @event in tracks[0].Events) {
-			vegas.DebugOut("Event " + @event.Index + " " + @event.Start + " " +
+			vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
 				@event.Length + " " + @event.End + " ");
 		
 			foreach (Take take in @event.Takes) {
-				vegas.DebugOut("    Take " + take.Index + " " + take.Name + " " +
-					take.Media.FilePath);
+				vegas.DebugOut("    Take " + take.Index + spacer +
+					take.Name.Substring(0, take.Name.IndexOf(Common.SPACER)) + spacer +
+					Common.Basename(take.Media.FilePath));
 			}
 		}
 	}
+	
 }
 

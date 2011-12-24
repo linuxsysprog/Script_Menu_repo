@@ -179,6 +179,12 @@ public class Common {
 		return "ruler_" + (top ? "top" : "bot") + "_" +  number.ToString("D2") + ".png";
 	}
 
+	// get basename of a fully qualified file name
+	public static string Basename(string path) {
+	
+		return path.Substring(path.LastIndexOf("\\") + 1);
+	}
+	
 }
 }
 
