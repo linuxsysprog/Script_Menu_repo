@@ -228,7 +228,32 @@ public class AddRulerControl : UserControl {
 	}
 	
 	void btnFillGaps_Click(object sender, EventArgs e) {
-		MessageBox.Show(cbNumber.Text);
+		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
+			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
+		);
+		
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(selectedVideoTracks[0].Events);
+		
+		// there must be at least two events on the track to continue
+		if (events.Count < 2) {
+			MessageBox.Show("Please make sure there are at least two events on the track to continue",
+				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		int eventsTrimmed = 0;
+		for (int i = 0; i < events.ToArray().Length - 1; i++) {
+			TrackEvent @event = events.ToArray()[i];
+			
+			if (@event.End < events.ToArray()[i + 1].Start) {
+				@event.End = events.ToArray()[i + 1].Start;
+				eventsTrimmed++;
+			}
+		}
+		
+		MessageBox.Show(eventsTrimmed + " out of " + events.Count +
+			" total events were trimmed", Common.ADD_RULER);
+		form.Close();
 	}
 	
 	private void Validate_cbNumber() {
