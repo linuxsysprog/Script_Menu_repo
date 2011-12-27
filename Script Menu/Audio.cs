@@ -22,6 +22,29 @@ public class Audio {
 		return audioTracks;
 	}
 	
+	// add a beep 200ms long onto the track specified at the position specified
+	public static AudioEvent AddBeep(AudioTrack audioTrack, Timecode position,
+		int measure, int beat, string notes) {
+		// Common.vegas.DebugOut("is audioTrack null = " + (audioTrack == null) + "\n" +
+				// "is position null = " + (position == null) + "\n" +
+				// "measure = " + measure + "\n" +
+				// "beat = " + beat + "\n" +
+				// "notes = " + notes);
+		
+		string path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav";
+
+		Media media = new Media(path + "\\high.wav");
+		
+		AudioEvent audioEvent = audioTrack.AddAudioEvent(position, Timecode.FromMilliseconds(200.0));
+		
+		(audioEvent.AddTake(media.GetAudioStreamByIndex(0))).Name = notes + Common.SPACER;
+		media = new Media(path + "\\beep.1.wav");
+		(audioEvent.AddTake(media.GetAudioStreamByIndex(0))).Name = measure +
+			"." + beat + Common.SPACER;
+		
+		return audioEvent;
+	}
+	
 }
 }
 

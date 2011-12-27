@@ -26,7 +26,7 @@ public class EntryPoint : Form {
 		txtMeasure.Size = new Size(30, 50);
 		txtMeasure.Location = new Point(70, 10);
 		txtMeasure.Text = "1";
-		txtMeasure.Validated += new EventHandler(txtBeat_Validated);
+		txtMeasure.Validated += new EventHandler(txtMeasure_Validated);
 		
 		lblBeat.Size = new Size(40, 20);
 		lblBeat.Location = new Point(110, 10);
@@ -71,30 +71,40 @@ public class EntryPoint : Form {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	void txtBeat_Validated(object sender, EventArgs e) {
-		int rulerNumber;
+	void txtMeasure_Validated(object sender, EventArgs e) {
+		int measure;
 		
 		try {
-			rulerNumber = Convert.ToInt32(txtBeat.Text);
+			measure = Convert.ToInt32(txtMeasure.Text);
+			if (measure < 1) {
+				throw new Exception("measure is less than one");
+			}
 		} catch (Exception ex) {
-			MessageBox.Show("Invalid Ruler Number");
-			txtBeat.Focus();
-			return;
+			MessageBox.Show("Invalid Measure");
+			txtMeasure.Focus();
 		}
+	}
+	
+	void txtBeat_Validated(object sender, EventArgs e) {
+		int beat;
 		
-		if ((true && (rulerNumber < 1 || rulerNumber > 12))
-			|| (false && (rulerNumber < 1 || rulerNumber > 16))) {
-			MessageBox.Show("Ruler Number out of range");
+		try {
+			beat = Convert.ToInt32(txtBeat.Text);
+			if (beat < 1) {
+				throw new Exception("beat is less than one");
+			}
+		} catch (Exception ex) {
+			MessageBox.Show("Invalid Beat");
 			txtBeat.Focus();
 		}
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
-		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
-			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project)))
+		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
+			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)))
 		);
 		
-		List<TrackEvent> events = Common.FindEventsByPosition(selectedVideoTracks[0],
+		List<TrackEvent> events = Common.FindEventsByPosition(selectedAudioTracks[0],
 			Common.vegas.Transport.CursorPosition);
 		
 		if (events.Count > 0) {
@@ -113,8 +123,8 @@ public class EntryPoint : Form {
 			}
 		}
 		
-		Video.AddRuler(selectedVideoTracks[0], Common.vegas.Transport.CursorPosition,
-			true, Convert.ToInt32(txtBeat.Text),
+		Audio.AddBeep(selectedAudioTracks[0], Common.vegas.Transport.CursorPosition,
+			Convert.ToInt32(txtMeasure.Text), Convert.ToInt32(txtBeat.Text),
 			txtNotes.Text == "[Section]" ? "." : txtNotes.Text);
 			
 		Close();
@@ -142,11 +152,11 @@ public class EntryPoint : Form {
 		StartPosition = FormStartPosition.CenterParent;
 		Size = new Size(200, 190);
 
-		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
-			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
+		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
+			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
 		);
-		if (selectedVideoTracks.Count != 1) {
-			MessageBox.Show("Please make sure you have exactly one video track selected",
+		if (selectedAudioTracks.Count != 1) {
+			MessageBox.Show("Please make sure you have exactly one audio track selected",
 				Common.ADD_BEEP, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			Close();
 			return;
