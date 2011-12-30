@@ -89,6 +89,22 @@ public class EntryPoint : Form {
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
+		Preset preset;
+		try {
+			preset = new Preset("320x240 Notes [A] elmo");
+		} catch (Exception ex) {
+			Common.vegas.ShowError(ex);
+			Close();
+			return;
+		}
+		Common.vegas.DebugClear();
+		Common.vegas.DebugOut("" + preset);
+		preset.FrameSize = "1";
+		preset.Object = "2";
+		preset.Value = "3";
+		Common.vegas.DebugOut(preset.FrameSize);
+		Common.vegas.DebugOut(preset.Object);
+		Common.vegas.DebugOut(preset.Value);
 		Close();
 	}
 	
@@ -127,5 +143,54 @@ public class EntryPoint : Form {
 		ShowDialog();
 	}
 
+}
+
+public class Preset {
+	private string frameSize;
+	private string @object;
+	private string value;
+
+	public Preset(string strPreset) {
+		string[] result = strPreset.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+		if (result.Length != 3) {
+			throw new Exception("can't parse Preset string: " + strPreset);
+		}
+		
+		this.frameSize = result[0];
+		this.@object = result[1];
+		this.value = result[2];
+	}
+	
+	public string FrameSize {
+		get {
+			return frameSize;
+		}
+		set {
+			frameSize = value;
+		}
+	}
+	
+	public string Object {
+		get {
+			return @object;
+		}
+		set {
+			@object = value;
+		}
+	}
+	
+	public string Value {
+		get {
+			return value;
+		}
+		set {
+			this.value = value;
+		}
+	}
+	
+	public override string ToString() {
+		return frameSize + " " + @object + " " + value;
+	}
+	
 }
 
