@@ -35,8 +35,8 @@ public class EntryPoint : Form {
 		lblObject.Location = new Point(10, 50);
 		lblObject.Text = "&Object:";
 		
-		cbObject.Size = new Size(200, 50);
-		cbObject.Location = new Point(80, 50);
+		cbObject.Size = new Size(70, 50);
+		cbObject.Location = new Point(210, 50);
 		// cbObject.Items.AddRange(new object[] { "n/a" });
 		// cbObject.SelectedIndex = 0;
 		cbObject.Validated += new EventHandler(cbFrameSize_Validated);
@@ -160,6 +160,31 @@ public class EntryPoint : Form {
 		frameSizes.Sort();
 		cbFrameSize.Items.AddRange(frameSizes.ToArray());
 		cbFrameSize.SelectedIndex = 0;
+		
+		// populate Object drop-down
+		List<string> objects = new List<string>();
+		foreach (Preset preset in presets) {
+			if (preset.FrameSize == cbFrameSize.Text) {
+				objects.Add(preset.Object);
+			}
+		}
+		objects = removeDuplicates(objects);
+		objects.Sort();
+		cbObject.Items.AddRange(objects.ToArray());
+		cbObject.SelectedIndex = 0;
+		
+		// populate Preset drop-down
+		List<string> values = new List<string>();
+		foreach (Preset preset in presets) {
+			if (preset.FrameSize == cbFrameSize.Text &&
+					preset.Object == cbObject.Text) {
+				values.Add(preset.Value);
+			}
+		}
+		values = removeDuplicates(values);
+		values.Sort();
+		cbPreset.Items.AddRange(values.ToArray());
+		cbPreset.SelectedIndex = 0;
 		
 		// show dialog
 		ShowDialog();
