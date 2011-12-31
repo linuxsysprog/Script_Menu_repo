@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using Sony.Vegas;
 using AddRulerNamespace;
 
@@ -26,8 +27,8 @@ public class EntryPoint : Form {
 		
 		cbFrameSize.Size = new Size(200, 50);
 		cbFrameSize.Location = new Point(80, 10);
-		cbFrameSize.Items.AddRange(new object[] { "n/a" });
-		cbFrameSize.SelectedIndex = 0;
+		// cbFrameSize.Items.AddRange(new object[] { "n/a" });
+		// cbFrameSize.SelectedIndex = 0;
 		cbFrameSize.Validated += new EventHandler(cbFrameSize_Validated);
 		
 		lblObject.Size = new Size(70, 20);
@@ -36,8 +37,8 @@ public class EntryPoint : Form {
 		
 		cbObject.Size = new Size(200, 50);
 		cbObject.Location = new Point(80, 50);
-		cbObject.Items.AddRange(new object[] { "n/a" });
-		cbObject.SelectedIndex = 0;
+		// cbObject.Items.AddRange(new object[] { "n/a" });
+		// cbObject.SelectedIndex = 0;
 		cbObject.Validated += new EventHandler(cbFrameSize_Validated);
 		
 		lblPreset.Size = new Size(70, 20);
@@ -46,8 +47,8 @@ public class EntryPoint : Form {
 		
 		cbPreset.Size = new Size(200, 50);
 		cbPreset.Location = new Point(80, 90);
-		cbPreset.Items.AddRange(new object[] { "n/a" });
-		cbPreset.SelectedIndex = 0;
+		// cbPreset.Items.AddRange(new object[] { "n/a" });
+		// cbPreset.SelectedIndex = 0;
 		cbPreset.Validated += new EventHandler(cbFrameSize_Validated);
 		
 		btnAdd.Location = new Point(110, 130);
@@ -89,23 +90,6 @@ public class EntryPoint : Form {
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
-		Preset preset;
-		try {
-			preset = new Preset("320x240 Notes [A] elmo");
-		} catch (Exception ex) {
-			Common.vegas.ShowError(ex);
-			Close();
-			return;
-		}
-		Common.vegas.DebugClear();
-		Common.vegas.DebugOut("" + preset);
-		preset.FrameSize = "1";
-		preset.Object = "2";
-		preset.Value = "3";
-		Common.vegas.DebugOut(preset.FrameSize);
-		Common.vegas.DebugOut(preset.Object);
-		Common.vegas.DebugOut(preset.Value);
-		Close();
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -135,10 +119,38 @@ public class EntryPoint : Form {
 		);
 		if (selectedVideoTracks.Count != 1) {
 			MessageBox.Show("Please make sure you have exactly one video track selected",
-				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.ADD_OBJECT, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			Close();
 			return;
 		}
+		
+		// get text media generator
+		PlugInNode plugIn = vegas.Generators.GetChildByName("Sony Text");
+		if (plugIn == null) {
+			MessageBox.Show("Couldn't find Sony Text media generator",
+				Common.ADD_OBJECT, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			Close();
+			return;
+		}
+		
+		// prepopulate 1st drop-down
+		List<Preset> presets = new List<Preset>();
+		foreach (EffectPreset preset in plugIn.Presets) {
+			try {
+				presets.Add(new Preset(preset.Name));
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		
+		// dump list of presets
+		// Common.vegas.DebugClear();
+		// foreach (Preset preset in presets) {
+			// Common.vegas.DebugOut("" + preset);
+		// }
+		
+		cbFrameSize.Items.AddRange(presets.ToArray());
+		cbFrameSize.SelectedIndex = 0;
 		
 		ShowDialog();
 	}
@@ -149,10 +161,12 @@ public class Preset {
 	private string frameSize;
 	private string @object;
 	private string value;
+	private Regex regex = new Regex("^\\d+");
 
 	public Preset(string strPreset) {
 		string[] result = strPreset.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-		if (result.Length != 3) {
+		if (regex.Matches(strPreset).Count < 1 ||
+				result.Length != 3) {
 			throw new Exception("can't parse Preset string: " + strPreset);
 		}
 		
