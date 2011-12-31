@@ -25,8 +25,8 @@ public class EntryPoint : Form {
 		lblFrameSize.Location = new Point(10, 10);
 		lblFrameSize.Text = "&Frame Size:";
 		
-		cbFrameSize.Size = new Size(200, 50);
-		cbFrameSize.Location = new Point(80, 10);
+		cbFrameSize.Size = new Size(70, 50);
+		cbFrameSize.Location = new Point(210, 10);
 		// cbFrameSize.Items.AddRange(new object[] { "n/a" });
 		// cbFrameSize.SelectedIndex = 0;
 		cbFrameSize.Validated += new EventHandler(cbFrameSize_Validated);
@@ -105,6 +105,7 @@ public class EntryPoint : Form {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 
+		// setup form
 		Text = Common.ADD_OBJECT;
 		FormBorderStyle = FormBorderStyle.FixedDialog;
 		MaximizeBox = false;
@@ -114,6 +115,7 @@ public class EntryPoint : Form {
 		StartPosition = FormStartPosition.CenterParent;
 		Size = new Size(300, 190);
 
+		// get the video track to work on
 		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
 			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
 		);
@@ -133,7 +135,7 @@ public class EntryPoint : Form {
 			return;
 		}
 		
-		// prepopulate 1st drop-down
+		// get presets
 		List<Preset> presets = new List<Preset>();
 		foreach (EffectPreset preset in plugIn.Presets) {
 			try {
@@ -142,22 +144,46 @@ public class EntryPoint : Form {
 				continue;
 			}
 		}
-		
-		// dump list of presets
+
+		// dump presets
 		// Common.vegas.DebugClear();
 		// foreach (Preset preset in presets) {
 			// Common.vegas.DebugOut("" + preset);
 		// }
-		
-		cbFrameSize.Items.AddRange(presets.ToArray());
+
+		// populate Frame Size drop-down
+		List<string> frameSizes = new List<string>();
+		foreach (Preset preset in presets) {
+			frameSizes.Add(preset.FrameSize);
+		}
+		frameSizes = removeDuplicates(frameSizes);
+		frameSizes.Sort();
+		cbFrameSize.Items.AddRange(frameSizes.ToArray());
 		cbFrameSize.SelectedIndex = 0;
 		
+		// show dialog
 		ShowDialog();
+	}
+
+	// Courtesy of http://www.kirupa.com/forum/showthread.php?240523-C-Removing-Duplicates-from-List
+	static List<string> removeDuplicates(List<string> inputList)
+	{
+		Dictionary<string, int> uniqueStore = new Dictionary<string, int>();
+		List<string> finalList = new List<string>();
+		foreach (string currValue in inputList)
+		{
+			if (!uniqueStore.ContainsKey(currValue))
+			{
+				uniqueStore.Add(currValue, 0);
+				finalList.Add(currValue);
+			}
+		}
+		return finalList;
 	}
 
 }
 
-public class Preset {
+public class Preset : IComparable {
 	private string frameSize;
 	private string @object;
 	private string value;
@@ -205,6 +231,17 @@ public class Preset {
 	public override string ToString() {
 		return frameSize + " " + @object + " " + value;
 	}
+	
+    public int CompareTo(object obj) {
+        if (obj == null) return 1;
+
+        Preset otherPreset = obj as Preset;
+        if (otherPreset != null) 
+            return ToString().CompareTo(otherPreset.ToString());
+        else
+           throw new ArgumentException("Object is not a Preset");
+    }
+
 	
 }
 
