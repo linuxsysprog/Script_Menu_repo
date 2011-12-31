@@ -27,8 +27,6 @@ public class EntryPoint : Form {
 		
 		cbFrameSize.Size = new Size(70, 50);
 		cbFrameSize.Location = new Point(210, 10);
-		// cbFrameSize.Items.AddRange(new object[] { "n/a" });
-		// cbFrameSize.SelectedIndex = 0;
 		cbFrameSize.Validated += new EventHandler(cbFrameSize_Validated);
 		
 		lblObject.Size = new Size(70, 20);
@@ -37,8 +35,6 @@ public class EntryPoint : Form {
 		
 		cbObject.Size = new Size(70, 50);
 		cbObject.Location = new Point(210, 50);
-		// cbObject.Items.AddRange(new object[] { "n/a" });
-		// cbObject.SelectedIndex = 0;
 		cbObject.Validated += new EventHandler(cbFrameSize_Validated);
 		
 		lblPreset.Size = new Size(70, 20);
@@ -47,8 +43,6 @@ public class EntryPoint : Form {
 		
 		cbPreset.Size = new Size(200, 50);
 		cbPreset.Location = new Point(80, 90);
-		// cbPreset.Items.AddRange(new object[] { "n/a" });
-		// cbPreset.SelectedIndex = 0;
 		cbPreset.Validated += new EventHandler(cbFrameSize_Validated);
 		
 		btnAdd.Location = new Point(110, 130);
@@ -267,6 +261,5 @@ public class Preset : IComparable {
            throw new ArgumentException("Object is not a Preset");
     }
 
-	
 }
 
