@@ -18,7 +18,9 @@ public class EntryPoint : Form {
 	private Label lblPreset = new Label();
 	private ComboBox cbPreset = new ComboBox();
 	private Button btnAdd = new Button();
-	private Button btnCancel = new Button();		
+	private Button btnCancel = new Button();
+	
+	private List<Preset> presets;
 
 	public EntryPoint() {
 		lblFrameSize.Size = new Size(70, 20);
@@ -27,7 +29,8 @@ public class EntryPoint : Form {
 		
 		cbFrameSize.Size = new Size(70, 50);
 		cbFrameSize.Location = new Point(210, 10);
-		cbFrameSize.Validated += new EventHandler(cbFrameSize_Validated);
+		cbFrameSize.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbFrameSize.SelectedValueChanged += new EventHandler(cbFrameSize_SelectedValueChanged);
 		
 		lblObject.Size = new Size(70, 20);
 		lblObject.Location = new Point(10, 50);
@@ -35,7 +38,8 @@ public class EntryPoint : Form {
 		
 		cbObject.Size = new Size(70, 50);
 		cbObject.Location = new Point(210, 50);
-		cbObject.Validated += new EventHandler(cbFrameSize_Validated);
+		cbObject.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbObject.SelectedValueChanged += new EventHandler(cbObject_SelectedValueChanged);
 		
 		lblPreset.Size = new Size(70, 20);
 		lblPreset.Location = new Point(10, 90);
@@ -43,7 +47,7 @@ public class EntryPoint : Form {
 		
 		cbPreset.Size = new Size(200, 50);
 		cbPreset.Location = new Point(80, 90);
-		cbPreset.Validated += new EventHandler(cbFrameSize_Validated);
+		cbPreset.DropDownStyle = ComboBoxStyle.DropDownList;
 		
 		btnAdd.Location = new Point(110, 130);
 		btnAdd.Text = "&Add";
@@ -69,18 +73,12 @@ public class EntryPoint : Form {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	void cbFrameSize_Validated(object sender, EventArgs e) {
-		// int measure;
-		
-		// try {
-			// measure = Convert.ToInt32(cbFrameSize.Text);
-			// if (measure < 1) {
-				// throw new Exception("measure is less than one");
-			// }
-		// } catch (Exception ex) {
-			// MessageBox.Show("Invalid Measure");
-			// cbFrameSize.Focus();
-		// }
+	void cbFrameSize_SelectedValueChanged(object sender, EventArgs e) {
+		update_cbObject();
+	}
+	
+	void cbObject_SelectedValueChanged(object sender, EventArgs e) {
+		update_cbPreset();
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
@@ -130,7 +128,7 @@ public class EntryPoint : Form {
 		}
 		
 		// get presets
-		List<Preset> presets = new List<Preset>();
+		presets = new List<Preset>();
 		foreach (EffectPreset preset in plugIn.Presets) {
 			try {
 				presets.Add(new Preset(preset.Name));
@@ -156,6 +154,16 @@ public class EntryPoint : Form {
 		cbFrameSize.SelectedIndex = 0;
 		
 		// populate Object drop-down
+		update_cbObject();
+
+		// populate Preset drop-down
+		update_cbPreset();
+		
+		// show dialog
+		ShowDialog();
+	}
+	
+	void update_cbObject() {
 		List<string> objects = new List<string>();
 		foreach (Preset preset in presets) {
 			if (preset.FrameSize == cbFrameSize.Text) {
@@ -164,10 +172,12 @@ public class EntryPoint : Form {
 		}
 		objects = removeDuplicates(objects);
 		objects.Sort();
+		cbObject.Items.Clear();
 		cbObject.Items.AddRange(objects.ToArray());
 		cbObject.SelectedIndex = 0;
-		
-		// populate Preset drop-down
+	}
+
+	void update_cbPreset() {
 		List<string> values = new List<string>();
 		foreach (Preset preset in presets) {
 			if (preset.FrameSize == cbFrameSize.Text &&
@@ -177,11 +187,9 @@ public class EntryPoint : Form {
 		}
 		values = removeDuplicates(values);
 		values.Sort();
+		cbPreset.Items.Clear();
 		cbPreset.Items.AddRange(values.ToArray());
 		cbPreset.SelectedIndex = 0;
-		
-		// show dialog
-		ShowDialog();
 	}
 
 	// Courtesy of http://www.kirupa.com/forum/showthread.php?240523-C-Removing-Duplicates-from-List
