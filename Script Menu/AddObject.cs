@@ -21,6 +21,8 @@ public class EntryPoint : Form {
 	private Button btnCancel = new Button();
 	
 	private List<Preset> presets;
+	private List<VideoTrack> selectedVideoTracks;
+	private PlugInNode plugIn;
 
 	public EntryPoint() {
 		lblFrameSize.Size = new Size(70, 20);
@@ -82,6 +84,10 @@ public class EntryPoint : Form {
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
+		Common.AddTextEvent(Common.vegas, plugIn, selectedVideoTracks[0],
+			cbFrameSize.Text + " " + cbObject.Text + " " + cbPreset.Text,
+			Common.vegas.Transport.CursorPosition, Timecode.FromFrames(1));
+		Close();
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -108,7 +114,7 @@ public class EntryPoint : Form {
 		Size = new Size(300, 190);
 
 		// get the video track to work on
-		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
+		selectedVideoTracks = Common.TracksToVideoTracks(
 			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
 		);
 		if (selectedVideoTracks.Count != 1) {
@@ -119,7 +125,7 @@ public class EntryPoint : Form {
 		}
 		
 		// get text media generator
-		PlugInNode plugIn = vegas.Generators.GetChildByName("Sony Text");
+		plugIn = vegas.Generators.GetChildByName("Sony Text");
 		if (plugIn == null) {
 			MessageBox.Show("Couldn't find Sony Text media generator",
 				Common.ADD_OBJECT, MessageBoxButtons.OK, MessageBoxIcon.Error);

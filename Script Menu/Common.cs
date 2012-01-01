@@ -95,6 +95,17 @@ public class Common {
 		return videoEvent;
 	}
 
+	// AddTextEvent II
+	public static VideoEvent AddTextEvent(Vegas vegas, PlugInNode plugIn, VideoTrack videoTrack,
+		string preset, Timecode start, Timecode length)
+	{
+		Media media = new Media(plugIn);
+		media.Generator.Preset = preset;
+		VideoEvent videoEvent = videoTrack.AddVideoEvent(start, length);
+		(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = preset;
+		return videoEvent;
+	}
+
 	// returns all selected tracks
 	public static List<Track> FindSelectedTracks(List<Track> tracks) {
 		List<Track> selectedTracks = new List<Track>();
