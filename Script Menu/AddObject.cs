@@ -157,7 +157,9 @@ public class EntryPoint : Form {
 		frameSizes = removeDuplicates(frameSizes);
 		frameSizes.Sort();
 		cbFrameSize.Items.AddRange(frameSizes.ToArray());
-		cbFrameSize.SelectedIndex = 0;
+		if (cbFrameSize.Items.Count > 0) {
+			cbFrameSize.SelectedIndex = 0;
+		}
 		
 		// populate Object drop-down
 		update_cbObject();
@@ -180,7 +182,9 @@ public class EntryPoint : Form {
 		objects.Sort();
 		cbObject.Items.Clear();
 		cbObject.Items.AddRange(objects.ToArray());
-		cbObject.SelectedIndex = 0;
+		if (cbObject.Items.Count > 0) {
+			cbObject.SelectedIndex = 0;
+		}
 	}
 
 	void update_cbPreset() {
@@ -195,7 +199,9 @@ public class EntryPoint : Form {
 		values.Sort();
 		cbPreset.Items.Clear();
 		cbPreset.Items.AddRange(values.ToArray());
-		cbPreset.SelectedIndex = 0;
+		if (cbPreset.Items.Count > 0) {
+			cbPreset.SelectedIndex = 0;
+		}
 	}
 
 	// Courtesy of http://www.kirupa.com/forum/showthread.php?240523-C-Removing-Duplicates-from-List
