@@ -1,0 +1,40 @@
+Tempo
+Edit
+	Arial 21 Bold Center
+Placement
+	Free Form X -0.876 Y 0.922 Safe Zone 10%
+Properties
+	Text Color 255 0 0 255
+	
+Rate
+Edit
+	Arial 21 Bold Center
+Placement
+	Free Form X 0.875 Y -0.786 Safe Zone 10%
+Properties
+	Text Color 255 0 0 255
+	
+Notes
+Edit
+	Arial 21 Bold Center
+Placement
+	Free Form X -0.689 Y -0.786 Safe Zone 10%
+Properties
+	Text Color 0 255 255 255
+	
+Measure
+Edit
+	Arial 29 Center
+Placement
+	Free Form X -0.502 Y 0.925 Safe Zone 10%
+Properties
+	Text Color 0 255 0 255
+	
+Filename |000000|XXXXXXXXXX|0000000000|0000000000|XXXXXXXXXX|000000|
+Edit
+	Arial 14 Bold Center
+Placement
+	Free Form X -0.003 Y -0.936 Safe Zone 10%
+Properties
+	Text Color 0 255 255 255
+	
