@@ -48,13 +48,17 @@ public class EntryPoint {
 				@event.Length + " " + @event.End + " ");
 		
 			foreach (Take take in @event.Takes) {
-				string takeName = "n/a";
-				if (take.Name.IndexOf(Common.SPACER) != -1) {
-					takeName = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
+				if (take.Media.Generator == null) {
+					string takeName = "n/a";
+					if (take.Name.IndexOf(Common.SPACER) != -1) {
+						takeName = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
+					}
+				
+					vegas.DebugOut("    Take " + take.Index + spacer + takeName + spacer +
+						Common.Basename(take.Media.FilePath));
+				} else {
+					vegas.DebugOut("    Take " + take.Index + spacer + take.Name);
 				}
-			
-				vegas.DebugOut("    Take " + take.Index + spacer + takeName + spacer +
-					Common.Basename(take.Media.FilePath));
 			}
 		}
 	}
