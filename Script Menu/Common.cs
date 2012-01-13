@@ -11,6 +11,7 @@ public class Common {
 	public const string ADD_RULER = "Add Ruler";
 	public const string ADD_BEEP = "Add Beep";
 	public const string ADD_OBJECT = "Add Object";
+	public const string CALC_TEMPO = "Calculate Tempo";
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public static Vegas vegas;
 
