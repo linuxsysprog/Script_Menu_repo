@@ -19,6 +19,8 @@ public class CalcTempo : ICustomCommandModule {
 
 	public ICollection GetCustomCommands() {
 		calcTempoCmd.DisplayName = Common.CALC_TEMPO + " View";
+		calcTempoCmd.IconFile = vegas.InstallationDirectory +
+			"\\Application Extensions\\CalcTempo.cs.png";
 		calcTempoCmd.Invoked += this.HandleInvoked;
 		calcTempoCmd.MenuPopup += this.HandleMenuPopup;
 		return new CustomCommand[] { calcTempoCmd };
