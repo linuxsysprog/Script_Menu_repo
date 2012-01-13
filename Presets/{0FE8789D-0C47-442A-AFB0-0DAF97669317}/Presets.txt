@@ -1,18 +1,18 @@
-Tempo
+Filename
 Edit
-	Arial 21 Bold Center
+	Arial 14 Bold Center
 Placement
-	Free Form X -0.876 Y 0.922 Safe Zone 10%
+	Free Form X -0.003 Y -0.936 Safe Zone 10%
 Properties
-	Text Color 255 0 0 255
-	
-Rate
+	Text Color 0 255 255 255
+
+Measure
 Edit
-	Arial 21 Bold Center
+	Arial 29 Center
 Placement
-	Free Form X 0.875 Y -0.786 Safe Zone 10%
+	Free Form X -0.502 Y 0.925 Safe Zone 10%
 Properties
-	Text Color 255 0 0 255
+	Text Color 0 255 0 255
 	
 Notes
 Edit
@@ -22,22 +22,22 @@ Placement
 Properties
 	Text Color 0 255 255 255
 	
-Measure
+Rate
 Edit
-	Arial 29 Center
+	Arial 21 Bold Center
 Placement
-	Free Form X -0.502 Y 0.925 Safe Zone 10%
+	Free Form X 0.875 Y -0.786 Safe Zone 10%
 Properties
-	Text Color 0 255 0 255
+	Text Color 255 0 0 255
 	
-Filename |000000|XXXXXXXXXX|0000000000|0000000000|XXXXXXXXXX|000000|
+Tempo
 Edit
-	Arial 14 Bold Center
+	Arial 21 Bold Center
 Placement
-	Free Form X -0.003 Y -0.936 Safe Zone 10%
+	Free Form X -0.876 Y 0.922 Safe Zone 10%
 Properties
-	Text Color 0 255 255 255
-
+	Text Color 255 0 0 255
+	
 
 	
 Masks
@@ -53,3 +53,237 @@ Masks
 (0.0, 0.0) (719.0, 0.0) (719.0, 82.0) (0.0, 82.0)
 (0.0, 527.0) (719.0, 527.0) (719.0, 575.0) (0.0, 575.0)
 (357.0, 0.0) (362.0, 0.0) (362.0, 575.0) (357.0, 575.0)
+
+
+
+320x240 Filename new1.mp4
+320x240 Measure 1
+320x240 Measure 2
+320x240 Measure 3
+320x240 Measure 4
+320x240 Measure 5
+320x240 Measure 6
+320x240 Measure 7
+320x240 Measure 8
+320x240 Measure 9
+320x240 Measure 10
+320x240 Measure 11
+320x240 Measure 12
+320x240 Measure 13
+320x240 Measure 14
+320x240 Measure 15
+320x240 Measure 16
+320x240 Measure 17
+320x240 Measure 18
+320x240 Measure 19
+320x240 Measure 20
+320x240 Measure 21
+320x240 Measure 22
+320x240 Measure 23
+320x240 Measure 24
+320x240 Measure 25
+320x240 Measure 26
+320x240 Measure 27
+320x240 Measure 28
+320x240 Measure 29
+320x240 Measure 30
+320x240 Measure 31
+320x240 Measure 32
+320x240 Measure 33
+320x240 Measure 34
+320x240 Measure 35
+320x240 Measure 36
+320x240 Measure 37
+320x240 Measure 38
+320x240 Measure 39
+320x240 Measure 40
+320x240 Measure 41
+320x240 Measure 42
+320x240 Measure 43
+320x240 Measure 44
+320x240 Measure 45
+320x240 Measure 46
+320x240 Measure 47
+320x240 Measure 48
+320x240 Measure 49
+320x240 Measure 50
+320x240 Measure 51
+320x240 Measure 52
+320x240 Measure 53
+320x240 Measure 54
+320x240 Measure 55
+320x240 Measure 56
+320x240 Measure 57
+320x240 Measure 58
+320x240 Measure 59
+320x240 Measure 60
+320x240 Measure 61
+320x240 Measure 62
+320x240 Measure 63
+320x240 Measure 64
+320x240 Measure 65
+320x240 Measure 66
+320x240 Measure 67
+320x240 Measure 68
+320x240 Measure 69
+320x240 Measure 70
+320x240 Measure 71
+320x240 Measure 72
+320x240 Measure 73
+320x240 Measure 74
+320x240 Measure 75
+320x240 Measure 76
+320x240 Measure 77
+320x240 Measure 78
+320x240 Measure 79
+320x240 Measure 80
+320x240 Measure 81
+320x240 Measure 82
+320x240 Measure 83
+320x240 Measure 84
+320x240 Measure 85
+320x240 Measure 86
+320x240 Measure 87
+320x240 Measure 88
+320x240 Measure 89
+320x240 Measure 90
+320x240 Measure 91
+320x240 Measure 92
+320x240 Measure 93
+320x240 Measure 94
+320x240 Measure 95
+320x240 Measure 96
+320x240 Measure 97
+320x240 Measure 98
+320x240 Measure 99
+320x240 Measure 100
+320x240 Measure 101
+320x240 Measure 102
+320x240 Measure 103
+320x240 Measure 104
+320x240 Measure 105
+320x240 Measure 106
+320x240 Measure 107
+320x240 Measure 108
+320x240 Measure 109
+320x240 Measure 110
+320x240 Measure 111
+320x240 Measure 112
+320x240 Measure 113
+320x240 Measure 114
+320x240 Measure 115
+320x240 Measure 116
+320x240 Measure 117
+320x240 Measure 118
+320x240 Measure 119
+320x240 Measure 120
+320x240 Measure 121
+320x240 Measure 122
+320x240 Measure 123
+320x240 Measure 124
+320x240 Measure 125
+320x240 Measure 126
+320x240 Measure 127
+320x240 Measure 128
+320x240 Measure 129
+320x240 Measure 130
+320x240 Measure 131
+320x240 Measure 132
+320x240 Measure 133
+320x240 Measure 134
+320x240 Measure 135
+320x240 Measure 136
+320x240 Measure 137
+320x240 Measure 138
+320x240 Measure 139
+320x240 Measure 140
+320x240 Measure 141
+320x240 Measure 142
+320x240 Measure 143
+320x240 Measure 144
+320x240 Measure 145
+320x240 Measure 146
+320x240 Measure 147
+320x240 Measure 148
+320x240 Measure 149
+320x240 Measure 150
+320x240 Measure 151
+320x240 Measure 152
+320x240 Measure 153
+320x240 Measure 154
+320x240 Measure 155
+320x240 Measure 156
+320x240 Measure 157
+320x240 Measure 158
+320x240 Measure 159
+320x240 Measure 160
+320x240 Measure 161
+320x240 Measure 162
+320x240 Measure 163
+320x240 Measure 164
+320x240 Measure 165
+320x240 Measure 166
+320x240 Measure 167
+320x240 Measure 168
+320x240 Measure 169
+320x240 Measure 170
+320x240 Measure 171
+320x240 Measure 172
+320x240 Measure 173
+320x240 Measure 174
+320x240 Measure 175
+320x240 Measure 176
+320x240 Measure 177
+320x240 Measure 178
+320x240 Measure 179
+320x240 Measure 180
+320x240 Measure 181
+320x240 Measure 182
+320x240 Measure 183
+320x240 Measure 184
+320x240 Measure 185
+320x240 Measure 186
+320x240 Measure 187
+320x240 Measure 188
+320x240 Measure 189
+320x240 Measure 190
+320x240 Measure 191
+320x240 Measure 192
+320x240 Measure 193
+320x240 Measure 194
+320x240 Measure 195
+320x240 Measure 196
+320x240 Measure 197
+320x240 Measure 198
+320x240 Measure 199
+320x240 Measure 200
+320x240 Notes [A]
+320x240 Notes [B]
+320x240 Notes [C]
+320x240 Notes [D]
+320x240 Notes [E]
+320x240 Notes [F]
+320x240 Notes [G]
+320x240 Notes [H]
+320x240 Notes [I]
+320x240 Notes [J]
+320x240 Notes [K]
+320x240 Notes [L]
+320x240 Notes [M]
+320x240 Notes [N]
+320x240 Notes [O]
+320x240 Notes [P]
+320x240 Notes [Q]
+320x240 Notes [R]
+320x240 Notes [S]
+320x240 Notes [T]
+320x240 Notes [U]
+320x240 Notes [V]
+320x240 Notes [W]
+320x240 Notes [X]
+320x240 Notes [Y]
+320x240 Notes [Z]
+320x240 Rate x0.25
+320x240 Rate x0.5
+320x240 Rate x1.0
+320x240 Tempo T120
