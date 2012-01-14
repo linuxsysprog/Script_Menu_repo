@@ -46,32 +46,50 @@ public class CalcTempo : ICustomCommandModule {
 	}
 	
 	void HandleMarkersChanged(Object sender, EventArgs args) {
-		calcTempoControl.txtNotes.Text = "elmo";
+		calcTempoControl.txtTempo.Text = "elmo";
 	}
 	
 }
 
 public class CalcTempoControl : UserControl {
 
-	private Label lblNotes = new Label();
-	public TextBox txtNotes = new TextBox();
+	private Label lblTempo = new Label();
+	public TextBox txtTempo = new TextBox();
+	public CheckBox chkDoubleTime = new CheckBox();
 
 	public CalcTempoControl() {
 	
-		lblNotes.Size = new Size(40, 60);
-		lblNotes.Location = new Point(10, 120);
-		lblNotes.Text = "N&otes:";
+		lblTempo.Size = new Size(50, 20);
+		lblTempo.Location = new Point(10, 10);
+		lblTempo.Text = "&Tempo:";
 		
-		txtNotes.Multiline = true;
-		txtNotes.ScrollBars = ScrollBars.Vertical;
-		txtNotes.Size = new Size(120, 60);
-		txtNotes.Location = new Point(60, 120);
-		txtNotes.Text = "[Section]";
+		txtTempo.Size = new Size(50, 20);
+		txtTempo.Location = new Point(60, 10);
+		txtTempo.Text = "120.1234";
 		
-		Size = new Size(190, 240);
+		chkDoubleTime.Size = new Size(100, 50);
+		chkDoubleTime.Location = new Point(10, 30);
+		chkDoubleTime.Text = "&Double Time";
+		
+		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
-			lblNotes,
-			txtNotes});
+			lblTempo,
+			txtTempo,
+			chkDoubleTime});
+	}
+	
+}
+
+public class CalcTempoControlTest : Form {
+	private CalcTempoControl calcTempoControl = new CalcTempoControl();
+	
+	public CalcTempoControlTest() {
+		Controls.Add(calcTempoControl);
+		Size = new Size(130, 110);
+	}
+	
+	public static void Main() {
+		Application.Run(new CalcTempoControlTest());
 	}
 	
 }
