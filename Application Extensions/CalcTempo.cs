@@ -65,8 +65,8 @@ public class CalcTempoControl : UserControl {
 		lblTempo.Location = new Point(10, 10);
 		lblTempo.Text = "&Tempo:";
 		
-		txtTempo.Size = new Size(50, 20);
-		txtTempo.Location = new Point(70, 10);
+		txtTempo.Size = new Size(60, 20);
+		txtTempo.Location = new Point(60, 10);
 		txtTempo.Text = "000.0000";
 		txtTempo.ReadOnly = true;
 		
