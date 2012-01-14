@@ -65,7 +65,8 @@ public class CalcTempoControl : UserControl {
 		
 		txtTempo.Size = new Size(50, 20);
 		txtTempo.Location = new Point(60, 10);
-		txtTempo.Text = "120.1234";
+		txtTempo.Text = "000.0000";
+		txtTempo.ReadOnly = true;
 		
 		chkDoubleTime.Size = new Size(100, 50);
 		chkDoubleTime.Location = new Point(10, 30);
