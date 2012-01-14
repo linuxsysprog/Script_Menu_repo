@@ -36,7 +36,7 @@ public class CalcTempo : ICustomCommandModule {
 			calcTempoControl = new CalcTempoControl();
 			calcTempoView.Controls.Add(calcTempoControl);
 			
-			calcTempoView.DefaultFloatingSize = new Size(170, 170);
+			calcTempoView.DefaultFloatingSize = new Size(140, 170);
 			Common.vegas.LoadDockView(calcTempoView);
 		}
 	}
@@ -46,7 +46,102 @@ public class CalcTempo : ICustomCommandModule {
 	}
 	
 	void HandleMarkersChanged(Object sender, EventArgs args) {
-		if (!calcTempoControl.chkMonitorRegion.Checked) {
+		calcTempoControl.updateTempo();
+	}
+	
+}
+
+public class CalcTempoControl : UserControl {
+
+	private Label lblTempo = new Label();
+	public TextBox txtTempo = new TextBox();
+	public CheckBox chkDoubleTime = new CheckBox();
+	public CheckBox chkMonitorRegion = new CheckBox();
+	private Button btnCalcTempo = new Button();
+
+	public CalcTempoControl() {
+	
+		lblTempo.Size = new Size(50, 20);
+		lblTempo.Location = new Point(10, 10);
+		lblTempo.Text = "&Tempo:";
+		
+		txtTempo.Size = new Size(50, 20);
+		txtTempo.Location = new Point(70, 10);
+		txtTempo.Text = "000.0000";
+		txtTempo.ReadOnly = true;
+		
+		chkDoubleTime.Size = new Size(100, 20);
+		chkDoubleTime.Location = new Point(10, 50);
+		chkDoubleTime.Text = "&Double Time";
+		chkDoubleTime.Click += new EventHandler(chkDoubleTime_Click);
+		
+		chkMonitorRegion.Size = new Size(150, 50);
+		chkMonitorRegion.Location = new Point(10, 60);
+		chkMonitorRegion.Text = "&Monitor Regions";
+		chkMonitorRegion.Click += new EventHandler(chkMonitorRegion_Click);
+		
+		btnCalcTempo.Location = new Point(30, 110);
+		btnCalcTempo.Text = "&Calculate";
+		btnCalcTempo.Click += new EventHandler(btnCalcTempo_Click);
+		
+		Size = new Size(1000, 1000);
+		Controls.AddRange(new Control[] {
+			lblTempo,
+			txtTempo,
+			chkDoubleTime,
+			chkMonitorRegion,
+			btnCalcTempo});
+	}
+	
+	void btnCalcTempo_Click(object sender, EventArgs e) {
+		Selection selection = new Selection(Common.vegas.Transport.SelectionStart,
+			Common.vegas.Transport.SelectionLength);
+		selection.Normalize();
+		
+		if (selection.SelectionLength == new Timecode()) {
+			MessageBox.Show("Selection is zero");
+			return;
+		}
+		
+		txtTempo.Text = "" +
+			calcTempo(selection.SelectionLength).ToString("F4");
+	}
+	
+	void chkDoubleTime_Click(object sender, EventArgs e) {
+		double n;
+		
+		try {
+			n = Convert.ToDouble(txtTempo.Text);
+			if (n == 0) {
+				throw new Exception("tempo is zero");
+			}
+		} catch (Exception ex) {
+			return;
+		}
+
+		if (chkDoubleTime.Checked) {
+			txtTempo.Text = (n * 2).ToString("F4");
+		} else {
+			txtTempo.Text = (n / 2).ToString("F4");
+		}
+	}
+	
+	void chkMonitorRegion_Click(object sender, EventArgs e) {
+			updateTempo();
+	}
+	
+	private double calcTempo(Timecode length) {
+		double tempo = 60.0 / (length.ToMilliseconds() / 1000.0);
+		
+		if (chkDoubleTime.Checked) {
+			tempo *= 2;
+		}
+		
+		return tempo;
+	}
+	
+	public void updateTempo() {
+		if (!chkMonitorRegion.Checked) {
 			return;
 		}
 	
@@ -67,60 +162,10 @@ public class CalcTempo : ICustomCommandModule {
 			return;
 		}
 		
-		// calculate tempo
-		double tempo = 60.0 / (tempoRegion.Length.ToMilliseconds() / 1000.0);
-		if (calcTempoControl.chkDoubleTime.Checked) {
-			tempo *= 2;
-		}
-		calcTempoControl.txtTempo.Text = "" + tempo.ToString("F4");
+		txtTempo.Text = "" +
+			calcTempo(tempoRegion.Length).ToString("F4");
 	}
-	
-}
 
-public class CalcTempoControl : UserControl {
-
-	private Label lblTempo = new Label();
-	public TextBox txtTempo = new TextBox();
-	public CheckBox chkDoubleTime = new CheckBox();
-	public CheckBox chkMonitorRegion = new CheckBox();
-	private Button btnCalcTempo = new Button();
-
-	public CalcTempoControl() {
-	
-		lblTempo.Size = new Size(50, 20);
-		lblTempo.Location = new Point(10, 10);
-		lblTempo.Text = "&Tempo:";
-		
-		txtTempo.Size = new Size(50, 20);
-		txtTempo.Location = new Point(100, 10);
-		txtTempo.Text = "000.0000";
-		txtTempo.ReadOnly = true;
-		
-		chkDoubleTime.Size = new Size(100, 20);
-		chkDoubleTime.Location = new Point(10, 50);
-		chkDoubleTime.Text = "&Double Time";
-		
-		chkMonitorRegion.Size = new Size(150, 50);
-		chkMonitorRegion.Location = new Point(10, 60);
-		chkMonitorRegion.Text = "&Monitor \"Tempo\" Region";
-		
-		btnCalcTempo.Location = new Point(40, 110);
-		btnCalcTempo.Text = "&Calculate";
-		btnCalcTempo.Click += new EventHandler(btnCalcTempo_Click);
-		
-		Size = new Size(1000, 1000);
-		Controls.AddRange(new Control[] {
-			lblTempo,
-			txtTempo,
-			chkDoubleTime,
-			chkMonitorRegion,
-			btnCalcTempo});
-	}
-	
-		void btnCalcTempo_Click(object sender, EventArgs e) {
-			MessageBox.Show("btnCalcTempo_Click() Entry.");
-		}
-	
 }
 
 public class CalcTempoControlTest : Form {
@@ -128,7 +173,7 @@ public class CalcTempoControlTest : Form {
 	
 	public CalcTempoControlTest() {
 		Controls.Add(calcTempoControl);
-		Size = new Size(170, 170);
+		Size = new Size(140, 170);
 	}
 	
 	public static void Main() {
