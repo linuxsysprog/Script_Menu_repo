@@ -9,50 +9,54 @@ using Sony.Vegas;
 using AddRulerNamespace;
 
 public class CalcTempo : ICustomCommandModule {
-	private Vegas vegas;
 	private CustomCommand calcTempoCmd = new CustomCommand(CommandCategory.View, "CalcTempoCmd");
+	private CalcTempoControl calcTempoControl;
 	
 	public void InitializeModule(Vegas vegas) {
-		this.vegas = vegas;
 		Common.vegas = vegas;
 	}
 
 	public ICollection GetCustomCommands() {
 		calcTempoCmd.DisplayName = Common.CALC_TEMPO + " View";
-		calcTempoCmd.IconFile = vegas.InstallationDirectory +
+		calcTempoCmd.IconFile = Common.vegas.InstallationDirectory +
 			"\\Application Extensions\\CalcTempo.cs.png";
-		calcTempoCmd.Invoked += this.HandleInvoked;
-		calcTempoCmd.MenuPopup += this.HandleMenuPopup;
+		
+		// subscribe to events
+		calcTempoCmd.Invoked += HandleInvoked;
+		calcTempoCmd.MenuPopup += HandleMenuPopup;
+		Common.vegas.MarkersChanged += HandleMarkersChanged;
+		
 		return new CustomCommand[] { calcTempoCmd };
 	}
 
 	void HandleInvoked(Object sender, EventArgs args) {
-		if (!vegas.ActivateDockView(Common.CALC_TEMPO)) {
+		if (!Common.vegas.ActivateDockView(Common.CALC_TEMPO)) {
 			DockableControl calcTempoView = new DockableControl(Common.CALC_TEMPO);
 			
-			CalcTempoControl calcTempoControl = new CalcTempoControl(vegas, null);
+			calcTempoControl = new CalcTempoControl();
 			calcTempoView.Controls.Add(calcTempoControl);
 			
 			calcTempoView.DefaultFloatingSize = new Size(200, 260);
-			vegas.LoadDockView(calcTempoView);
+			Common.vegas.LoadDockView(calcTempoView);
 		}
 	}
 
 	void HandleMenuPopup(Object sender, EventArgs args) {
-		calcTempoCmd.Checked = vegas.FindDockView(Common.CALC_TEMPO);
+		calcTempoCmd.Checked = Common.vegas.FindDockView(Common.CALC_TEMPO);
 	}
+	
+	void HandleMarkersChanged(Object sender, EventArgs args) {
+		calcTempoControl.txtNotes.Text = "elmo";
+	}
+	
 }
 
 public class CalcTempoControl : UserControl {
-	private Vegas vegas;
-	private Form form;
 
 	private Label lblNotes = new Label();
-	private TextBox txtNotes = new TextBox();
+	public TextBox txtNotes = new TextBox();
 
-	public CalcTempoControl(Vegas vegas, Form form) {
-		this.vegas = vegas;
-		this.form = form;
+	public CalcTempoControl() {
 	
 		lblNotes.Size = new Size(40, 60);
 		lblNotes.Location = new Point(10, 120);
