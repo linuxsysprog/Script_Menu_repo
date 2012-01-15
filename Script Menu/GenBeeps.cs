@@ -83,10 +83,12 @@ public class EntryPoint : Form {
 		rbNumber.Location = new Point(10, 20);
 		rbNumber.Text = "&Number";
 		rbNumber.Checked = true;
+		rbNumber.Click += new EventHandler(rbNumber_Click);
 		
 		rbSelection.Size = new Size(100, 20);
 		rbSelection.Location = new Point(10, 50);
 		rbSelection.Text = "&Selection";
+		rbSelection.Click += new EventHandler(rbSelection_Click);
 		
 		txtNumber.Size = new Size(30, 50);
 		txtNumber.Location = new Point(150, 20);
@@ -159,6 +161,14 @@ public class EntryPoint : Form {
 			MessageBox.Show("Invalid Beats per Measure");
 			txtBPM.Focus();
 		}
+	}
+	
+	void rbNumber_Click(object sender, EventArgs e) {
+		txtNumber.Enabled = true;
+	}
+	
+	void rbSelection_Click(object sender, EventArgs e) {
+		txtNumber.Enabled = false;
 	}
 	
 	void txtNumber_Validated(object sender, EventArgs e) {
