@@ -14,6 +14,8 @@ public class EntryPoint : Form {
 	private TextBox txtMeasure = new TextBox();
 	private Label lblBeat = new Label();
 	private TextBox txtBeat = new TextBox();
+	private Label lblBPM = new Label();
+	private TextBox txtBPM = new TextBox();
 	private Label lblTempo = new Label();
 	private TextBox txtTempo = new TextBox();
 	private GroupBox gbHowMany = new GroupBox();
@@ -51,16 +53,24 @@ public class EntryPoint : Form {
 		txtBeat.Text = "1";
 		txtBeat.Validated += new EventHandler(txtBeat_Validated);
 		
+		lblBPM.Size = new Size(120, 20);
+		lblBPM.Location = new Point(10, 80);
+		lblBPM.Text = "&Beats per Measure:";
+		
+		txtBPM.Size = new Size(30, 50);
+		txtBPM.Location = new Point(170, 80);
+		txtBPM.Text = "4";
+		
 		lblTempo.Size = new Size(50, 20);
-		lblTempo.Location = new Point(10, 80);
+		lblTempo.Location = new Point(10, 120);
 		lblTempo.Text = "&Tempo:";
 		
 		txtTempo.Size = new Size(60, 20);
-		txtTempo.Location = new Point(140, 80);
+		txtTempo.Location = new Point(140, 120);
 		txtTempo.Text = "000.0000";
 		
-		gbHowMany.Size = new Size(190, 100);
-		gbHowMany.Location = new Point(10, 110);
+		gbHowMany.Size = new Size(190, 80);
+		gbHowMany.Location = new Point(10, 150);
 		gbHowMany.Text = "How many beeps";
 		gbHowMany.Controls.AddRange(new Control[] {
 			rbNumber,
@@ -79,7 +89,7 @@ public class EntryPoint : Form {
 		txtNumber.Location = new Point(150, 20);
 		txtNumber.Text = "16";
 
-		btnGenerate.Location = new Point(70, 230);
+		btnGenerate.Location = new Point(70, 250);
 		btnGenerate.Text = "&Generate";
 		btnGenerate.Click += new EventHandler(btnGenerate_Click);
 
@@ -88,13 +98,15 @@ public class EntryPoint : Form {
 
 		Controls.AddRange(new Control[] {
 			gbStartWith,
+			lblBPM,
+			txtBPM,
 			lblTempo,
 			txtTempo,
 			gbHowMany,
 			btnGenerate,
 			btnCancel});
 
-		Size = new Size(220, 290);
+		Size = new Size(220, 310);
 	}
 	
 	//
