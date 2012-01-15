@@ -55,11 +55,12 @@ public class EntryPoint : Form {
 		
 		lblBPM.Size = new Size(120, 20);
 		lblBPM.Location = new Point(10, 80);
-		lblBPM.Text = "&Beats per Measure:";
+		lblBPM.Text = "Beats &per Measure:";
 		
 		txtBPM.Size = new Size(30, 50);
 		txtBPM.Location = new Point(170, 80);
 		txtBPM.Text = "4";
+		txtBPM.Validated += new EventHandler(txtBPM_Validated);
 		
 		lblTempo.Size = new Size(50, 20);
 		lblTempo.Location = new Point(10, 120);
@@ -68,6 +69,7 @@ public class EntryPoint : Form {
 		txtTempo.Size = new Size(60, 20);
 		txtTempo.Location = new Point(140, 120);
 		txtTempo.Text = "000.0000";
+		txtTempo.Validated += new EventHandler(txtTempo_Validated);
 		
 		gbHowMany.Size = new Size(190, 80);
 		gbHowMany.Location = new Point(10, 150);
@@ -77,8 +79,9 @@ public class EntryPoint : Form {
 			rbSelection,
 			txtNumber});
 		
-		rbNumber.Size = new Size(20, 20);
+		rbNumber.Size = new Size(100, 20);
 		rbNumber.Location = new Point(10, 20);
+		rbNumber.Text = "&Number";
 		rbNumber.Checked = true;
 		
 		rbSelection.Size = new Size(100, 20);
@@ -88,6 +91,7 @@ public class EntryPoint : Form {
 		txtNumber.Size = new Size(30, 50);
 		txtNumber.Location = new Point(150, 20);
 		txtNumber.Text = "16";
+		txtNumber.Validated += new EventHandler(txtNumber_Validated);
 
 		btnGenerate.Location = new Point(70, 250);
 		btnGenerate.Text = "&Generate";
@@ -140,6 +144,48 @@ public class EntryPoint : Form {
 		} catch (Exception ex) {
 			MessageBox.Show("Invalid Beat");
 			txtBeat.Focus();
+		}
+	}
+	
+	void txtBPM_Validated(object sender, EventArgs e) {
+		int bpm;
+		
+		try {
+			bpm = Convert.ToInt32(txtBPM.Text);
+			if (bpm < 1) {
+				throw new Exception("Beats per Measure is less than one");
+			}
+		} catch (Exception ex) {
+			MessageBox.Show("Invalid Beats per Measure");
+			txtBPM.Focus();
+		}
+	}
+	
+	void txtNumber_Validated(object sender, EventArgs e) {
+		int number;
+		
+		try {
+			number = Convert.ToInt32(txtNumber.Text);
+			if (number < 1) {
+				throw new Exception("Number of beeps is less than one");
+			}
+		} catch (Exception ex) {
+			MessageBox.Show("Invalid number of beeps");
+			txtNumber.Focus();
+		}
+	}
+	
+	void txtTempo_Validated(object sender, EventArgs e) {
+		double tempo;
+		
+		try {
+			tempo = Convert.ToDouble(txtTempo.Text);
+			if (tempo <= 0) {
+				throw new Exception("Tempo is less or equal zero");
+			}
+		} catch (Exception ex) {
+			MessageBox.Show("Invalid Tempo");
+			txtTempo.Focus();
 		}
 	}
 	
