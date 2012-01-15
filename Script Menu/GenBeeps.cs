@@ -223,7 +223,7 @@ public class EntryPoint : Form {
 		AcceptButton = btnGenerate;
 		CancelButton = btnCancel;
 		StartPosition = FormStartPosition.CenterParent;
-		Size = new Size(220, 290);
+		Size = new Size(220, 310);
 
 		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
 			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
