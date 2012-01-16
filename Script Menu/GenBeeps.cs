@@ -42,7 +42,6 @@ public class EntryPoint : Form {
 		txtMeasure.Size = new Size(30, 50);
 		txtMeasure.Location = new Point(70, 20);
 		txtMeasure.Text = "1";
-		txtMeasure.Validated += new EventHandler(txtMeasure_Validated);
 		
 		lblBeat.Size = new Size(40, 20);
 		lblBeat.Location = new Point(110, 20);
@@ -51,7 +50,6 @@ public class EntryPoint : Form {
 		txtBeat.Size = new Size(30, 50);
 		txtBeat.Location = new Point(150, 20);
 		txtBeat.Text = "1";
-		txtBeat.Validated += new EventHandler(txtBeat_Validated);
 		
 		lblBPM.Size = new Size(120, 20);
 		lblBPM.Location = new Point(10, 80);
@@ -60,7 +58,6 @@ public class EntryPoint : Form {
 		txtBPM.Size = new Size(30, 50);
 		txtBPM.Location = new Point(170, 80);
 		txtBPM.Text = "4";
-		txtBPM.Validated += new EventHandler(txtBPM_Validated);
 		
 		lblTempo.Size = new Size(50, 20);
 		lblTempo.Location = new Point(10, 120);
@@ -68,8 +65,7 @@ public class EntryPoint : Form {
 		
 		txtTempo.Size = new Size(60, 20);
 		txtTempo.Location = new Point(140, 120);
-		txtTempo.Text = "000.0000";
-		txtTempo.Validated += new EventHandler(txtTempo_Validated);
+		txtTempo.Text = "120.0000";
 		
 		gbHowMany.Size = new Size(190, 80);
 		gbHowMany.Location = new Point(10, 150);
@@ -93,7 +89,6 @@ public class EntryPoint : Form {
 		txtNumber.Size = new Size(30, 50);
 		txtNumber.Location = new Point(150, 20);
 		txtNumber.Text = "16";
-		txtNumber.Validated += new EventHandler(txtNumber_Validated);
 
 		btnGenerate.Location = new Point(70, 250);
 		btnGenerate.Text = "&Generate";
@@ -121,48 +116,6 @@ public class EntryPoint : Form {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	void txtMeasure_Validated(object sender, EventArgs e) {
-		int measure;
-		
-		try {
-			measure = Convert.ToInt32(txtMeasure.Text);
-			if (measure < 1) {
-				throw new Exception("measure is less than one");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid Measure");
-			txtMeasure.Focus();
-		}
-	}
-	
-	void txtBeat_Validated(object sender, EventArgs e) {
-		int beat;
-		
-		try {
-			beat = Convert.ToInt32(txtBeat.Text);
-			if (beat < 1) {
-				throw new Exception("beat is less than one");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid Beat");
-			txtBeat.Focus();
-		}
-	}
-	
-	void txtBPM_Validated(object sender, EventArgs e) {
-		int bpm;
-		
-		try {
-			bpm = Convert.ToInt32(txtBPM.Text);
-			if (bpm < 1) {
-				throw new Exception("Beats per Measure is less than one");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid Beats per Measure");
-			txtBPM.Focus();
-		}
-	}
-	
 	void rbNumber_Click(object sender, EventArgs e) {
 		txtNumber.Enabled = true;
 	}
@@ -171,36 +124,15 @@ public class EntryPoint : Form {
 		txtNumber.Enabled = false;
 	}
 	
-	void txtNumber_Validated(object sender, EventArgs e) {
-		int number;
-		
-		try {
-			number = Convert.ToInt32(txtNumber.Text);
-			if (number < 1) {
-				throw new Exception("Number of beeps is less than one");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid number of beeps");
-			txtNumber.Focus();
-		}
-	}
-	
-	void txtTempo_Validated(object sender, EventArgs e) {
-		double tempo;
-		
-		try {
-			tempo = Convert.ToDouble(txtTempo.Text);
-			if (tempo <= 0) {
-				throw new Exception("Tempo is less or equal zero");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid Tempo");
-			txtTempo.Focus();
-		}
-	}
-	
 	void btnGenerate_Click(object sender, EventArgs e) {
-		MessageBox.Show("btnGenerate_Click() Entry.");
+		try {
+			validateForm();
+		} catch (Exception ex) {
+			MessageBox.Show(ex.Message);
+			return;
+		}
+		
+		MessageBox.Show("Invaders!");
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -212,6 +144,34 @@ public class EntryPoint : Form {
 	//
 	//
 	////////////////////////////////////////////////////////////////////////////////
+	
+	void validateForm() {
+		string[] labels = { "Measure", "Beat", "Beats per Measure", "Tempo", "Number" };
+		TextBox[] controls = { txtMeasure, txtBeat, txtBPM, txtTempo, txtNumber };
+		
+		for (int i = 0; i < labels.Length; i++) {
+			try {
+				if (labels[i] == "Tempo") {
+					double f = Convert.ToDouble(controls[i].Text);
+					if (f <= 0) {
+						throw new Exception(labels[i] + " is less or equal zero");
+					}
+				} else {
+					int n = Convert.ToInt32(controls[i].Text);
+					if (n < 1) {
+						throw new Exception(labels[i] + " is less than one");
+					}
+				}
+			} catch (Exception ex) {
+				if (labels[i] == "Number" && rbSelection.Checked == true) {
+					continue;
+				}
+				controls[i].Focus();
+				controls[i].SelectAll();
+				throw new Exception("Invalid " + labels[i]);
+			}
+		}
+	}
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
