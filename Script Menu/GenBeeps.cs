@@ -145,7 +145,7 @@ public class EntryPoint : Form {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	void validateForm() {
+	private void validateForm() {
 		string[] labels = { "Measure", "Beat", "Beats per Measure", "Tempo", "Number" };
 		TextBox[] controls = { txtMeasure, txtBeat, txtBPM, txtTempo, txtNumber };
 		

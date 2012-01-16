@@ -26,7 +26,6 @@ public class EntryPoint : Form {
 		txtMeasure.Size = new Size(30, 50);
 		txtMeasure.Location = new Point(70, 10);
 		txtMeasure.Text = "1";
-		txtMeasure.Validated += new EventHandler(txtMeasure_Validated);
 		
 		lblBeat.Size = new Size(40, 20);
 		lblBeat.Location = new Point(110, 10);
@@ -35,7 +34,6 @@ public class EntryPoint : Form {
 		txtBeat.Size = new Size(30, 50);
 		txtBeat.Location = new Point(150, 10);
 		txtBeat.Text = "1";
-		txtBeat.Validated += new EventHandler(txtBeat_Validated);
 		
 		lblNotes.Size = new Size(40, 60);
 		lblNotes.Location = new Point(10, 50);
@@ -71,35 +69,14 @@ public class EntryPoint : Form {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	void txtMeasure_Validated(object sender, EventArgs e) {
-		int measure;
-		
-		try {
-			measure = Convert.ToInt32(txtMeasure.Text);
-			if (measure < 1) {
-				throw new Exception("measure is less than one");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid Measure");
-			txtMeasure.Focus();
-		}
-	}
-	
-	void txtBeat_Validated(object sender, EventArgs e) {
-		int beat;
-		
-		try {
-			beat = Convert.ToInt32(txtBeat.Text);
-			if (beat < 1) {
-				throw new Exception("beat is less than one");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Invalid Beat");
-			txtBeat.Focus();
-		}
-	}
-	
 	void btnAdd_Click(object sender, EventArgs e) {
+		try {
+			validateForm();
+		} catch (Exception ex) {
+			MessageBox.Show(ex.Message);
+			return;
+		}
+		
 		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
 			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)))
 		);
@@ -139,6 +116,24 @@ public class EntryPoint : Form {
 	//
 	//
 	////////////////////////////////////////////////////////////////////////////////
+	
+	private void validateForm() {
+		string[] labels = { "Measure", "Beat" };
+		TextBox[] controls = { txtMeasure, txtBeat };
+		
+		for (int i = 0; i < labels.Length; i++) {
+			try {
+				int n = Convert.ToInt32(controls[i].Text);
+				if (n < 1) {
+					throw new Exception(labels[i] + " is less than one");
+				}
+			} catch (Exception ex) {
+				controls[i].Focus();
+				controls[i].SelectAll();
+				throw new Exception("Invalid " + labels[i]);
+			}
+		}
+	}
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
