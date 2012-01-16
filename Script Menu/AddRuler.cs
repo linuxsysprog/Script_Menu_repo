@@ -148,7 +148,6 @@ public class AddRulerControl : UserControl {
 		cbNumber.Location = new Point(140, 80);
 		cbNumber.Items.AddRange(TOP_RANGE);
 		cbNumber.SelectedIndex = 0;
-		cbNumber.Validated += new EventHandler(cbNumber_Validated);
 		
 		lblNotes.Size = new Size(40, 60);
 		lblNotes.Location = new Point(10, 120);
@@ -180,23 +179,32 @@ public class AddRulerControl : UserControl {
 			btnFillGaps});
 	}
 	
+	//
+	// Event handlers BEGIN
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
 	void rbTop_CheckedChanged(object sender, EventArgs e) {
+		cbNumber.Items.Clear();
+		
 		if (rbTop.Checked) {
-			cbNumber.Items.Clear();
 			cbNumber.Items.AddRange(TOP_RANGE);
 		} else {
-			cbNumber.Items.Clear();
 			cbNumber.Items.AddRange(BOTTOM_RANGE);
 		}
 		
-		Validate_cbNumber();
-	}
-	
-	void cbNumber_Validated(object sender, EventArgs e) {
-		Validate_cbNumber();
+		cbNumber.SelectedIndex = 0;
 	}
 	
 	void btnAdd_Click(object sender, EventArgs e) {
+		try {
+			validateForm();
+		} catch (Exception ex) {
+			MessageBox.Show(ex.Message);
+			return;
+		}
+		
 		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
 			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(vegas.Project)))
 		);
@@ -256,24 +264,26 @@ public class AddRulerControl : UserControl {
 		form.Close();
 	}
 	
-	private void Validate_cbNumber() {
-		int rulerNumber;
-		
+	//
+	// Event handlers END
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
+	private void validateForm() {
 		try {
-			rulerNumber = Convert.ToInt32(cbNumber.Text);
-		} catch (Exception e) {
-			MessageBox.Show("Invalid Ruler Number");
+			int n = Convert.ToInt32(cbNumber.Text);
+			if ((rbTop.Checked && (n < 1 || n > 12))
+				|| (rbBottom.Checked && (n < 1 || n > 16))) {
+				throw new Exception("Ruler Number is out of range");
+			}
+		} catch (Exception ex) {
 			cbNumber.Focus();
-			return;
-		}
-		
-		if ((rbTop.Checked && (rulerNumber < 1 || rulerNumber > 12))
-			|| (rbBottom.Checked && (rulerNumber < 1 || rulerNumber > 16))) {
-			MessageBox.Show("Ruler Number out of range");
-			cbNumber.Focus();
+			cbNumber.SelectAll();
+			throw new Exception("Invalid Ruler Number");
 		}
 	}
-	
+		
 }
 
 public class AddRulerControlTest : Form {
