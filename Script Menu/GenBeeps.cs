@@ -132,7 +132,57 @@ public class EntryPoint : Form {
 			return;
 		}
 		
-		MessageBox.Show("Invaders!");
+		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
+			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)))
+		);
+		
+		// generate a series of beep positions
+		List<Timecode> beepPositions = new List<Timecode>();
+		Timecode offset = Common.vegas.Transport.CursorPosition;
+		for (int i = 0; i < Convert.ToInt32(txtNumber.Text); i++) {
+			double length = (60.0 / Convert.ToDouble(txtTempo.Text)) * 1000;
+			beepPositions.Add(offset);
+			offset = offset + Timecode.FromMilliseconds(length);
+		}
+
+		// dump the above list
+		// Common.vegas.DebugClear();
+		// foreach (Timecode beepPosition in beepPositions) {
+			// Common.vegas.DebugOut("" + beepPosition.ToMilliseconds());
+		// }
+		
+		// check for pre-existing events
+		List<TrackEvent> existingEvents = new List<TrackEvent>();
+		foreach (Timecode beepPosition in beepPositions) {
+			existingEvents.AddRange(Common.FindEventsByPosition(selectedAudioTracks[0], beepPosition));
+		}
+
+		// dump the above list
+		// Common.vegas.DebugClear();
+		// foreach (TrackEvent existingEvent in existingEvents) {
+			// Common.vegas.DebugOut("" + existingEvent.Start.ToMilliseconds());
+		// }
+
+		foreach (TrackEvent existingEvent in existingEvents) {
+			string msg = "There is already an event at position " +
+				existingEvent.Start + ". Would you like to continue?";
+		
+			DialogResult result = MessageBox.Show(msg, Common.ADD_BEEP, MessageBoxButtons.OKCancel,
+				MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+			if (result != DialogResult.OK) {
+				return;
+			}
+		}
+		
+		// insert beeps
+		foreach (Timecode beepPosition in beepPositions) {
+			Audio.AddBeep(selectedAudioTracks[0], beepPosition,
+				Convert.ToInt32(txtMeasure.Text), Convert.ToInt32(txtBeat.Text),
+				"" + Convert.ToDouble(txtTempo.Text));
+		}
+		
+		MessageBox.Show("Inserted " + beepPositions.Count + " beeps", Common.GEN_BEEPS);
+		Close();
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
