@@ -175,10 +175,19 @@ public class EntryPoint : Form {
 		}
 		
 		// insert beeps
+		int measure = Convert.ToInt32(txtMeasure.Text);
+		int beat = Convert.ToInt32(txtBeat.Text);
+		int bpm = Convert.ToInt32(txtBPM.Text);
 		foreach (Timecode beepPosition in beepPositions) {
-			Audio.AddBeep(selectedAudioTracks[0], beepPosition,
-				Convert.ToInt32(txtMeasure.Text), Convert.ToInt32(txtBeat.Text),
+			int rem = beat % bpm;
+		
+			Audio.AddBeep(selectedAudioTracks[0], beepPosition, measure, rem == 0 ? bpm : rem,
 				"" + Convert.ToDouble(txtTempo.Text));
+				
+			beat++;
+			if (rem == 0) {
+				measure++;
+			}
 		}
 		
 		MessageBox.Show("Inserted " + beepPositions.Count + " beeps", Common.GEN_BEEPS);
