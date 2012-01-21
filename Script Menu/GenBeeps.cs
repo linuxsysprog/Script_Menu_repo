@@ -18,10 +18,12 @@ public class EntryPoint : Form {
 	private TextBox txtBPM = new TextBox();
 	private Label lblTempo = new Label();
 	private TextBox txtTempo = new TextBox();
-	private GroupBox gbHowMany = new GroupBox();
-	private RadioButton rbNumber = new RadioButton();
-	private RadioButton rbSelection = new RadioButton();
+	private Label lblNumber = new Label();
 	private TextBox txtNumber = new TextBox();
+	private GroupBox gbMode = new GroupBox();
+	private RadioButton rbTempoNumber = new RadioButton();
+	private RadioButton rbTempoSelection = new RadioButton();
+	private RadioButton rbSelectionNumber = new RadioButton();
 	private Button btnGenerate = new Button();
 	private Button btnCancel = new Button();		
 
@@ -67,30 +69,39 @@ public class EntryPoint : Form {
 		txtTempo.Location = new Point(140, 120);
 		txtTempo.Text = "120.0000";
 		
-		gbHowMany.Size = new Size(190, 80);
-		gbHowMany.Location = new Point(10, 150);
-		gbHowMany.Text = "How many beeps";
-		gbHowMany.Controls.AddRange(new Control[] {
-			rbNumber,
-			rbSelection,
-			txtNumber});
-		
-		rbNumber.Size = new Size(100, 20);
-		rbNumber.Location = new Point(10, 20);
-		rbNumber.Text = "&Number";
-		rbNumber.Checked = true;
-		rbNumber.Click += new EventHandler(rbNumber_Click);
-		
-		rbSelection.Size = new Size(100, 20);
-		rbSelection.Location = new Point(10, 50);
-		rbSelection.Text = "&Selection";
-		rbSelection.Click += new EventHandler(rbSelection_Click);
+		lblNumber.Size = new Size(100, 20);
+		lblNumber.Location = new Point(10, 160);
+		lblNumber.Text = "&Number of Beeps:";
 		
 		txtNumber.Size = new Size(30, 50);
-		txtNumber.Location = new Point(150, 20);
+		txtNumber.Location = new Point(170, 160);
 		txtNumber.Text = "16";
 
-		btnGenerate.Location = new Point(70, 250);
+		gbMode.Size = new Size(190, 110);
+		gbMode.Location = new Point(10, 200);
+		gbMode.Text = "&Mode";
+		gbMode.Controls.AddRange(new Control[] {
+			rbTempoNumber,
+			rbTempoSelection,
+			rbSelectionNumber});
+		
+		rbTempoNumber.Size = new Size(170, 20);
+		rbTempoNumber.Location = new Point(10, 20);
+		rbTempoNumber.Text = "Tempo and Number";
+		rbTempoNumber.Checked = true;
+		rbTempoNumber.Click += new EventHandler(rbTempoNumber_Click);
+		
+		rbTempoSelection.Size = new Size(170, 20);
+		rbTempoSelection.Location = new Point(10, 50);
+		rbTempoSelection.Text = "Tempo and Selection";
+		rbTempoSelection.Click += new EventHandler(rbTempoSelection_Click);
+		
+		rbSelectionNumber.Size = new Size(170, 20);
+		rbSelectionNumber.Location = new Point(10, 80);
+		rbSelectionNumber.Text = "Selection and Number";
+		rbSelectionNumber.Click += new EventHandler(rbSelectionNumber_Click);
+		
+		btnGenerate.Location = new Point(70, 330);
 		btnGenerate.Text = "&Generate";
 		btnGenerate.Click += new EventHandler(btnGenerate_Click);
 
@@ -103,11 +114,13 @@ public class EntryPoint : Form {
 			txtBPM,
 			lblTempo,
 			txtTempo,
-			gbHowMany,
+			lblNumber,
+			txtNumber,
+			gbMode,
 			btnGenerate,
 			btnCancel});
 
-		Size = new Size(220, 310);
+		Size = new Size(220, 390);
 	}
 	
 	//
@@ -116,12 +129,19 @@ public class EntryPoint : Form {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	void rbNumber_Click(object sender, EventArgs e) {
+	void rbTempoNumber_Click(object sender, EventArgs e) {
+		txtTempo.Enabled = true;
 		txtNumber.Enabled = true;
 	}
 	
-	void rbSelection_Click(object sender, EventArgs e) {
+	void rbTempoSelection_Click(object sender, EventArgs e) {
+		txtTempo.Enabled = true;
 		txtNumber.Enabled = false;
+	}
+	
+	void rbSelectionNumber_Click(object sender, EventArgs e) {
+		txtTempo.Enabled = false;
+		txtNumber.Enabled = true;
 	}
 	
 	void btnGenerate_Click(object sender, EventArgs e) {
@@ -181,8 +201,7 @@ public class EntryPoint : Form {
 		foreach (Timecode beepPosition in beepPositions) {
 			int rem = beat % bpm;
 		
-			Audio.AddBeep(selectedAudioTracks[0], beepPosition, measure, rem == 0 ? bpm : rem,
-				"" + Convert.ToDouble(txtTempo.Text));
+			Audio.AddBeep(selectedAudioTracks[0], beepPosition, measure, rem == 0 ? bpm : rem, "");
 				
 			beat++;
 			if (rem == 0) {
@@ -222,7 +241,7 @@ public class EntryPoint : Form {
 					}
 				}
 			} catch (Exception ex) {
-				if (labels[i] == "Number" && rbSelection.Checked == true) {
+				if (labels[i] == "Number" && rbTempoSelection.Checked == true) {
 					continue;
 				}
 				controls[i].Focus();
@@ -242,7 +261,7 @@ public class EntryPoint : Form {
 		AcceptButton = btnGenerate;
 		CancelButton = btnCancel;
 		StartPosition = FormStartPosition.CenterParent;
-		Size = new Size(220, 310);
+		Size = new Size(220, 390);
 
 		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
 			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
