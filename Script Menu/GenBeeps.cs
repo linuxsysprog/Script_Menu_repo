@@ -224,7 +224,7 @@ public class EntryPoint : Form {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	private void validateForm() {
-		string[] labels = { "Measure", "Beat", "Beats per Measure", "Tempo", "Number" };
+		string[] labels = { "Measure", "Beat", "Beats per Measure", "Tempo", "Number of Beeps" };
 		TextBox[] controls = { txtMeasure, txtBeat, txtBPM, txtTempo, txtNumber };
 		
 		for (int i = 0; i < labels.Length; i++) {
@@ -241,7 +241,8 @@ public class EntryPoint : Form {
 					}
 				}
 			} catch (Exception ex) {
-				if (labels[i] == "Number" && rbTempoSelection.Checked == true) {
+				if ((labels[i] == "Number of Beeps" && rbTempoSelection.Checked == true) ||
+						(labels[i] == "Tempo" && rbSelectionNumber.Checked == true)) {
 					continue;
 				}
 				controls[i].Focus();
