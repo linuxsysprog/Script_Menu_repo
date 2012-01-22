@@ -311,12 +311,12 @@ public class CustomMessageBox : Form {
 			txtTextBox.Size = new Size(60, 20);
 			txtTextBox.Location = new Point(195, 20);
 		} else {
-			lblLabel.Size = new Size(105, 20);
-			lblLabel.Location = new Point(110, 20);
-			lblLabel.Text = "The new Number is ";
+			lblLabel.Size = new Size(150, 20);
+			lblLabel.Location = new Point(85, 20);
+			lblLabel.Text = "The new Number of Beeps is ";
 			
 			txtTextBox.Size = new Size(30, 20);
-			txtTextBox.Location = new Point(215, 20);
+			txtTextBox.Location = new Point(235, 20);
 		}
 		
 		btnOK.Location = new Point(145, 60);
