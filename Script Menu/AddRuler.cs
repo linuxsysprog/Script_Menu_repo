@@ -201,7 +201,7 @@ public class AddRulerControl : UserControl {
 		try {
 			validateForm();
 		} catch (Exception ex) {
-			MessageBox.Show(ex.Message);
+			MessageBox.Show(ex.Message, Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		

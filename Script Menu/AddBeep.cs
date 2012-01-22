@@ -73,7 +73,7 @@ public class EntryPoint : Form {
 		try {
 			validateForm();
 		} catch (Exception ex) {
-			MessageBox.Show(ex.Message);
+			MessageBox.Show(ex.Message, Common.ADD_BEEP, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
