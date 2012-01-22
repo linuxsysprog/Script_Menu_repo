@@ -151,6 +151,11 @@ public class EntryPoint : Form {
 			MessageBox.Show(ex.Message, Common.GEN_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
+		CustomMessageBox customMessageBox = new CustomMessageBox(CustomMessageBoxMode.Tempo, "120.000");
+		customMessageBox.ShowDialog();
+		customMessageBox = new CustomMessageBox(CustomMessageBoxMode.Number, "16");
+		customMessageBox.ShowDialog();
+		return;
 		
 		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
 			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)))
@@ -279,6 +284,70 @@ public class EntryPoint : Form {
 
 	public static void Main() {
 		Application.Run(new EntryPoint());
+	}
+	
+}
+
+public enum CustomMessageBoxMode {
+	Tempo,
+	Number
+}
+
+public class CustomMessageBox : Form {
+	private Label lblLabel = new Label();
+	private TextBox txtTextBox = new TextBox();
+	private Button btnOK = new Button();
+	private Button btnCancel = new Button();	
+
+	public CustomMessageBox(CustomMessageBoxMode mode, string value) {
+		txtTextBox.ReadOnly = true;
+		txtTextBox.Text = value;
+		
+		if (mode == CustomMessageBoxMode.Tempo) {
+			lblLabel.Size = new Size(100, 20);
+			lblLabel.Location = new Point(95, 20);
+			lblLabel.Text = "The new Tempo is ";
+			
+			txtTextBox.Size = new Size(60, 20);
+			txtTextBox.Location = new Point(195, 20);
+		} else {
+			lblLabel.Size = new Size(105, 20);
+			lblLabel.Location = new Point(110, 20);
+			lblLabel.Text = "The new Number is ";
+			
+			txtTextBox.Size = new Size(30, 20);
+			txtTextBox.Location = new Point(215, 20);
+		}
+		
+		btnOK.Location = new Point(145, 60);
+		btnOK.Text = "&OK";
+		btnOK.Click += new EventHandler(btnOK_Click);
+
+		btnCancel.Click += new EventHandler(btnCancel_Click);
+		btnCancel.Size = new Size(0, 0);
+
+		Controls.AddRange(new Control[] {
+			lblLabel,
+			txtTextBox,
+			btnOK,
+			btnCancel});
+
+		Text = Common.GEN_BEEPS;
+		FormBorderStyle = FormBorderStyle.FixedDialog;
+		MaximizeBox = false;
+		MinimizeBox = false;
+		AcceptButton = btnOK;
+		CancelButton = btnCancel;
+		StartPosition = FormStartPosition.CenterParent;
+		Size = new Size(365, 120);
+	}
+	
+	void btnOK_Click(object sender, EventArgs e) {
+		Close();
+	}
+	
+	void btnCancel_Click(object sender, EventArgs e) {
+		Close();
 	}
 	
 }
