@@ -151,11 +151,15 @@ public class EntryPoint : Form {
 			MessageBox.Show(ex.Message, Common.GEN_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
-		CustomMessageBox customMessageBox = new CustomMessageBox(CustomMessageBoxMode.Tempo, "120.000");
-		customMessageBox.ShowDialog();
-		customMessageBox = new CustomMessageBox(CustomMessageBoxMode.Number, "16");
-		customMessageBox.ShowDialog();
-		return;
+		
+		// check selection
+		Selection selection = new Selection(Common.vegas.Transport.SelectionStart,
+			Common.vegas.Transport.SelectionLength);
+		selection.Normalize();
+		if (!rbTempoNumber.Checked && selection.SelectionLength == new Timecode()) {
+			MessageBox.Show("Selection is zero", Common.GEN_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
 		
 		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
 			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)))
@@ -163,13 +167,33 @@ public class EntryPoint : Form {
 		
 		// generate a series of beep positions
 		List<Timecode> beepPositions = new List<Timecode>();
-		Timecode offset = Common.vegas.Transport.CursorPosition;
-		for (int i = 0; i < Convert.ToInt32(txtNumber.Text); i++) {
-			double length = (60.0 / Convert.ToDouble(txtTempo.Text)) * 1000;
-			beepPositions.Add(offset);
-			offset = offset + Timecode.FromMilliseconds(length);
+		Timecode offset = selection.SelectionStart;
+		double step;
+		int nBeats;
+		
+		if (rbTempoNumber.Checked) {
+			offset = Common.vegas.Transport.CursorPosition;
+			
+			step = (60.0 / Convert.ToDouble(txtTempo.Text)) * 1000;
+			nBeats = Convert.ToInt32(txtNumber.Text);
+		} else if (rbTempoSelection.Checked) {
+			step = (60.0 / Convert.ToDouble(txtTempo.Text)) * 1000;
+			nBeats = (int)(Convert.ToDouble(txtTempo.Text) *
+				selection.SelectionLength.ToMilliseconds() / 1000.0 / 60.0);
+			CustomMessageBox.Show(CustomMessageBoxMode.Number, "" + nBeats);
+		} else {
+			nBeats = Convert.ToInt32(txtNumber.Text);
+			step = selection.SelectionLength.ToMilliseconds() / (double)nBeats;
+			
+			double tempo = 60.0 / (step / 1000.0);
+			CustomMessageBox.Show(CustomMessageBoxMode.Tempo, tempo.ToString("F4"));
 		}
 
+		for (int i = 0; i < nBeats; i++) {
+			beepPositions.Add(offset);
+			offset = offset + Timecode.FromMilliseconds(step);
+		}
+		
 		// dump the above list
 		// Common.vegas.DebugClear();
 		// foreach (Timecode beepPosition in beepPositions) {
@@ -297,26 +321,31 @@ public class CustomMessageBox : Form {
 	private Label lblLabel = new Label();
 	private TextBox txtTextBox = new TextBox();
 	private Button btnOK = new Button();
-	private Button btnCancel = new Button();	
+	private Button btnCancel = new Button();
+	
+	static public void Show(CustomMessageBoxMode mode, string value) {
+		CustomMessageBox customMessageBox = new CustomMessageBox(mode, value);
+		customMessageBox.ShowDialog();
+	}
 
 	public CustomMessageBox(CustomMessageBoxMode mode, string value) {
 		txtTextBox.ReadOnly = true;
 		txtTextBox.Text = value;
 		
 		if (mode == CustomMessageBoxMode.Tempo) {
-			lblLabel.Size = new Size(100, 20);
-			lblLabel.Location = new Point(95, 20);
-			lblLabel.Text = "The new Tempo is ";
+			lblLabel.Size = new Size(130, 20);
+			lblLabel.Location = new Point(80, 20);
+			lblLabel.Text = "The calculated Tempo is ";
 			
 			txtTextBox.Size = new Size(60, 20);
-			txtTextBox.Location = new Point(195, 20);
+			txtTextBox.Location = new Point(210, 20);
 		} else {
-			lblLabel.Size = new Size(150, 20);
-			lblLabel.Location = new Point(85, 20);
-			lblLabel.Text = "The new Number of Beeps is ";
+			lblLabel.Size = new Size(180, 20);
+			lblLabel.Location = new Point(70, 20);
+			lblLabel.Text = "The calculated Number of Beeps is ";
 			
 			txtTextBox.Size = new Size(30, 20);
-			txtTextBox.Location = new Point(235, 20);
+			txtTextBox.Location = new Point(250, 20);
 		}
 		
 		btnOK.Location = new Point(145, 60);

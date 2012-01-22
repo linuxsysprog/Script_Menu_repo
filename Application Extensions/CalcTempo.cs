@@ -99,7 +99,7 @@ public class CalcTempoControl : UserControl {
 		selection.Normalize();
 		
 		if (selection.SelectionLength == new Timecode()) {
-			MessageBox.Show("Selection is zero");
+			MessageBox.Show("Selection is zero", Common.CALC_TEMPO, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
@@ -154,11 +154,11 @@ public class CalcTempoControl : UserControl {
 			}
 		}
 		if (tempoRegion == null) {
-			MessageBox.Show("Tempo region not found");
+			MessageBox.Show("Tempo region not found", Common.CALC_TEMPO, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		if (tempoRegion.Length.ToMilliseconds() == 0) {
-			MessageBox.Show("Tempo region is zero");
+			MessageBox.Show("Tempo region is zero", Common.CALC_TEMPO, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
