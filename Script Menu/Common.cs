@@ -13,6 +13,7 @@ public class Common {
 	public const string ADD_OBJECT = "Add Object";
 	public const string CALC_TEMPO = "Calculate Tempo";
 	public const string GEN_BEEPS = "Generate Beeps";
+	public const string TRACK_OUT = "Track Outline";
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public static Vegas vegas;
 

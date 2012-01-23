@@ -1,4 +1,4 @@
-// File: 2M.cs - Promote a track 2 Measure track
+// File: TrackOutline.cs - Create a track which outlines an existing track
 
 using System;
 using System.Drawing;
@@ -21,7 +21,7 @@ public class EntryPoint {
 		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
 		if (tracks.Count != 2) {
 			MessageBox.Show("Please make sure you have exactly two tracks selected",
-				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.TRACK_OUT, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
@@ -41,7 +41,7 @@ public class EntryPoint {
 		if ((events[0].Count == 0 && events[1].Count == 0) ||
 				(events[0].Count != 0 && events[1].Count != 0)) {
 			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
-				Common.ADD_BEEP, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.TRACK_OUT, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
