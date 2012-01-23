@@ -12,9 +12,11 @@ using AddRulerNamespace;
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		Regex regex = new Regex("^\\d+\\.\\d+");
+		Regex regex = new Regex("^\\d+\\.1|^1 (T|B)");
 		Track sourceTrack;
 		Track targetTrack;
+		List<TrackEvent> sourceEvents;
+		List<TrackEvent> targetEvents;
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -38,9 +40,6 @@ public class EntryPoint {
 			}
 		}
 
-		// clear output window
-		vegas.DebugClear();
-		
 		if ((events[0].Count == 0 && events[1].Count == 0) ||
 				(events[0].Count != 0 && events[1].Count != 0)) {
 			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
@@ -48,75 +47,67 @@ public class EntryPoint {
 			return;
 		}
 		
-		// sort out which track is which
+		// sort out which track and event collection is the source
+		// and which is the target
 		if (events[1].Count == 0) {
 			sourceTrack = tracks[0];
 			targetTrack = tracks[1];
+			
+			sourceEvents = events[0];
+			targetEvents = events[1];
 		} else {
 			sourceTrack = tracks[1];
 			targetTrack = tracks[0];
+			
+			sourceEvents = events[1];
+			targetEvents = events[0];
 		}
 		
-		if (targetTrack.IsAudio()) {
-			addAudioEvent((AudioTrack)targetTrack, vegas.Transport.CursorPosition, "hello");
-		}
 		
-		// string spacer = "    " + "    ";
-		// foreach (TrackEvent @event in events) {
-			// vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
-				// @event.Length + " " + @event.End + " ");
-		
-			// foreach (Take take in @event.Takes) {
-				// if (take.Media.Generator == null) {
-					// string takeName = "n/a";
-					// if (take.Name.IndexOf(Common.SPACER) != -1) {
-						// takeName = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
-					// }
-				
-					// vegas.DebugOut("    Take " + take.Index + spacer + takeName + spacer +
-						// Common.Basename(take.Media.FilePath));
+		vegas.DebugClear();
+		// find events
+		foreach (TrackEvent @event in sourceEvents) {
+			// find a take that matches our pattern
+			string label = null;
+			foreach (Take take in @event.Takes) {
+				// if (take.Media) {
+				// } else if () {
 				// } else {
-					// vegas.DebugOut("    Take " + take.Index + spacer + take.Name);
 				// }
-			// }
-		// }
-		
-		// foreach (TrackEvent @event in sourceTrack.Events) {
-			// find event with a take that matches the pattern
-			// string label = null;
-			// foreach (Take take in @event.Takes) {
-				// if (regex.Matches(take.Name).Count > 0) {
-					// label = take.Name;
-					// break;
-				// }
-			// }
-			// if (label == null) {
-				// continue;
-			// }
+			
+				if (regex.Matches(take.Name).Count > 0) {
+					label = take.Name;
+					break;
+				}
+			}
+			if (label == null) {
+				continue;
+			}
 			
 			// create event
-			// vegas.DebugOut(label);
-		// }
+			vegas.DebugOut(label);
+		}
 	}
 	
-	// add an audio event 1s long to the track specified at the specified position
-	private AudioEvent addAudioEvent(AudioTrack audioTrack, Timecode position, string label) {
-		Common.vegas.DebugOut("is audioTrack null = " + (audioTrack == null) + "\n" +
-				"is position null = " + (position == null) + "\n" +
-				"label = " + label);
-		
-		string path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav";
+	// add an empty event to the track specified at the position specified.
+	// The track could be either audio or video
+	private TrackEvent AddEmptyEvent(Track track, Timecode position, string label) {
+		Media media;
+		TrackEvent @event;
 
-		Media media = new Media(path + "\\high.wav");
-		
-		AudioEvent audioEvent = audioTrack.AddAudioEvent(position, Timecode.FromMilliseconds(1000.0));
-		
-		(audioEvent.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
-		// media = new Media(path + "\\beep.1.wav");
-		// (audioEvent.AddTake(media.GetAudioStreamByIndex(0))).Name = measure +
-			// "." + beat + Common.SPACER;
-		
-		return audioEvent;
+		if (track.IsAudio()) {
+			media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav\\empty.wav");
+			@event = (TrackEvent)((AudioTrack)track).AddAudioEvent(position, Timecode.FromMilliseconds(2000.0));
+			(@event.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
+		} else if (track.IsVideo()) {
+			media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png");
+			@event = (TrackEvent)((VideoTrack)track).AddVideoEvent(position, Timecode.FromMilliseconds(2000.0));
+			(@event.AddTake(media.GetVideoStreamByIndex(0))).Name = label + Common.SPACER;
+		} else {
+			throw new Exception("track type is neither audio nor video");
+		}
+
+		return @event;
 	}
 	
 }
