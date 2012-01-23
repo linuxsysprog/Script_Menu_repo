@@ -12,6 +12,9 @@ using AddRulerNamespace;
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
+		Regex regex = new Regex("^\\d+\\.\\d+");
+		Track sourceTrack;
+		Track targetTrack;
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -45,12 +48,18 @@ public class EntryPoint {
 			return;
 		}
 		
-		MessageBox.Show("Invaders!");
+		// sort out which track is which
+		if (events[1].Count == 0) {
+			sourceTrack = tracks[0];
+			targetTrack = tracks[1];
+		} else {
+			sourceTrack = tracks[1];
+			targetTrack = tracks[0];
+		}
 		
-		// if (events.Count < 1) {
-			// vegas.DebugOut("No events found.");
-			// return;
-		// }
+		if (targetTrack.IsAudio()) {
+			addAudioEvent((AudioTrack)targetTrack, vegas.Transport.CursorPosition, "hello");
+		}
 		
 		// string spacer = "    " + "    ";
 		// foreach (TrackEvent @event in events) {
@@ -71,6 +80,43 @@ public class EntryPoint {
 				// }
 			// }
 		// }
+		
+		// foreach (TrackEvent @event in sourceTrack.Events) {
+			// find event with a take that matches the pattern
+			// string label = null;
+			// foreach (Take take in @event.Takes) {
+				// if (regex.Matches(take.Name).Count > 0) {
+					// label = take.Name;
+					// break;
+				// }
+			// }
+			// if (label == null) {
+				// continue;
+			// }
+			
+			// create event
+			// vegas.DebugOut(label);
+		// }
+	}
+	
+	// add an audio event 1s long to the track specified at the specified position
+	private AudioEvent addAudioEvent(AudioTrack audioTrack, Timecode position, string label) {
+		Common.vegas.DebugOut("is audioTrack null = " + (audioTrack == null) + "\n" +
+				"is position null = " + (position == null) + "\n" +
+				"label = " + label);
+		
+		string path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav";
+
+		Media media = new Media(path + "\\high.wav");
+		
+		AudioEvent audioEvent = audioTrack.AddAudioEvent(position, Timecode.FromMilliseconds(1000.0));
+		
+		(audioEvent.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
+		// media = new Media(path + "\\beep.1.wav");
+		// (audioEvent.AddTake(media.GetAudioStreamByIndex(0))).Name = measure +
+			// "." + beat + Common.SPACER;
+		
+		return audioEvent;
 	}
 	
 }
