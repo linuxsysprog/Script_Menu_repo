@@ -1,4 +1,4 @@
-// File: 2M.cs - Promote a beep track 2 Measure track
+// File: 2M.cs - Promote a track 2 Measure track
 
 using System;
 using System.Drawing;
@@ -12,57 +12,66 @@ using AddRulerNamespace;
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		AudioTrack sourceTrack;
-		AudioTrack targetTrack;
-		Regex regex = new Regex("^\\d+\\.\\d+");
+		
+		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
+		selection.Normalize();
+		
+		// check for the user has selected exactly two tracks
+		// either audio or video
+		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
+		if (tracks.Count != 2) {
+			MessageBox.Show("Please make sure you have exactly two tracks selected",
+				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		// find events
+		List<TrackEvent>[] events = new List<TrackEvent>[2];
+		for (int i = 0; i < 2; i++) {
+			if (selection.SelectionLength == new Timecode()) {
+				events[i] = Common.TrackEventsToTrackEvents(tracks[i].Events);
+			} else {
+				events[i] = Common.FindEventsBySelection(tracks[i], selection);
+			}
+		}
 
-		List<AudioTrack> selectedAudioTracks = Common.TracksToAudioTracks(
-			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(vegas.Project)))
-		);
-		if (selectedAudioTracks.Count != 2) {
-			MessageBox.Show("Please make sure you have exactly two audio tracks selected",
-				Common.ADD_BEEP, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		if ((selectedAudioTracks[0].Events.Count == 0 && selectedAudioTracks[1].Events.Count == 0) ||
-				(selectedAudioTracks[0].Events.Count != 0 && selectedAudioTracks[1].Events.Count != 0)) {
-			MessageBox.Show("Please make sure one audio track is empty and the other has at least one event",
-				Common.ADD_BEEP, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		sourceTrack = selectedAudioTracks[0];
-		targetTrack = selectedAudioTracks[1];
-		
-		// reverse tracks if the above guess was wrong
-		if (targetTrack.Events.Count != 0) {
-			sourceTrack = selectedAudioTracks[1];
-			targetTrack = selectedAudioTracks[0];
-		}
-		
-		// promote track
+		// clear output window
 		vegas.DebugClear();
-		foreach (TrackEvent @event in sourceTrack.Events) {
-			// find event with a take that matches the pattern
-			string label = null;
-			foreach (Take take in @event.Takes) {
-				if (regex.Matches(take.Name).Count > 0) {
-					label = take.Name;
-					break;
-				}
-			}
-			if (label == null) {
-				continue;
-			}
-			
-			// create event
-			vegas.DebugOut(label);
+		
+		if ((events[0].Count == 0 && events[1].Count == 0) ||
+				(events[0].Count != 0 && events[1].Count != 0)) {
+			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
+				Common.ADD_BEEP, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
 		}
 		
-		// report
 		MessageBox.Show("Invaders!");
+		
+		// if (events.Count < 1) {
+			// vegas.DebugOut("No events found.");
+			// return;
+		// }
+		
+		// string spacer = "    " + "    ";
+		// foreach (TrackEvent @event in events) {
+			// vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
+				// @event.Length + " " + @event.End + " ");
+		
+			// foreach (Take take in @event.Takes) {
+				// if (take.Media.Generator == null) {
+					// string takeName = "n/a";
+					// if (take.Name.IndexOf(Common.SPACER) != -1) {
+						// takeName = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
+					// }
+				
+					// vegas.DebugOut("    Take " + take.Index + spacer + takeName + spacer +
+						// Common.Basename(take.Media.FilePath));
+				// } else {
+					// vegas.DebugOut("    Take " + take.Index + spacer + take.Name);
+				// }
+			// }
+		// }
 	}
-
+	
 }
 
