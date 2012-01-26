@@ -230,7 +230,7 @@ public class EntryPoint : Form {
 		foreach (Timecode beepPosition in beepPositions) {
 			int rem = beat % bpm;
 		
-			Audio.AddBeep(selectedAudioTracks[0], beepPosition, measure, rem == 0 ? bpm : rem, "");
+			Audio.AddBeep(selectedAudioTracks[0], beepPosition, measure, rem == 0 ? bpm : rem, ".");
 				
 			beat++;
 			if (rem == 0) {

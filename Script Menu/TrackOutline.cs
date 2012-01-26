@@ -10,15 +10,15 @@ using Sony.Vegas;
 using AddRulerNamespace;
 
 public class EntryPoint {
+	private const string AUDIO_RE = "^\\d+\\.1";
+	private const string VIDEO_RE = "^1 (T|B)";
+	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 		Track sourceTrack;
 		Track targetTrack;
 		List<TrackEvent> sourceEvents;
 		List<TrackEvent> targetEvents;
-		
-		const string AUDIO_RE = "^\\d+\\.1";
-		const string VIDEO_RE = "^1 (T|B)";
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -67,8 +67,8 @@ public class EntryPoint {
 		}
 		
 		
-		// find events
-		vegas.DebugClear();
+		// find and insert events
+		int insertedEvents = 0;
 		foreach (TrackEvent @event in sourceEvents) {
 			// for event to qualify it should have at least one take that matches our pattern
 			bool eventOK = false;
@@ -82,14 +82,7 @@ public class EntryPoint {
 					continue;
 				}
 				
-				Regex regex;
-				if (take.MediaStream.MediaType == MediaType.Audio) {
-					regex = new Regex(AUDIO_RE);
-				} else {
-					regex = new Regex(VIDEO_RE);
-				}
-			
-				if (regex.Matches(take.Name).Count > 0) {
+				if (getRegex(take).Matches(take.Name).Count > 0) {
 					eventOK = true;
 					break;
 				}
@@ -108,14 +101,7 @@ public class EntryPoint {
 					continue;
 				}
 				
-				Regex regex;
-				if (take.MediaStream.MediaType == MediaType.Audio) {
-					regex = new Regex(AUDIO_RE);
-				} else {
-					regex = new Regex(VIDEO_RE);
-				}
-			
-				if (regex.Matches(take.Name).Count > 0) {
+				if (getRegex(take).Matches(take.Name).Count > 0) {
 					leadingString = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
 				} else {
 					strings.Add(take.Name.Substring(0, take.Name.IndexOf(Common.SPACER)));
@@ -129,7 +115,20 @@ public class EntryPoint {
 			}
 			
 			// create event
-			vegas.DebugOut(leadingString + Common.SPACER);
+			AddEmptyEvent(targetTrack, @event.Start, leadingString);
+			insertedEvents++;
+		}
+		
+		// report
+		MessageBox.Show("Inserted " + insertedEvents + " events", Common.TRACK_OUT);
+	}
+	
+	// return a regex appropriate for the take's media
+	private Regex getRegex(Take take) {
+		if (take.MediaStream.MediaType == MediaType.Audio) {
+			return new Regex(AUDIO_RE);
+		} else {
+			return new Regex(VIDEO_RE);
 		}
 	}
 	
@@ -138,14 +137,23 @@ public class EntryPoint {
 	private TrackEvent AddEmptyEvent(Track track, Timecode position, string label) {
 		Media media;
 		TrackEvent @event;
+		Timecode length;
+		Regex regex = new Regex("(" + AUDIO_RE + " .$)|(" + VIDEO_RE + " .$)");
 
+		if (regex.Matches(label).Count > 0) {
+			length = Timecode.FromMilliseconds(1000.0);
+			label = new Regex("^\\d+").Match(label).Groups[0].Value;
+		} else {
+			length = Timecode.FromMilliseconds(4000.0);
+		}
+		
 		if (track.IsAudio()) {
 			media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav\\empty.wav");
-			@event = (TrackEvent)((AudioTrack)track).AddAudioEvent(position, Timecode.FromMilliseconds(2000.0));
+			@event = (TrackEvent)((AudioTrack)track).AddAudioEvent(position, length);
 			(@event.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
 		} else if (track.IsVideo()) {
 			media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png");
-			@event = (TrackEvent)((VideoTrack)track).AddVideoEvent(position, Timecode.FromMilliseconds(2000.0));
+			@event = (TrackEvent)((VideoTrack)track).AddVideoEvent(position, length);
 			(@event.AddTake(media.GetVideoStreamByIndex(0))).Name = label + Common.SPACER;
 		} else {
 			throw new Exception("track type is neither audio nor video");
