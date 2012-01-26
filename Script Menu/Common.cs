@@ -137,9 +137,9 @@ public class Common {
 	}
 	
 	//
-	// The "Four Horsemen" functions
+	// The "Four Horsemen" functions for tracks
 	//
-	// Functions to convert lists of Video/Audio tracks to and from list of Track
+	// Functions to convert a list of Video/Audio tracks to and from a list of Track
 	//
 	
 	// converts List<AudioTrack> to List<Track>
@@ -176,6 +176,48 @@ public class Common {
 	
 	private static VideoTrack TrackToVideoTrack(Track track) {
 		return (VideoTrack)track;
+	}
+	
+	//
+	// The "Four Horsemen" functions for events
+	//
+	// Functions to convert a list of Video/Audio events to and from a list of TrackEvent
+	//
+	
+	// converts List<AudioEvent> to List<TrackEvent>
+	public static List<TrackEvent> AudioEventsToEvents(List<AudioEvent> audioEvents) {
+		return audioEvents.ConvertAll(new Converter<AudioEvent, TrackEvent>(AudioEventToEvent));
+	}
+	
+	private static TrackEvent AudioEventToEvent(AudioEvent audioEvent) {
+		return audioEvent;
+	}
+	
+	// converts List<TrackEvent> to List<AudioEvent>
+	public static List<AudioEvent> EventsToAudioEvents(List<TrackEvent> events) {
+		return events.ConvertAll(new Converter<TrackEvent, AudioEvent>(EventToAudioEvent));
+	}
+	
+	private static AudioEvent EventToAudioEvent(TrackEvent @event) {
+		return (AudioEvent)@event;
+	}
+	
+	// converts List<VideoEvent> to List<TrackEvent>
+	public static List<TrackEvent> VideoEventsToEvents(List<VideoEvent> videoEvents) {
+		return videoEvents.ConvertAll(new Converter<VideoEvent, TrackEvent>(VideoEventToEvent));
+	}
+	
+	private static TrackEvent VideoEventToEvent(VideoEvent videoEvent) {
+		return videoEvent;
+	}
+	
+	// converts List<TrackEvent> to List<VideoEvent>
+	public static List<VideoEvent> EventsToVideoEvents(List<TrackEvent> events) {
+		return events.ConvertAll(new Converter<TrackEvent, VideoEvent>(EventToVideoEvent));
+	}
+	
+	private static VideoEvent EventToVideoEvent(TrackEvent @event) {
+		return (VideoEvent)@event;
 	}
 	
 	// the 5th horseman

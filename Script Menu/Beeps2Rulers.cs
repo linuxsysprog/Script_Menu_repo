@@ -39,43 +39,41 @@ public class EntryPoint {
 			return;
 		}
 		
-		MessageBox.Show("Invaders!");
-		/*
-		// find events
-		List<TrackEvent>[] events = new List<TrackEvent>[2];
-		for (int i = 0; i < 2; i++) {
-			if (selection.SelectionLength == new Timecode()) {
-				events[i] = Common.TrackEventsToTrackEvents(tracks[i].Events);
-			} else {
-				events[i] = Common.FindEventsBySelection(tracks[i], selection);
-			}
-		}
-
-		// to continue, one track (selection) should be empty and the other should not
-		if ((events[0].Count == 0 && events[1].Count == 0) ||
-				(events[0].Count != 0 && events[1].Count != 0)) {
-			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
-				Common.BEEPS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		// sort out which track and event collection is the source
-		// and which is the target
-		if (events[1].Count == 0) {
-			sourceTrack = tracks[0];
-			targetTrack = tracks[1];
-			
-			sourceEvents = events[0];
-			targetEvents = events[1];
+		// sort out tracks
+		if (tracks[0].IsAudio()) {
+			sourceTrack = (AudioTrack)tracks[0];
+			targetTrack = (VideoTrack)tracks[1];
 		} else {
-			sourceTrack = tracks[1];
-			targetTrack = tracks[0];
-			
-			sourceEvents = events[1];
-			targetEvents = events[0];
+			sourceTrack = (AudioTrack)tracks[1];
+			targetTrack = (VideoTrack)tracks[0];
 		}
 		
-		*/
+		// deal with selections
+		if (selection.SelectionLength == new Timecode()) {
+			sourceEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(sourceTrack.Events));
+			targetEvents = Common.EventsToVideoEvents(Common.TrackEventsToTrackEvents(targetTrack.Events));
+		} else {
+			sourceEvents = Common.EventsToAudioEvents(Common.FindEventsBySelection(sourceTrack, selection));
+			targetEvents = Common.EventsToVideoEvents(Common.FindEventsBySelection(targetTrack, selection));
+		}
+		
+		// dump lists
+		Common.vegas.DebugClear();
+		foreach (AudioEvent audioEvent in sourceEvents) {
+			Common.vegas.DebugOut("Audio: " + audioEvent.Start);
+		}
+		foreach (VideoEvent videoEvent in targetEvents) {
+			Common.vegas.DebugOut("Video: " + videoEvent.Start);
+		}
+		
+		// to continue, one track (selection) should be empty and the other should not
+		// if ((events[0].Count == 0 && events[1].Count == 0) ||
+				// (events[0].Count != 0 && events[1].Count != 0)) {
+			// MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
+				// Common.BEEPS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			// return;
+		// }
+		
 	}
 	
 }
