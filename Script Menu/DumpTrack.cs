@@ -45,7 +45,7 @@ public class EntryPoint {
 		string spacer = "    " + "    ";
 		foreach (TrackEvent @event in events) {
 			vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
-				@event.Length + " " + @event.End + " ");
+				@event.End + " " + @event.Length + " ");
 		
 			foreach (Take take in @event.Takes) {
 				if (take.Media.Generator == null) {
