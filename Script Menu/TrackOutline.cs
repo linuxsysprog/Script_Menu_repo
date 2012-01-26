@@ -17,6 +17,9 @@ public class EntryPoint {
 		List<TrackEvent> sourceEvents;
 		List<TrackEvent> targetEvents;
 		
+		const string AUDIO_RE = "^\\d+\\.1";
+		const string VIDEO_RE = "^1 (T|B)";
+		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
 		
@@ -67,8 +70,8 @@ public class EntryPoint {
 		// find events
 		vegas.DebugClear();
 		foreach (TrackEvent @event in sourceEvents) {
-			// find a take that matches our pattern
-			string label = null;
+			// for event to qualify it should have at least one take that matches our pattern
+			bool eventOK = false;
 			foreach (Take take in @event.Takes) {
 				if (take.MediaStream == null) {
 					continue;
@@ -81,22 +84,52 @@ public class EntryPoint {
 				
 				Regex regex;
 				if (take.MediaStream.MediaType == MediaType.Audio) {
-					regex = new Regex("^\\d+\\.1");
+					regex = new Regex(AUDIO_RE);
 				} else {
-					regex = new Regex("^1 (T|B)");
+					regex = new Regex(VIDEO_RE);
 				}
 			
 				if (regex.Matches(take.Name).Count > 0) {
-					label = take.Name;
+					eventOK = true;
 					break;
 				}
 			}
-			if (label == null) {
+			if (!eventOK) {
 				continue;
 			}
 			
+			
+			// compose label
+			List<string> strings = new List<string>();
+			string leadingString = "";
+			foreach (Take take in @event.Takes) {
+				// drop take names which do not have the spacer in them
+				if (take.Name.IndexOf(Common.SPACER) == -1) {
+					continue;
+				}
+				
+				Regex regex;
+				if (take.MediaStream.MediaType == MediaType.Audio) {
+					regex = new Regex(AUDIO_RE);
+				} else {
+					regex = new Regex(VIDEO_RE);
+				}
+			
+				if (regex.Matches(take.Name).Count > 0) {
+					leadingString = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
+				} else {
+					strings.Add(take.Name.Substring(0, take.Name.IndexOf(Common.SPACER)));
+				}
+			}
+			
+			// concatinate all into one string
+			foreach (string @string in strings) {
+				leadingString += " ";
+				leadingString += @string;
+			}
+			
 			// create event
-			vegas.DebugOut(label);
+			vegas.DebugOut(leadingString + Common.SPACER);
 		}
 	}
 	
