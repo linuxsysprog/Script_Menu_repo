@@ -12,7 +12,6 @@ using AddRulerNamespace;
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		Regex regex = new Regex("^\\d+\\.1|^1 (T|B)");
 		Track sourceTrack;
 		Track targetTrack;
 		List<TrackEvent> sourceEvents;
@@ -21,8 +20,8 @@ public class EntryPoint {
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
 		
-		// check for the user has selected exactly two tracks
-		// either audio or video
+		// check for the user has selected exactly two tracks. Either track could be
+		// audio or video
 		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
 		if (tracks.Count != 2) {
 			MessageBox.Show("Please make sure you have exactly two tracks selected",
@@ -40,6 +39,7 @@ public class EntryPoint {
 			}
 		}
 
+		// to continue, one track (selection) should be empty and the other should not
 		if ((events[0].Count == 0 && events[1].Count == 0) ||
 				(events[0].Count != 0 && events[1].Count != 0)) {
 			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
@@ -64,16 +64,27 @@ public class EntryPoint {
 		}
 		
 		
-		vegas.DebugClear();
 		// find events
+		vegas.DebugClear();
 		foreach (TrackEvent @event in sourceEvents) {
 			// find a take that matches our pattern
 			string label = null;
 			foreach (Take take in @event.Takes) {
-				// if (take.Media) {
-				// } else if () {
-				// } else {
-				// }
+				if (take.MediaStream == null) {
+					continue;
+				}
+				
+				if (take.MediaStream.MediaType != MediaType.Audio &&
+						take.MediaStream.MediaType != MediaType.Video) {
+					continue;
+				}
+				
+				Regex regex;
+				if (take.MediaStream.MediaType == MediaType.Audio) {
+					regex = new Regex("^\\d+\\.1");
+				} else {
+					regex = new Regex("^1 (T|B)");
+				}
 			
 				if (regex.Matches(take.Name).Count > 0) {
 					label = take.Name;
