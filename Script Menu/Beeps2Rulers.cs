@@ -58,23 +58,60 @@ public class EntryPoint {
 		}
 		
 		// dump lists
-		Common.vegas.DebugClear();
-		foreach (AudioEvent audioEvent in sourceEvents) {
-			Common.vegas.DebugOut("Audio: " + audioEvent.Start);
-		}
-		foreach (VideoEvent videoEvent in targetEvents) {
-			Common.vegas.DebugOut("Video: " + videoEvent.Start);
-		}
-		
-		// to continue, one track (selection) should be empty and the other should not
-		// if ((events[0].Count == 0 && events[1].Count == 0) ||
-				// (events[0].Count != 0 && events[1].Count != 0)) {
-			// MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
-				// Common.BEEPS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			// return;
+		// Common.vegas.DebugClear();
+		// foreach (AudioEvent audioEvent in sourceEvents) {
+			// Common.vegas.DebugOut("Audio: " + audioEvent.Start);
+		// }
+		// foreach (VideoEvent videoEvent in targetEvents) {
+			// Common.vegas.DebugOut("Video: " + videoEvent.Start);
 		// }
 		
+		// to continue, the target track (selection) should be empty and the source
+		// track (selection) should have at least one event
+		if (!(targetEvents.Count == 0 && sourceEvents.Count > 0)) {
+			MessageBox.Show("Please make sure the target track (selection) is empty " +
+				"and the source track (selection) has at least one event",
+				Common.BEEPS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		// insert frames
+		foreach (AudioEvent audioEvent in sourceEvents) {
+			// work out takes (take names)
+		}
+			
+		MessageBox.Show("Inserted " + sourceEvents.Count + " bottom ruler frames", Common.BEEPS_RULERS);
 	}
+	
+	// add an empty event to the track specified at the position specified.
+	// The track could be either audio or video
+	// private TrackEvent AddEmptyEvent(Track track, Timecode position, string label) {
+		// Media media;
+		// TrackEvent @event;
+		// Timecode length;
+		// Regex regex = new Regex("(" + AUDIO_RE + " .$)|(" + VIDEO_RE + " .$)");
+
+		// if (regex.Matches(label).Count > 0) {
+			// length = Timecode.FromMilliseconds(1000.0);
+			// label = new Regex("^\\d+").Match(label).Groups[0].Value;
+		// } else {
+			// length = Timecode.FromMilliseconds(4000.0);
+		// }
+		
+		// if (track.IsAudio()) {
+			// media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav\\empty.wav");
+			// @event = (TrackEvent)((AudioTrack)track).AddAudioEvent(position, length);
+			// (@event.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
+		// } else if (track.IsVideo()) {
+			// media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png");
+			// @event = (TrackEvent)((VideoTrack)track).AddVideoEvent(position, length);
+			// (@event.AddTake(media.GetVideoStreamByIndex(0))).Name = label + Common.SPACER;
+		// } else {
+			// throw new Exception("track type is neither audio nor video");
+		// }
+
+		// return @event;
+	// }
 	
 }
 
