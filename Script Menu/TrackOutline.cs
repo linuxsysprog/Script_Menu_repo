@@ -10,9 +10,6 @@ using Sony.Vegas;
 using AddRulerNamespace;
 
 public class EntryPoint {
-	private const string AUDIO_RE = "^\\d+\\.1";
-	private const string VIDEO_RE = "^1 (T|B)";
-	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 		Track sourceTrack;
@@ -82,7 +79,7 @@ public class EntryPoint {
 					continue;
 				}
 				
-				if (getRegex(take).Matches(take.Name).Count > 0) {
+				if (Common.getRegex(take).Matches(take.Name).Count > 0) {
 					eventOK = true;
 					break;
 				}
@@ -92,44 +89,24 @@ public class EntryPoint {
 			}
 			
 			
-			// compose label
-			List<string> strings = new List<string>();
-			string leadingString = "";
-			foreach (Take take in @event.Takes) {
-				// drop take names which do not have the spacer in them
-				if (take.Name.IndexOf(Common.SPACER) == -1) {
-					continue;
-				}
+			// compose the only take's full name
+			List<string> names = Common.getTakeNames(@event);
+			string fullName = "";
+			for (int i = 0; i < names.Count; i++) {
+				fullName += names[i];
 				
-				if (getRegex(take).Matches(take.Name).Count > 0) {
-					leadingString = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
-				} else {
-					strings.Add(take.Name.Substring(0, take.Name.IndexOf(Common.SPACER)));
+				if (i < names.Count - 1) {
+					fullName += " ";
 				}
-			}
-			
-			// concatinate all into one string
-			foreach (string @string in strings) {
-				leadingString += " ";
-				leadingString += @string;
 			}
 			
 			// create event
-			AddEmptyEvent(targetTrack, @event.Start, leadingString);
+			AddEmptyEvent(targetTrack, @event.Start, fullName);
 			insertedEvents++;
 		}
 		
 		// report
 		MessageBox.Show("Inserted " + insertedEvents + " events", Common.TRACK_OUT);
-	}
-	
-	// return a regex appropriate for the take's media
-	private Regex getRegex(Take take) {
-		if (take.MediaStream.MediaType == MediaType.Audio) {
-			return new Regex(AUDIO_RE);
-		} else {
-			return new Regex(VIDEO_RE);
-		}
 	}
 	
 	// add an empty event to the track specified at the position specified.
@@ -138,7 +115,7 @@ public class EntryPoint {
 		Media media;
 		TrackEvent @event;
 		Timecode length;
-		Regex regex = new Regex("(" + AUDIO_RE + " .$)|(" + VIDEO_RE + " .$)");
+		Regex regex = new Regex("(" + Common.AUDIO_RE + " .$)|(" + Common.VIDEO_RE + " .$)");
 
 		if (regex.Matches(label).Count > 0) {
 			length = Timecode.FromMilliseconds(1000.0);

@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Sony.Vegas;
 
 namespace AddRulerNamespace
@@ -16,6 +17,9 @@ public class Common {
 	public const string TRACK_OUT = "Track Outline";
 	public const string BEEPS_RULERS = "Beeps to Rulers";
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
+	public const string AUDIO_RE = "^\\d+\\.1";
+	public const string VIDEO_RE = "^1 (T|B)";
+
 	public static Vegas vegas;
 
 	//
@@ -270,6 +274,40 @@ public class Common {
 		return path.Substring(path.LastIndexOf("\\") + 1);
 	}
 	
+	// return a regex appropriate for the take's media
+	public static Regex getRegex(Take take) {
+		if (take.MediaStream.MediaType == MediaType.Audio) {
+			return new Regex(AUDIO_RE);
+		} else {
+			return new Regex(VIDEO_RE);
+		}
+	}
+	
+	// return a list of strings in which the first string is the event's
+	// main take (^N.N for audio/^N X for video). Ignore take names which
+	// are not native to our application (the ones that do not have SPACER
+	// at the end).
+	public static List<string> getTakeNames(TrackEvent @event) {
+		List<string> strings = new List<string>();
+		string leadingString = "";
+		
+		foreach (Take take in @event.Takes) {
+			// drop take names which do not have the spacer in them
+			if (take.Name.IndexOf(SPACER) == -1) {
+				continue;
+			}
+			
+			if (getRegex(take).Matches(take.Name).Count > 0) {
+				leadingString = take.Name.Substring(0, take.Name.IndexOf(SPACER));
+			} else {
+				strings.Add(take.Name.Substring(0, take.Name.IndexOf(SPACER)));
+			}
+		}
+		
+		strings.Insert(0, leadingString);
+		return strings;
+	}
+		
 }
 
 public class Selection {
