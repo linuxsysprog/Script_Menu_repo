@@ -55,9 +55,10 @@ public class EntryPoint {
 					}
 				
 					vegas.DebugOut("    Take " + take.Index + spacer + takeName + spacer +
-						Common.Basename(take.Media.FilePath));
+						Common.Basename(take.Media.FilePath) + (take.IsActive == true ? " *" : ""));
 				} else {
-					vegas.DebugOut("    Take " + take.Index + spacer + take.Name);
+					vegas.DebugOut("    Take " + take.Index + spacer + take.Name +
+						(take.IsActive == true ? " *" : ""));
 				}
 			}
 		}
