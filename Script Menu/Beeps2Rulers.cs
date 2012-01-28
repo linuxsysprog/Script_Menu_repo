@@ -75,43 +75,74 @@ public class EntryPoint {
 			return;
 		}
 		
-		// insert frames
-		foreach (AudioEvent audioEvent in sourceEvents) {
-			// work out takes (take names)
-		}
+		// find and insert events
+		int insertedEvents = 0;
+		foreach (AudioEvent @event in sourceEvents) {
+			// for event to qualify it should have at least one take that matches 
+			// ^N.[1-4] pattern
+			bool eventOK = false;
+			foreach (Take take in @event.Takes) {
+				if (take.MediaStream == null) {
+					continue;
+				}
+				
+				if (take.MediaStream.MediaType != MediaType.Audio &&
+						take.MediaStream.MediaType != MediaType.Video) {
+					continue;
+				}
+				
+				if (new Regex("^\\d+\\.[1-4]").Matches(take.Name).Count > 0) {
+					eventOK = true;
+					break;
+				}
+			}
+			if (!eventOK) {
+				continue;
+			}
 			
-		MessageBox.Show("Inserted " + sourceEvents.Count + " bottom ruler frames", Common.BEEPS_RULERS);
+			
+			// create event
+			AddVideoEvent(targetTrack, @event);
+			insertedEvents++;
+		}
+		
+		// report
+		MessageBox.Show("Inserted " + insertedEvents + " events", Common.BEEPS_RULERS);
 	}
 	
-	// add an empty event to the track specified at the position specified.
-	// The track could be either audio or video
-	// private TrackEvent AddEmptyEvent(Track track, Timecode position, string label) {
-		// Media media;
-		// TrackEvent @event;
-		// Timecode length;
-		// Regex regex = new Regex("(" + AUDIO_RE + " .$)|(" + VIDEO_RE + " .$)");
-
-		// if (regex.Matches(label).Count > 0) {
-			// length = Timecode.FromMilliseconds(1000.0);
-			// label = new Regex("^\\d+").Match(label).Groups[0].Value;
-		// } else {
-			// length = Timecode.FromMilliseconds(4000.0);
-		// }
+	// add a video event with a bottom ruler onto specified target video track.
+	// Copy position and take names from the source audio event.
+	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, AudioEvent sourceEvent) {
+		VideoEvent videoEvent = tagretTrack.AddVideoEvent(sourceEvent.Start, Timecode.FromFrames(1));
 		
-		// if (track.IsAudio()) {
-			// media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav\\empty.wav");
-			// @event = (TrackEvent)((AudioTrack)track).AddAudioEvent(position, length);
-			// (@event.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
-		// } else if (track.IsVideo()) {
-			// media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png");
-			// @event = (TrackEvent)((VideoTrack)track).AddVideoEvent(position, length);
-			// (@event.AddTake(media.GetVideoStreamByIndex(0))).Name = label + Common.SPACER;
-		// } else {
-			// throw new Exception("track type is neither audio nor video");
-		// }
+		foreach (Take take in sourceEvent.Takes) {
+			string path;
+			bool activeTake = new Regex("^\\d+\\.[1-4]").Matches(take.Name).Count > 0;
+			
+			if (activeTake) {
+				int beat = Convert.ToInt32(new Regex("^\\d+\\.([1-4])").Match(take.Name).Groups[1].Value);
+				
+				// convert beat to ruler number
+				if (beat == 2) {	
+					beat = 5;
+				} else if (beat == 3) {
+					beat = 9;
+				} else if (beat == 4) {
+					beat = 13;
+				}
+				
+				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" +
+					Common.LocationNumber2Basename(false, beat);
+			} else {
+				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png";
+			}
 
-		// return @event;
-	// }
+			Media media = new Media(path);
+			(videoEvent.AddTake(media.GetVideoStreamByIndex(0), activeTake)).Name = take.Name;
+		}
+		
+		return videoEvent;
+	}
 	
 }
 

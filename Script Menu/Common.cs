@@ -284,7 +284,7 @@ public class Common {
 	}
 	
 	// return a list of strings in which the first string is the event's
-	// main take (^N.N for audio/^N X for video). Ignore take names which
+	// main take (^N.1 for audio/^1 X for video). Ignore take names which
 	// are not native to our application (the ones that do not have SPACER
 	// at the end).
 	public static List<string> getTakeNames(TrackEvent @event) {
