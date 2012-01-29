@@ -75,6 +75,9 @@ public class EntryPoint {
 			return;
 		}
 		
+		// clear log
+		Common.vegas.DebugClear();
+		
 		// find and insert events
 		int insertedEvents = 0;
 		foreach (AudioEvent @event in sourceEvents) {
@@ -102,8 +105,10 @@ public class EntryPoint {
 			
 			
 			// create event
-			AddVideoEvent(targetTrack, @event);
-			insertedEvents++;
+			VideoEvent result = AddVideoEvent(targetTrack, @event);
+			if (result != null) {
+				insertedEvents++;
+			}
 		}
 		
 		// report
@@ -111,9 +116,41 @@ public class EntryPoint {
 	}
 	
 	// add a video event with a bottom ruler onto specified target video track.
-	// Copy position and take names from the source audio event.
+	// Quantize original position to the nearest frame. Copy take names from the source audio event.
 	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, AudioEvent sourceEvent) {
-		VideoEvent videoEvent = tagretTrack.AddVideoEvent(sourceEvent.Start, Timecode.FromFrames(1));
+		// quantize position to frames
+		double frames = Convert.ToDouble(sourceEvent.Start.ToString(RulerFormat.AbsoluteFrames));
+		int nearestFrame = (int)Math.Round(frames);
+		
+		// a frame could be fast, slow or perfect
+		string frameStatus;
+		Timecode offset = new Timecode();
+		if (Timecode.FromFrames(nearestFrame) == sourceEvent.Start) {
+			frameStatus = "P";
+		} else if (Timecode.FromFrames(nearestFrame) > sourceEvent.Start) {
+			frameStatus = "S";
+			offset = Timecode.FromFrames(nearestFrame) - sourceEvent.Start;
+		} else { // Timecode.FromFrames(nearestFrame) < sourceEvent.Start
+			frameStatus = "F";
+			offset = sourceEvent.Start - Timecode.FromFrames(nearestFrame);
+		}
+		
+		// write to log.
+		// Do not insert into the same slot more than once
+		string spacer = "    " + "    ";
+		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, Timecode.FromFrames(nearestFrame));
+		if (events.Count > 0) {
+			Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
+					Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset + " skipped");
+			return null;
+		} else {
+			Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
+					Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset);
+		}
+		
+		// insert event at the nearest frame
+		VideoEvent videoEvent = tagretTrack.AddVideoEvent(Timecode.FromFrames(nearestFrame),
+			Timecode.FromFrames(1));
 		
 		foreach (Take take in sourceEvent.Takes) {
 			string path;
