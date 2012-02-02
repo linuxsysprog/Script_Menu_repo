@@ -307,7 +307,22 @@ public class Common {
 		strings.Insert(0, leadingString);
 		return strings;
 	}
+	
+	// returns a full name as a concatinated string of individual take names
+	public static string getFullName(List<string> takeNames) {
+		string fullName = "";
 		
+		for (int i = 0; i < takeNames.Count; i++) {
+			fullName += takeNames[i];
+			
+			if (i < takeNames.Count - 1) {
+				fullName += " ";
+			}
+		}
+		
+		return fullName;
+	}
+			
 }
 
 public class Selection {

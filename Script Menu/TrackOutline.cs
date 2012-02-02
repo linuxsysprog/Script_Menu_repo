@@ -88,20 +88,8 @@ public class EntryPoint {
 				continue;
 			}
 			
-			
-			// compose the only take's full name
-			List<string> names = Common.getTakeNames(@event);
-			string fullName = "";
-			for (int i = 0; i < names.Count; i++) {
-				fullName += names[i];
-				
-				if (i < names.Count - 1) {
-					fullName += " ";
-				}
-			}
-			
 			// create event
-			AddEmptyEvent(targetTrack, @event.Start, fullName);
+			AddEmptyEvent(targetTrack, @event.Start, Common.getFullName(Common.getTakeNames(@event)));
 			insertedEvents++;
 		}
 		
