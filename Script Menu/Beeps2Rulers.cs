@@ -136,16 +136,17 @@ public class EntryPoint {
 		}
 		
 		// write to log.
-		// Do not insert into the same slot more than once
 		string spacer = "    " + "    ";
 		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, Timecode.FromFrames(nearestFrame));
+
+		Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
+				Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset +
+				(events.Count > 0 ? " skipped " : "         ") +
+				Common.getFullName(Common.getTakeNames(sourceEvent)));
+
+		// do not insert into the same slot more than once
 		if (events.Count > 0) {
-			Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
-					Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset + " skipped");
 			return null;
-		} else {
-			Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
-					Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset);
 		}
 		
 		// insert event at the nearest frame

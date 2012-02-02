@@ -289,7 +289,7 @@ public class Common {
 	// at the end).
 	public static List<string> getTakeNames(TrackEvent @event) {
 		List<string> strings = new List<string>();
-		string leadingString = "";
+		string leadingString = null;
 		
 		foreach (Take take in @event.Takes) {
 			// drop take names which do not have the spacer in them
@@ -304,7 +304,9 @@ public class Common {
 			}
 		}
 		
-		strings.Insert(0, leadingString);
+		if (leadingString != null) {
+			strings.Insert(0, leadingString);
+		}
 		return strings;
 	}
 	
