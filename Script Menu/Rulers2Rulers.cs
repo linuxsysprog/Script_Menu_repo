@@ -17,63 +17,55 @@ public class EntryPoint {
 		List<VideoEvent> sourceEvents;
 		List<VideoEvent> targetEvents;
 		
+		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
+		selection.Normalize();
+		
 		// check for the user has selected exactly two video tracks
-		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
-		try {
-			if (tracks.Count != 2) {
-				throw new Exception("track count not equals two");
-			}
-			
-			if (tracks[0].IsAudio() || tracks[1].IsAudio()) {
-				throw new Exception("at least one track is of type audio");
-			}
-		} catch (Exception ex) {
-			MessageBox.Show("Please make sure you have exactly two video tracks selected. ",
+		List<VideoTrack> selectedVideoTracks = Common.TracksToVideoTracks(
+			Common.FindSelectedTracks(Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project)))
+		);
+		if (selectedVideoTracks.Count != 2) {
+			MessageBox.Show("Please make sure you have exactly two video tracks selected",
 				Common.RULERS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
+		}
+		
+		// find events
+		List<TrackEvent>[] events = new List<TrackEvent>[2];
+		for (int i = 0; i < 2; i++) {
+			if (selection.SelectionLength == new Timecode()) {
+				events[i] = Common.TrackEventsToTrackEvents(selectedVideoTracks[i].Events);
+			} else {
+				events[i] = Common.FindEventsBySelection(selectedVideoTracks[i], selection);
+			}
+		}
+
+		// to continue, one track (selection) should be empty and the other should not
+		if ((events[0].Count == 0 && events[1].Count == 0) ||
+				(events[0].Count != 0 && events[1].Count != 0)) {
+			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
+				Common.RULERS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		// sort out which track and event collection is the source
+		// and which is the target
+		if (events[1].Count == 0) {
+			sourceTrack = selectedVideoTracks[0];
+			targetTrack = selectedVideoTracks[1];
+			
+			sourceEvents = Common.EventsToVideoEvents(events[0]);
+			targetEvents = Common.EventsToVideoEvents(events[1]);
+		} else {
+			sourceTrack = selectedVideoTracks[1];
+			targetTrack = selectedVideoTracks[0];
+			
+			sourceEvents = Common.EventsToVideoEvents(events[1]);
+			targetEvents = Common.EventsToVideoEvents(events[0]);
 		}
 		
 		MessageBox.Show("Invaders!");
 		return;/*
-		
-		// deal with selections
-		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
-		selection.Normalize();
-		
-		if (selection.SelectionLength == new Timecode()) {
-			sourceEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(sourceTrack.Events));
-			targetEvents = Common.EventsToVideoEvents(Common.TrackEventsToTrackEvents(targetTrack.Events));
-		} else {
-			sourceEvents = Common.EventsToAudioEvents(Common.FindEventsBySelection(sourceTrack, selection));
-			targetEvents = Common.EventsToVideoEvents(Common.FindEventsBySelection(targetTrack, selection));
-		}
-		
-		// dump lists
-		// Common.vegas.DebugClear();
-		// foreach (VideoEvent audioEvent in sourceEvents) {
-			// Common.vegas.DebugOut("Audio: " + audioEvent.Start);
-		// }
-		// foreach (VideoEvent videoEvent in targetEvents) {
-			// Common.vegas.DebugOut("Video: " + videoEvent.Start);
-		// }
-		
-		// sort out tracks
-		if (tracks[0].IsAudio()) {
-			sourceTrack = (VideoTrack)tracks[0];
-			targetTrack = (VideoTrack)tracks[1];
-		} else {
-			sourceTrack = (VideoTrack)tracks[1];
-			targetTrack = (VideoTrack)tracks[0];
-		}
-		
-		// to continue, the target track (selection) should be empty and the source
-		// track (selection) should have at least one event
-		if (!(targetEvents.Count == 0 && sourceEvents.Count > 0)) {
-			MessageBox.Show("Please make sure the target track (selection) is empty " +
-				"and the source track (selection) has at least one event",
-				Common.RULERS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
 		
 		// clear log
 		Common.vegas.DebugClear();
