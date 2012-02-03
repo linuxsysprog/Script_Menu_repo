@@ -10,6 +10,8 @@ using Sony.Vegas;
 using AddRulerNamespace;
 
 public class EntryPoint {
+	private Regex regex = new Regex("^(1|5|9|13) B");
+
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 		VideoTrack sourceTrack;
@@ -64,29 +66,19 @@ public class EntryPoint {
 			targetEvents = Common.EventsToVideoEvents(events[0]);
 		}
 		
-		MessageBox.Show("Invaders!");
-		return;/*
-		
-		// clear log
-		Common.vegas.DebugClear();
-		
 		// find and insert events
 		int insertedEvents = 0;
 		foreach (VideoEvent @event in sourceEvents) {
 			// for event to qualify it should have at least one take that matches 
-			// ^N.[1-4] pattern
+			// ^(1|5|9|13) B pattern
 			bool eventOK = false;
 			foreach (Take take in @event.Takes) {
-				if (take.MediaStream == null) {
-					continue;
-				}
-				
-				if (take.MediaStream.MediaType != MediaType.Audio &&
+				if (take.MediaStream == null ||
 						take.MediaStream.MediaType != MediaType.Video) {
 					continue;
 				}
 				
-				if (new Regex("^\\d+\\.[1-4]").Matches(take.Name).Count > 0) {
+				if (regex.Matches(take.Name).Count > 0) {
 					eventOK = true;
 					break;
 				}
@@ -94,7 +86,6 @@ public class EntryPoint {
 			if (!eventOK) {
 				continue;
 			}
-			
 			
 			// create event
 			VideoEvent result = AddVideoEvent(targetTrack, @event);
@@ -104,69 +95,43 @@ public class EntryPoint {
 		}
 		
 		// report
-		MessageBox.Show("Inserted " + insertedEvents + " events", Common.RULERS_RULERS);*/
+		MessageBox.Show("Inserted " + insertedEvents + " events", Common.RULERS_RULERS);
 	}
 	
-	// add a video event with a bottom ruler onto specified target video track.
-	// Quantize original position to the nearest frame. Copy take names from the source audio event.
+	// add a video event with a top ruler onto specified target video track.
+	// Copy position and take names from the source video event
 	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, VideoEvent sourceEvent) {
-		// quantize position to frames
-		double frames = Convert.ToDouble(sourceEvent.Start.ToString(RulerFormat.AbsoluteFrames));
-		int nearestFrame = (int)Math.Round(frames);
-		
-		// a frame could be fast, slow or perfect
-		string frameStatus;
-		Timecode offset = new Timecode();
-		if (Timecode.FromFrames(nearestFrame) == sourceEvent.Start) {
-			frameStatus = "P";
-		} else if (Timecode.FromFrames(nearestFrame) > sourceEvent.Start) {
-			frameStatus = "S";
-			offset = Timecode.FromFrames(nearestFrame) - sourceEvent.Start;
-		} else { // Timecode.FromFrames(nearestFrame) < sourceEvent.Start
-			frameStatus = "F";
-			offset = sourceEvent.Start - Timecode.FromFrames(nearestFrame);
-		}
-		
-		// write to log.
-		string spacer = "    " + "    ";
-		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, Timecode.FromFrames(nearestFrame));
-
-		Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
-				Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset +
-				(events.Count > 0 ? " skipped " : "         ") +
-				Common.getFullName(Common.getTakeNames(sourceEvent)));
-
 		// do not insert into the same slot more than once
+		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, sourceEvent.Start);
 		if (events.Count > 0) {
 			return null;
 		}
 		
-		// insert event at the nearest frame
-		VideoEvent videoEvent = tagretTrack.AddVideoEvent(Timecode.FromFrames(nearestFrame),
-			Timecode.FromFrames(1));
+		// insert event
+		VideoEvent videoEvent = tagretTrack.AddVideoEvent(sourceEvent.Start, Timecode.FromFrames(1));
 		
+		// copy take names across
 		foreach (Take take in sourceEvent.Takes) {
 			string path;
 			Media media;
-			bool activeTake = new Regex("^\\d+\\.[1-4]").Matches(take.Name).Count > 0;
 			
-			if (activeTake) {
-				int beat = Convert.ToInt32(new Regex("^\\d+\\.([1-4])").Match(take.Name).Groups[1].Value);
-				
-				// convert beat to ruler number
-				if (beat == 2) {	
-					beat = 5;
-				} else if (beat == 3) {
-					beat = 9;
-				} else if (beat == 4) {
-					beat = 13;
+			if (regex.Matches(take.Name).Count > 0) {
+				int rulerNumber = Convert.ToInt32(regex.Match(take.Name).Groups[1].Value);
+
+				// tweak ruler number
+				if (rulerNumber == 5) {
+					rulerNumber = 4;
+				} else if (rulerNumber == 9) {
+					rulerNumber = 7;
+				} else if (rulerNumber == 13) {
+					rulerNumber = 10;
 				}
 				
 				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" +
-					Common.LocationNumber2Basename(false, beat);
+					Common.LocationNumber2Basename(true, rulerNumber);
 				media = new Media(path);
 				(videoEvent.AddTake(media.GetVideoStreamByIndex(0), true)).Name =
-					beat + " B" + Common.SPACER;
+					rulerNumber + " T" + Common.SPACER;
 			} else {
 				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png";
 				media = new Media(path);
