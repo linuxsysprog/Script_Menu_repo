@@ -155,6 +155,7 @@ public class EntryPoint {
 		
 		foreach (Take take in sourceEvent.Takes) {
 			string path;
+			Media media;
 			bool activeTake = new Regex("^\\d+\\.[1-4]").Matches(take.Name).Count > 0;
 			
 			if (activeTake) {
@@ -171,12 +172,14 @@ public class EntryPoint {
 				
 				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" +
 					Common.LocationNumber2Basename(false, beat);
+				media = new Media(path);
+				(videoEvent.AddTake(media.GetVideoStreamByIndex(0), true)).Name =
+					beat + " B" + Common.SPACER;
 			} else {
 				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png";
+				media = new Media(path);
+				(videoEvent.AddTake(media.GetVideoStreamByIndex(0), false)).Name = take.Name;
 			}
-
-			Media media = new Media(path);
-			(videoEvent.AddTake(media.GetVideoStreamByIndex(0), activeTake)).Name = take.Name;
 		}
 		
 		return videoEvent;
