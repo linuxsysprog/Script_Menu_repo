@@ -12,43 +12,34 @@ using AddRulerNamespace;
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		AudioTrack sourceTrack;
+		VideoTrack sourceTrack;
 		VideoTrack targetTrack;
-		List<AudioEvent> sourceEvents;
+		List<VideoEvent> sourceEvents;
 		List<VideoEvent> targetEvents;
 		
-		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
-		selection.Normalize();
-		
-		// check for the user has selected exactly two tracks, one audio (source track)
-		// and the other video (target track)
+		// check for the user has selected exactly two video tracks
 		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
 		try {
 			if (tracks.Count != 2) {
 				throw new Exception("track count not equals two");
 			}
 			
-			if (!((tracks[0].IsAudio() && tracks[1].IsVideo()) ||
-					(tracks[1].IsAudio() && tracks[0].IsVideo()))) {
-				throw new Exception("tracks are of same type");
+			if (tracks[0].IsAudio() || tracks[1].IsAudio()) {
+				throw new Exception("at least one track is of type audio");
 			}
 		} catch (Exception ex) {
-			MessageBox.Show("Please make sure you have exactly two tracks selected. " +
-				"One audio (source track) and the other video (target track)",
+			MessageBox.Show("Please make sure you have exactly two video tracks selected. ",
 				Common.RULERS_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
-		// sort out tracks
-		if (tracks[0].IsAudio()) {
-			sourceTrack = (AudioTrack)tracks[0];
-			targetTrack = (VideoTrack)tracks[1];
-		} else {
-			sourceTrack = (AudioTrack)tracks[1];
-			targetTrack = (VideoTrack)tracks[0];
-		}
+		MessageBox.Show("Invaders!");
+		return;/*
 		
 		// deal with selections
+		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
+		selection.Normalize();
+		
 		if (selection.SelectionLength == new Timecode()) {
 			sourceEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(sourceTrack.Events));
 			targetEvents = Common.EventsToVideoEvents(Common.TrackEventsToTrackEvents(targetTrack.Events));
@@ -59,12 +50,21 @@ public class EntryPoint {
 		
 		// dump lists
 		// Common.vegas.DebugClear();
-		// foreach (AudioEvent audioEvent in sourceEvents) {
+		// foreach (VideoEvent audioEvent in sourceEvents) {
 			// Common.vegas.DebugOut("Audio: " + audioEvent.Start);
 		// }
 		// foreach (VideoEvent videoEvent in targetEvents) {
 			// Common.vegas.DebugOut("Video: " + videoEvent.Start);
 		// }
+		
+		// sort out tracks
+		if (tracks[0].IsAudio()) {
+			sourceTrack = (VideoTrack)tracks[0];
+			targetTrack = (VideoTrack)tracks[1];
+		} else {
+			sourceTrack = (VideoTrack)tracks[1];
+			targetTrack = (VideoTrack)tracks[0];
+		}
 		
 		// to continue, the target track (selection) should be empty and the source
 		// track (selection) should have at least one event
@@ -80,7 +80,7 @@ public class EntryPoint {
 		
 		// find and insert events
 		int insertedEvents = 0;
-		foreach (AudioEvent @event in sourceEvents) {
+		foreach (VideoEvent @event in sourceEvents) {
 			// for event to qualify it should have at least one take that matches 
 			// ^N.[1-4] pattern
 			bool eventOK = false;
@@ -112,12 +112,12 @@ public class EntryPoint {
 		}
 		
 		// report
-		MessageBox.Show("Inserted " + insertedEvents + " events", Common.RULERS_RULERS);
+		MessageBox.Show("Inserted " + insertedEvents + " events", Common.RULERS_RULERS);*/
 	}
 	
 	// add a video event with a bottom ruler onto specified target video track.
 	// Quantize original position to the nearest frame. Copy take names from the source audio event.
-	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, AudioEvent sourceEvent) {
+	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, VideoEvent sourceEvent) {
 		// quantize position to frames
 		double frames = Convert.ToDouble(sourceEvent.Start.ToString(RulerFormat.AbsoluteFrames));
 		int nearestFrame = (int)Math.Round(frames);
