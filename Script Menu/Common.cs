@@ -17,6 +17,7 @@ public class Common {
 	public const string TRACK_OUT = "Track Outline";
 	public const string BEEPS_RULERS = "Beeps to Rulers";
 	public const string RULERS_RULERS = "Rulers to Rulers";
+	public const string FILL_RULERS = "Fill Rulers";
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.1";
 	public const string VIDEO_RE = "^1 (T|B)";
