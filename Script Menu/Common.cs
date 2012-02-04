@@ -19,8 +19,8 @@ public class Common {
 	public const string RULERS_RULERS = "Rulers to Rulers";
 	public const string FILL_RULERS = "Fill Rulers";
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
-	public const string AUDIO_RE = "^\\d+\\.1";
-	public const string VIDEO_RE = "^1 (T|B)";
+	public const string AUDIO_RE = "^\\d+\\.\\d+";
+	public const string VIDEO_RE = "^\\d+ (T|B)";
 
 	public static Vegas vegas;
 
@@ -276,17 +276,8 @@ public class Common {
 		return path.Substring(path.LastIndexOf("\\") + 1);
 	}
 	
-	// return a regex appropriate for the take's media
-	public static Regex getRegex(Take take) {
-		if (take.MediaStream.MediaType == MediaType.Audio) {
-			return new Regex(AUDIO_RE);
-		} else {
-			return new Regex(VIDEO_RE);
-		}
-	}
-	
 	// return a list of strings in which the first string is the event's
-	// main take (^N.1 for audio/^1 X for video). Ignore take names which
+	// main take. Ignore take names which
 	// are not native to our application (the ones that do not have SPACER
 	// at the end).
 	public static List<string> getTakeNames(TrackEvent @event) {
@@ -310,6 +301,15 @@ public class Common {
 			strings.Insert(0, leadingString);
 		}
 		return strings;
+	}
+	
+	// returns a regex appropriate for event's media
+	private static Regex getRegex(Take take) {
+		if (take.MediaStream.MediaType == MediaType.Audio) {
+			return new Regex(AUDIO_RE);
+		} else {
+			return new Regex(VIDEO_RE);
+		}
 	}
 	
 	// returns a full name as a concatinated string of individual take names

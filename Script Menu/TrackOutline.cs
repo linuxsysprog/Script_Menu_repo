@@ -79,7 +79,7 @@ public class EntryPoint {
 					continue;
 				}
 				
-				if (Common.getRegex(take).Matches(take.Name).Count > 0) {
+				if (getRegex(take).Matches(take.Name).Count > 0) {
 					eventOK = true;
 					break;
 				}
@@ -97,13 +97,22 @@ public class EntryPoint {
 		MessageBox.Show("Inserted " + insertedEvents + " events", Common.TRACK_OUT);
 	}
 	
+	// returns a regex to match a measure start event.
+	private static Regex getRegex(Take take) {
+		if (take.MediaStream.MediaType == MediaType.Audio) {
+			return new Regex("^\\d+\\.1");
+		} else {
+			return new Regex("^1 (T|B)");
+		}
+	}
+	
 	// add an empty event to the track specified at the position specified.
 	// The track could be either audio or video
 	private TrackEvent AddEmptyEvent(Track track, Timecode position, string label) {
 		Media media;
 		TrackEvent @event;
 		Timecode length;
-		Regex regex = new Regex("(" + Common.AUDIO_RE + " .$)|(" + Common.VIDEO_RE + " .$)");
+		Regex regex = new Regex("(^\\d+\\.1 .$)|(^1 (T|B) .$)");
 
 		if (regex.Matches(label).Count > 0) {
 			length = Timecode.FromMilliseconds(1000.0);

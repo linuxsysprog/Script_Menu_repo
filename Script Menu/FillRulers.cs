@@ -43,20 +43,21 @@ public class EntryPoint {
 			return;
 		}
 		
-		MessageBox.Show("Invaders!");/*
-		int eventsTrimmed = 0;
+		Common.vegas.DebugClear();
 		for (int i = 0; i < events.ToArray().Length - 1; i++) {
-			TrackEvent @event = events.ToArray()[i];
+			string name = Common.getTakeNames(events.ToArray()[i])[0];
+			Common.vegas.DebugOut("" + i + " " + name);
+			continue;
+			int nRulers = new Regex("^\\d+ T").Matches(name).Count > 0 ? 2 : 3;
+			double step = (events.ToArray()[i + 1].Start - events.ToArray()[i].Start).ToMilliseconds() /
+				(double)nRulers;
+			Timecode offset = events.ToArray()[i].Start;
 			
-			if (@event.End < events.ToArray()[i + 1].Start) {
-				@event.End = events.ToArray()[i + 1].Start;
-				eventsTrimmed++;
+			for (int j = 0; j < nRulers; j++) {
+				offset = offset + Timecode.FromMilliseconds(step);
 			}
 		}
 		
-		// report
-		MessageBox.Show(eventsTrimmed + " out of " + events.Count +
-			" total events were trimmed", Common.FILL_RULERS);*/
 	}
 	
 }
