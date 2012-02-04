@@ -384,5 +384,71 @@ public class Selection {
 	
 }
 
+public class QuantizedEvent {
+	private Timecode start;
+	private Timecode quantizedStart;
+	private string status;
+	private Timecode offset;
+	
+	public QuantizedEvent(Timecode start) {
+		this.start = start;
+		Quantize();
+	}
+	
+	public Timecode Start {
+		get {
+			return start;
+		}
+		set {
+			start = value;
+			Quantize();
+		}
+	}
+	
+	public Timecode QuantizedStart {
+		get {
+			return quantizedStart;
+		}
+	}
+	
+	public string Status {
+		get {
+			return status;
+		}
+	}
+	
+	public Timecode Offset {
+		get {
+			return offset;
+		}
+	}
+	
+	private void Quantize() {
+		double frames = Convert.ToDouble(start.ToString(RulerFormat.AbsoluteFrames));
+		quantizedStart = Timecode.FromFrames((int)Math.Round(frames));
+		
+		// a frame could be fast, slow or perfect
+		if (quantizedStart == start) {
+			offset = new Timecode();
+			status = "P";
+		} else if (quantizedStart > start) {
+			offset = quantizedStart - start;
+			status = "S";
+		} else { // quantizedStart < start
+			offset = start - quantizedStart;
+			status = "F";
+		}
+	}
+	
+	public override string ToString() {
+		return start + " " + quantizedStart + " " + status + " " + offset;
+	}
+	
+	public static QuantizedEvent FromTimecode(Timecode start) {
+		return new QuantizedEvent(start);
+	}
+	
+}
+
 }
 

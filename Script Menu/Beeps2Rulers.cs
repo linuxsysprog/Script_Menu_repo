@@ -118,29 +118,13 @@ public class EntryPoint {
 	// add a video event with a bottom ruler onto specified target video track.
 	// Quantize original position to the nearest frame. Copy take names from the source audio event.
 	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, AudioEvent sourceEvent) {
-		// quantize position to frames
-		double frames = Convert.ToDouble(sourceEvent.Start.ToString(RulerFormat.AbsoluteFrames));
-		int nearestFrame = (int)Math.Round(frames);
-		
-		// a frame could be fast, slow or perfect
-		string frameStatus;
-		Timecode offset = new Timecode();
-		if (Timecode.FromFrames(nearestFrame) == sourceEvent.Start) {
-			frameStatus = "P";
-		} else if (Timecode.FromFrames(nearestFrame) > sourceEvent.Start) {
-			frameStatus = "S";
-			offset = Timecode.FromFrames(nearestFrame) - sourceEvent.Start;
-		} else { // Timecode.FromFrames(nearestFrame) < sourceEvent.Start
-			frameStatus = "F";
-			offset = sourceEvent.Start - Timecode.FromFrames(nearestFrame);
-		}
-		
+		QuantizedEvent quantizedEvent = QuantizedEvent.FromTimecode(sourceEvent.Start);
+
 		// write to log.
 		string spacer = "    " + "    ";
-		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, Timecode.FromFrames(nearestFrame));
+		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, quantizedEvent.QuantizedStart);
 
-		Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + sourceEvent.Start + " " +
-				Timecode.FromFrames(nearestFrame) + spacer + frameStatus + " " + offset +
+		Common.vegas.DebugOut("Event " + sourceEvent.Index + spacer + quantizedEvent + " " + 
 				(events.Count > 0 ? " skipped " : "         ") +
 				Common.getFullName(Common.getTakeNames(sourceEvent)));
 
@@ -150,7 +134,7 @@ public class EntryPoint {
 		}
 		
 		// insert event at the nearest frame
-		VideoEvent videoEvent = tagretTrack.AddVideoEvent(Timecode.FromFrames(nearestFrame),
+		VideoEvent videoEvent = tagretTrack.AddVideoEvent(quantizedEvent.QuantizedStart,
 			Timecode.FromFrames(1));
 		
 		foreach (Take take in sourceEvent.Takes) {
