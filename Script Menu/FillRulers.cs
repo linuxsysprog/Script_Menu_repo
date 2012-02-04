@@ -43,21 +43,74 @@ public class EntryPoint {
 			return;
 		}
 		
+		// all events should have correct labels
+		foreach (VideoEvent @event in events) {
+			string eventName = Common.getFullName(Common.getTakeNames(@event));
+			if (new Regex(Common.VIDEO_RE).Matches(eventName).Count <= 0) {
+				MessageBox.Show("Event " + @event.Index + " (" + eventName + ") has an incorrect label",
+					Common.FILL_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+		}
+		
+		// clear log
 		Common.vegas.DebugClear();
+		
+		// insert events
+		int insertedEvents = 0;
 		for (int i = 0; i < events.ToArray().Length - 1; i++) {
 			string name = Common.getTakeNames(events.ToArray()[i])[0];
-			Common.vegas.DebugOut("" + i + " " + name);
-			continue;
-			int nRulers = new Regex("^\\d+ T").Matches(name).Count > 0 ? 2 : 3;
+			bool topRuler = new Regex("^\\d+ T").Matches(name).Count > 0 ? true : false;
+			int keyRulerNumber = Convert.ToInt32(new Regex("^(\\d+) (T|B)").Match(name).Groups[1].Value);
+			
+			// number of rulers to insert
+			int nRulers = topRuler ? 2 : 3;
+			
 			double step = (events.ToArray()[i + 1].Start - events.ToArray()[i].Start).ToMilliseconds() /
-				(double)nRulers;
-			Timecode offset = events.ToArray()[i].Start;
+				(double)(nRulers + 1);
+			Timecode offset = events.ToArray()[i].Start + Timecode.FromMilliseconds(step);
 			
 			for (int j = 0; j < nRulers; j++) {
+				// for debugging
+				// Common.vegas.DebugOut("i = " + i + " j = " + j + " name = " + name + " nRulers = " +
+					// nRulers + " step = " + Timecode.FromMilliseconds(step) + " offset = " + offset +
+					// " topRuler = " + topRuler + " rulerNumber = " + (keyRulerNumber + j + 1) );
+					
+				// insert event
+				VideoEvent result = AddVideoEvent(selectedVideoTracks[0],
+					Common.getFullName(Common.getTakeNames(events.ToArray()[i])), offset,
+					topRuler, keyRulerNumber + j + 1);
+				if (result != null) {
+					insertedEvents++;
+				}
+				
 				offset = offset + Timecode.FromMilliseconds(step);
 			}
 		}
 		
+		// report
+		MessageBox.Show("Inserted " + insertedEvents + " events", Common.FILL_RULERS);
+	}
+	
+	// add a video event with a top/bottom ruler onto tagretTrack.
+	// Quantize position to the nearest frame
+	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, string keyEventName, Timecode position,
+							bool topRuler, int rulerNumber) {
+		QuantizedEvent quantizedEvent = QuantizedEvent.FromTimecode(position);
+
+		// write to log.
+		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, quantizedEvent.QuantizedStart);
+
+		string spacer = "    " + "    ";
+		Common.vegas.DebugOut(quantizedEvent + " " + (events.Count > 0 ? " skipped " : "         ") +
+				rulerNumber + " " + (topRuler == true ? "T": "B") + spacer + keyEventName);
+
+		// do not insert into the same slot more than once
+		if (events.Count > 0) {
+			return null;
+		}
+		
+		return Video.AddRuler(tagretTrack, quantizedEvent.QuantizedStart, topRuler, rulerNumber, null);
 	}
 	
 }

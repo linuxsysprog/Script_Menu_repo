@@ -441,7 +441,7 @@ public class QuantizedEvent {
 	}
 	
 	public override string ToString() {
-		return start + " " + quantizedStart + " " + status + " " + offset;
+		return start + " " + quantizedStart + " " + offset + " " + status;
 	}
 	
 	public static QuantizedEvent FromTimecode(Timecode start) {
