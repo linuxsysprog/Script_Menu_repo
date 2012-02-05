@@ -451,5 +451,66 @@ public class QuantizedEvent {
 	
 }
 
+public class Preset : IComparable {
+	private string frameSize;
+	private string @object;
+	private string value;
+	private Regex regex = new Regex("^\\d+");
+
+	public Preset(string strPreset) {
+		string[] result = strPreset.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+		if (regex.Matches(strPreset).Count < 1 ||
+				result.Length != 3) {
+			throw new Exception("can't parse Preset string: " + strPreset);
+		}
+		
+		this.frameSize = result[0];
+		this.@object = result[1];
+		this.value = result[2];
+	}
+	
+	public string FrameSize {
+		get {
+			return frameSize;
+		}
+		set {
+			frameSize = value;
+		}
+	}
+	
+	public string Object {
+		get {
+			return @object;
+		}
+		set {
+			@object = value;
+		}
+	}
+	
+	public string Value {
+		get {
+			return value;
+		}
+		set {
+			this.value = value;
+		}
+	}
+	
+	public override string ToString() {
+		return frameSize + " " + @object + " " + value;
+	}
+	
+    public int CompareTo(object obj) {
+        if (obj == null) return 1;
+
+        Preset otherPreset = obj as Preset;
+        if (otherPreset != null) 
+            return ToString().CompareTo(otherPreset.ToString());
+        else
+           throw new ArgumentException("Object is not a Preset");
+    }
+
+}
+
 }
 

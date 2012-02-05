@@ -19,6 +19,49 @@ public class EntryPoint {
 		List<VideoEvent> sourceEvents;
 		List<VideoEvent> targetEvents;
 		
+		// get text media generator
+		PlugInNode plugIn = vegas.Generators.GetChildByName("Sony Text");
+		if (plugIn == null) {
+			MessageBox.Show("Couldn't find Sony Text media generator",
+				Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		// get all presets
+		List<Preset> presets = new List<Preset>();
+		foreach (EffectPreset preset in plugIn.Presets) {
+			try {
+				presets.Add(new Preset(preset.Name));
+			} catch (Exception e) {
+				continue;
+			}
+		}
+
+		// figure out measure range
+		List<int> measures = new List<int>();
+		foreach (Preset preset in presets) {
+			if (preset.FrameSize == "320x240" && preset.Object == "Measure") {
+				try {
+					int n = Convert.ToInt32(preset.Value);
+					if (n < 1) {
+						throw new Exception("value is less than one");
+					}
+					measures.Add(n);
+				} catch (Exception ex) {
+					MessageBox.Show("Invalid Preset (" + preset + "): " + ex.Message,
+						Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+			}
+		}
+		measures.Sort();
+		
+		// dump measures
+		// Common.vegas.DebugClear();
+		// foreach (int measure in measures) {
+			// Common.vegas.DebugOut("" + measure);
+		// }
+		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
 		
@@ -79,6 +122,13 @@ public class EntryPoint {
 					return;
 				}
 			}
+		}
+		
+		// check if there's enough measures
+		if (measures.Count < sourceEvents.Count) {
+			MessageBox.Show("Not enough Measure Presets (" + measures.Count + ")",
+				Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
 		}
 		
 		MessageBox.Show("Invaders!");
