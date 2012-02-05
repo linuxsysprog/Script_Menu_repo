@@ -18,6 +18,7 @@ public class Common {
 	public const string BEEPS_RULERS = "Beeps to Rulers";
 	public const string RULERS_RULERS = "Rulers to Rulers";
 	public const string FILL_RULERS = "Fill Rulers";
+	public const string RULERS_OBJECTS = "Rulers to Objects";
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
 	public const string VIDEO_RE = "^\\d+ (T|B)";
