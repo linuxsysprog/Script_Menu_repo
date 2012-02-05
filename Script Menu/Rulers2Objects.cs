@@ -66,6 +66,24 @@ public class EntryPoint {
 			targetEvents = Common.EventsToVideoEvents(events[0]);
 		}
 		
+		// check for rogue events
+		foreach (VideoEvent sourceEvent in sourceEvents) {
+			string eventName = Common.getFullName(Common.getTakeNames(sourceEvent));
+			if (regex.Matches(eventName).Count <= 0) {
+				DialogResult result = MessageBox.Show("Event " + sourceEvent.Index +
+					(eventName == "" ? "" : " (" + eventName + ")") +
+					" has an incorrect label. Would you like to continue?",
+					Common.RULERS_OBJECTS, MessageBoxButtons.OKCancel,
+					MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+				if (result != DialogResult.OK) {
+					return;
+				}
+			}
+		}
+		
+		MessageBox.Show("Invaders!");
+		return;
+		
 		// find and insert events
 		int insertedEvents = 0;
 		foreach (VideoEvent @event in sourceEvents) {

@@ -47,7 +47,8 @@ public class EntryPoint {
 		foreach (VideoEvent @event in events) {
 			string eventName = Common.getFullName(Common.getTakeNames(@event));
 			if (new Regex(Common.VIDEO_RE).Matches(eventName).Count <= 0) {
-				MessageBox.Show("Event " + @event.Index + " (" + eventName + ") has an incorrect label",
+				MessageBox.Show("Event " + @event.Index +
+				(eventName == "" ? "" : " (" + eventName + ")") + " has an incorrect label",
 					Common.FILL_RULERS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
