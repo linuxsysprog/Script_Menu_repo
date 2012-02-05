@@ -112,23 +112,23 @@ public class EntryPoint {
 			targetEvents = Common.EventsToVideoEvents(events[0]);
 		}
 		
-		// check for rogue events
+		// narrow down source events to a list of 1 (T|B)'s
+		List<VideoEvent> filteredSourceEvents = new List<VideoEvent>();
 		foreach (VideoEvent sourceEvent in sourceEvents) {
 			string eventName = Common.getFullName(Common.getTakeNames(sourceEvent));
-			if (regex.Matches(eventName).Count <= 0) {
-				DialogResult result = MessageBox.Show("Event " + sourceEvent.Index +
-					(eventName == "" ? "" : " (" + eventName + ")") +
-					" has an incorrect label. Would you like to continue?",
-					Common.RULERS_OBJECTS, MessageBoxButtons.OKCancel,
-					MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-				if (result != DialogResult.OK) {
-					return;
-				}
+			if (regex.Match(eventName).Success) {
+				filteredSourceEvents.Add(sourceEvent);
 			}
 		}
 		
+		if (filteredSourceEvents.Count < 1) {
+			MessageBox.Show("No measure start events found",
+				Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
 		// check if there's enough measure presets
-		if (measures.Count < sourceEvents.Count) {
+		if (measures.Count < filteredSourceEvents.Count) {
 			MessageBox.Show("Not enough Measure Presets (" + measures.Count + ")",
 				Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
@@ -138,7 +138,7 @@ public class EntryPoint {
 		// Common.vegas.DebugClear();
 		{
 			int i = 0;
-			foreach (VideoEvent sourceEvent in sourceEvents) {
+			foreach (VideoEvent sourceEvent in filteredSourceEvents) {
 				// create event
 				// Common.vegas.DebugOut(frameSize + " " + @object + " " + measures.ToArray()[i++]);
 				Common.AddTextEvent(Common.vegas, plugIn, targetTrack,
@@ -148,7 +148,7 @@ public class EntryPoint {
 		}
 		
 		// report
-		MessageBox.Show("Inserted " + sourceEvents.Count + " events", Common.RULERS_OBJECTS);
+		MessageBox.Show("Inserted " + filteredSourceEvents.Count + " events", Common.RULERS_OBJECTS);
 	}
 	
 }
