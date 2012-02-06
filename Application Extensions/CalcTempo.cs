@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: CalcTempo.cs - Monitor current selection and calculate tempo
 
 using System;

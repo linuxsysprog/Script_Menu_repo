@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: Common.cs - Helper functions common to tracks and events
 
 using System;
@@ -9,16 +10,20 @@ using Sony.Vegas;
 namespace AddRulerNamespace
 {
 public class Common {
-	public const string ADD_RULER = "Add Ruler";
-	public const string ADD_BEEP = "Add Beep";
-	public const string ADD_OBJECT = "Add Object";
-	public const string CALC_TEMPO = "Calculate Tempo";
-	public const string GEN_BEEPS = "Generate Beeps";
-	public const string TRACK_OUT = "Track Outline";
-	public const string BEEPS_RULERS = "Beeps to Rulers";
-	public const string RULERS_RULERS = "Rulers to Rulers";
-	public const string FILL_RULERS = "Fill Rulers";
-	public const string RULERS_OBJECTS = "Rulers to Objects";
+	public const string CP_RIGHT = " - Copyright (C) 2011 Andrey Chislenko";
+	
+	public const string ADD_RULER = "Add Ruler" + CP_RIGHT;
+	public const string DUMP_TRACK = "Dump Track" + CP_RIGHT;
+	public const string ADD_BEEP = "Add Beep" + CP_RIGHT;
+	public const string ADD_OBJECT = "Add Object" + CP_RIGHT;
+	public const string CALC_TEMPO = "Calculate Tempo" + CP_RIGHT;
+	public const string GEN_BEEPS = "Generate Beeps" + CP_RIGHT;
+	public const string TRACK_OUT = "Track Outline" + CP_RIGHT;
+	public const string BEEPS_RULERS = "Beeps to Rulers" + CP_RIGHT;
+	public const string RULERS_RULERS = "Rulers to Rulers" + CP_RIGHT;
+	public const string FILL_RULERS = "Fill Rulers" + CP_RIGHT;
+	public const string RULERS_OBJECTS = "Rulers to Objects" + CP_RIGHT;
+	
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
 	public const string VIDEO_RE = "^\\d+ (T|B)";

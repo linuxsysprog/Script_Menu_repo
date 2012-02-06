@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: FillRulers.cs - Fill top/bottom ruler tracks with subdivision
 
 using System;

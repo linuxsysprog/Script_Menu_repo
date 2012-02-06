@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: AddBeep.cs - Insert a beep with high and low pitch as takes
 
 using System;

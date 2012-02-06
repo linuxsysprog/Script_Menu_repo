@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: Audio.cs - Helper functions common to audio tracks
 
 using System;

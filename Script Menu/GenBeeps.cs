@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: GenBeeps.cs - Generate series of beeps starting from a particular Measure.Beat
 
 using System;

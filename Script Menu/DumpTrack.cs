@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: DumpTrack.cs - Print a dump of a selection of a track's
 //           event's take's Name fields
 
@@ -22,7 +23,7 @@ public class EntryPoint {
 		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
 		if (tracks.Count != 1) {
 			MessageBox.Show("Please make sure you have exactly one track selected",
-				Common.ADD_RULER, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.DUMP_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		

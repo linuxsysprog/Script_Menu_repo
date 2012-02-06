@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: Rulers2Rulers.cs - Promote bottom rulers to top rulers
 
 using System;

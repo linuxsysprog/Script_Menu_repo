@@ -1,3 +1,4 @@
+// Copyright (C) 2011 Andrey Chislenko
 // File: Rulers2Objects.cs - Promote top/bottom rulers to Measure objects
 
 using System;
