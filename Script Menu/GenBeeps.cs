@@ -75,7 +75,7 @@ public class EntryPoint : Form {
 		
 		txtNumber.Size = new Size(30, 50);
 		txtNumber.Location = new Point(170, 160);
-		txtNumber.Text = "16";
+		txtNumber.Text = "4";
 
 		gbMode.Size = new Size(190, 110);
 		gbMode.Location = new Point(10, 200);
