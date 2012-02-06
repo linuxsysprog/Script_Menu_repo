@@ -68,6 +68,7 @@ public class EntryPoint : Form {
 		txtTempo.Size = new Size(60, 20);
 		txtTempo.Location = new Point(140, 120);
 		txtTempo.Text = "120.0000";
+		txtTempo.Enabled = false;
 		
 		lblNumber.Size = new Size(100, 20);
 		lblNumber.Location = new Point(10, 160);
@@ -88,7 +89,6 @@ public class EntryPoint : Form {
 		rbTempoNumber.Size = new Size(170, 20);
 		rbTempoNumber.Location = new Point(10, 20);
 		rbTempoNumber.Text = "Tempo and Number";
-		rbTempoNumber.Checked = true;
 		rbTempoNumber.Click += new EventHandler(rbTempoNumber_Click);
 		
 		rbTempoSelection.Size = new Size(170, 20);
@@ -99,6 +99,7 @@ public class EntryPoint : Form {
 		rbSelectionNumber.Size = new Size(170, 20);
 		rbSelectionNumber.Location = new Point(10, 80);
 		rbSelectionNumber.Text = "Selection and Number";
+		rbSelectionNumber.Checked = true;
 		rbSelectionNumber.Click += new EventHandler(rbSelectionNumber_Click);
 		
 		btnGenerate.Location = new Point(70, 330);
