@@ -207,6 +207,7 @@ public class CalcTempoControl : UserControl {
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			soloAllTracks(tracks, chkSoloAll.Checked);
+			lblPlayingTrack.Text = PLAYING_TRACK;
 		}
 	}
 	
@@ -221,6 +222,9 @@ public class CalcTempoControl : UserControl {
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			// unsolo soloed tracks if there are any
 			soloAllTracks(tracks, false);
+			if (chkSoloAll.Checked) {
+				chkSoloAll.Checked = false;
+			}
 			
 			List<Track> unmutedTracks = findUnmutedTracks(tracks);
 			
