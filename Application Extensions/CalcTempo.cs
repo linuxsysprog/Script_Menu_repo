@@ -66,7 +66,6 @@ public class CalcTempoControl : UserControl {
 	private Button btnCalcTempo = new Button();
 
 	private GroupBox gbMuteTracks= new GroupBox();
-	public CheckBox chkActivate= new CheckBox();
 	public CheckBox chkMuteAll= new CheckBox();
 	public CheckBox chkSoloAll= new CheckBox();
 	private Label lblPlayingTrack = new Label();
@@ -110,24 +109,18 @@ public class CalcTempoControl : UserControl {
 		gbMuteTracks.Location = new Point(160, 10);
 		gbMuteTracks.Text = "Mute/Solo Au Tracks";
 		gbMuteTracks.Controls.AddRange(new Control[] {
-			chkActivate,
 			chkMuteAll,
 			chkSoloAll,
 			lblPlayingTrack,
 			btnPlayNext});
 			
-		chkActivate.Size = new Size(100, 20);
-		chkActivate.Location = new Point(10, 20);
-		chkActivate.Text = "&Activate";
-		chkActivate.Click += new EventHandler(chkActivate_Click);
-		
 		chkMuteAll.Size = new Size(100, 20);
-		chkMuteAll.Location = new Point(10, 40);
+		chkMuteAll.Location = new Point(10, 20);
 		chkMuteAll.Text = "&Mute All";
 		chkMuteAll.Click += new EventHandler(chkMuteAll_Click);
 		
 		chkSoloAll.Size = new Size(100, 20);
-		chkSoloAll.Location = new Point(10, 60);
+		chkSoloAll.Location = new Point(10, 40);
 		chkSoloAll.Text = "&Solo All";
 		chkSoloAll.Click += new EventHandler(chkSoloAll_Click);
 		
@@ -186,9 +179,6 @@ public class CalcTempoControl : UserControl {
 	
 	void chkMonitorRegion_Click(object sender, EventArgs e) {
 			updateTempo();
-	}
-	
-	void chkActivate_Click(object sender, EventArgs e) {
 	}
 	
 	void chkMuteAll_Click(object sender, EventArgs e) {
