@@ -192,6 +192,7 @@ public class CalcTempoControl : UserControl {
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			muteAllTracks(tracks, chkMuteAll.Checked);
+			lblPlayingTrack.Text = PLAYING_TRACK;
 		}
 	}
 	
@@ -227,6 +228,10 @@ public class CalcTempoControl : UserControl {
 			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
 				muteAllTracks(tracks, true);
 				tracks[0].Mute = false;
+				if (chkMuteAll.Checked) {
+					chkMuteAll.Checked = false;
+				}
+				lblPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
 				return;
 			}
 			
@@ -243,8 +248,13 @@ public class CalcTempoControl : UserControl {
 					muteAllTracks(tracks, true);
 					if (i < tracks.Count - 1) {
 						tracks[i + 1].Mute = false;
+						lblPlayingTrack.Text = PLAYING_TRACK + tracks[i + 1].DisplayIndex;
 					} else {
 						tracks[0].Mute = false;
+						lblPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+					}
+					if (chkMuteAll.Checked) {
+						chkMuteAll.Checked = false;
 					}
 					return;
 				}
