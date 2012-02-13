@@ -17,6 +17,7 @@ public class Common {
 	public const string ADD_BEEP = "Add Beep" + CP_RIGHT;
 	public const string ADD_OBJECT = "Add Object" + CP_RIGHT;
 	public const string CALC_TEMPO = "Calculate Tempo" + CP_RIGHT;
+	public const string MUTE_TRACKS = "Mute/Solo Audio Tracks" + CP_RIGHT;
 	public const string GEN_BEEPS = "Generate Beeps" + CP_RIGHT;
 	public const string TRACK_OUT = "Track Outline" + CP_RIGHT;
 	public const string BEEPS_RULERS = "Beeps to Rulers" + CP_RIGHT;

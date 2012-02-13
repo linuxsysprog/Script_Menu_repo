@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
 // File: CalcTempo.cs - Monitor current selection and calculate tempo
+//                    - Added "Mute/Solo Audio Tracks" feature
 
 using System;
 using System.Drawing;
@@ -54,6 +55,8 @@ public class CalcTempo : ICustomCommandModule {
 
 public class CalcTempoControl : UserControl {
 	const string PLAYING_TRACK = "Playing Track: ";
+	const string UNDO_STRING = "Mute/Solo Audio Tracks";
+	const string NO_TRACKS = "No audio tracks found";
 
 	private GroupBox gbCalcTempo = new GroupBox();
 	private Label lblTempo = new Label();
@@ -67,7 +70,7 @@ public class CalcTempoControl : UserControl {
 	public CheckBox chkMuteAll= new CheckBox();
 	public CheckBox chkSoloAll= new CheckBox();
 	private Label lblPlayingTrack = new Label();
-	private Button btnSoloNext= new Button();
+	private Button btnPlayNext= new Button();
 
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 170);
@@ -105,13 +108,13 @@ public class CalcTempoControl : UserControl {
 		
 		gbMuteTracks.Size = new Size(135, 170);
 		gbMuteTracks.Location = new Point(160, 10);
-		gbMuteTracks.Text = "Mute/Solo Tracks";
+		gbMuteTracks.Text = "Mute/Solo Au Tracks";
 		gbMuteTracks.Controls.AddRange(new Control[] {
 			chkActivate,
 			chkMuteAll,
 			chkSoloAll,
 			lblPlayingTrack,
-			btnSoloNext});
+			btnPlayNext});
 			
 		chkActivate.Size = new Size(100, 20);
 		chkActivate.Location = new Point(10, 20);
@@ -132,9 +135,9 @@ public class CalcTempoControl : UserControl {
 		lblPlayingTrack.Location = new Point(10, 90);
 		lblPlayingTrack.Text = PLAYING_TRACK;
 		
-		btnSoloNext.Location = new Point(30, 130);
-		btnSoloNext.Text = "Solo &Next";
-		btnSoloNext.Click += new EventHandler(btnSoloNext_Click);
+		btnPlayNext.Location = new Point(30, 130);
+		btnPlayNext.Text = "Play &Next";
+		btnPlayNext.Click += new EventHandler(btnPlayNext_Click);
 		
 		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
@@ -189,12 +192,67 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void chkMuteAll_Click(object sender, EventArgs e) {
+		List<Track> tracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		
+		if (tracks.Count < 1) {
+			MessageBox.Show(NO_TRACKS, Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			chkMuteAll.Checked = chkMuteAll.Checked ? false : true;
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			muteAllTracks(tracks, chkMuteAll.Checked);
+		}
 	}
 	
 	void chkSoloAll_Click(object sender, EventArgs e) {
+		List<Track> tracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		
+		if (tracks.Count < 1) {
+			MessageBox.Show(NO_TRACKS, Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			chkSoloAll.Checked = chkSoloAll.Checked ? false : true;
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			soloAllTracks(tracks, chkSoloAll.Checked);
+		}
 	}
 	
-	void btnSoloNext_Click(object sender, EventArgs e) {
+	void btnPlayNext_Click(object sender, EventArgs e) {
+		List<Track> tracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		
+		if (tracks.Count < 1) {
+			MessageBox.Show(NO_TRACKS, Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			// unsolo all tracks
+			soloAllTracks(tracks, false);
+			
+			List<Track> unmutedTracks = findUnmutedTracks(tracks);
+			
+			// zero or more than one unmuted tracks
+			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
+				muteAllTracks(tracks, true);
+				tracks[0].Mute = false;
+				return;
+			}
+			
+			// exactly one unmuted track
+			for (int i = 0; i < tracks.Count; i++) {
+				if (!tracks[i].Mute) {
+					muteAllTracks(tracks, true);
+					if (i < tracks.Count - 1) {
+						tracks[i + 1].Mute = false;
+					} else {
+						tracks[0].Mute = false;
+					}
+					return;
+				}
+			}
+		}
 	}
 	
 	//
@@ -239,6 +297,36 @@ public class CalcTempoControl : UserControl {
 			calcTempo(tempoRegion.Length).ToString("F4");
 	}
 
+	private void muteAllTracks(List<Track> tracks, bool mute) {
+		foreach (Track track in tracks) {
+			if (mute && !track.Mute) {
+				track.Mute = true;
+			} else if (!mute && track.Mute) {
+				track.Mute = false;
+			}
+		}
+	}
+	
+	private void soloAllTracks(List<Track> tracks, bool solo) {
+		foreach (Track track in tracks) {
+			if (solo && !track.Solo) {
+				track.Solo = true;
+			} else if (!solo && track.Solo) {
+				track.Solo = false;
+			}
+		}
+	}
+	
+	private List<Track> findUnmutedTracks(List<Track> tracks) {
+		List<Track> unmutedTracks = new List<Track>();
+		foreach (Track track in tracks) {
+			if (!track.Mute) {
+				unmutedTracks.Add(track);
+			}
+		}
+		return unmutedTracks;
+	}
+	
 }
 
 public class CalcTempoControlTest : Form {
