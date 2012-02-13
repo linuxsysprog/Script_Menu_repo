@@ -228,7 +228,7 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-			// unsolo all tracks
+			// unsolo soloed tracks if there are any
 			soloAllTracks(tracks, false);
 			
 			List<Track> unmutedTracks = findUnmutedTracks(tracks);
@@ -241,6 +241,13 @@ public class CalcTempoControl : UserControl {
 			}
 			
 			// exactly one unmuted track
+			
+			// if the unmuted track happens to be the only audio track in the project
+			// nothing needs to be done
+			if (tracks.Count == 1) {
+				return;
+			}
+			
 			for (int i = 0; i < tracks.Count; i++) {
 				if (!tracks[i].Mute) {
 					muteAllTracks(tracks, true);
