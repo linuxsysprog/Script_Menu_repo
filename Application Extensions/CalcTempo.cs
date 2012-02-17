@@ -136,13 +136,18 @@ public class CalcTempoControl : UserControl {
 			gbMuteTracks});
 			
 		Common.vegas.ProjectClosed += HandleProjectClosed;
-		InitializeForm();
+		Common.vegas.TrackCountChanged += HandleTrackCountChanged;
+		InitializeCalcTempoForm();
+		InitializeMuteTracksForm();
 	}
 	
-	private void InitializeForm() {
+	private void InitializeCalcTempoForm() {
 		txtTempo.Text = "000.0000";
 		chkDoubleTime.Checked = false;
 		chkMonitorRegion.Checked = false;
+	}
+	
+	private void InitializeMuteTracksForm() {
 		chkMuteAll.Checked = false;
 		chkSoloAll.Checked = false;
 		lblPlayingTrack.Text = PLAYING_TRACK;
@@ -278,7 +283,12 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {
-		InitializeForm();
+		InitializeCalcTempoForm();
+		InitializeMuteTracksForm();
+	}
+	
+	void HandleTrackCountChanged(Object sender, EventArgs args) {
+		InitializeMuteTracksForm();
 	}
 	
 	//
