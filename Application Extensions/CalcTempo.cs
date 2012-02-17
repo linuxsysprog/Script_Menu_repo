@@ -88,7 +88,6 @@ public class CalcTempoControl : UserControl {
 		
 		txtTempo.Size = new Size(60, 20);
 		txtTempo.Location = new Point(60, 20);
-		txtTempo.Text = "000.0000";
 		txtTempo.ReadOnly = true;
 		
 		chkDoubleTime.Size = new Size(100, 20);
@@ -126,7 +125,6 @@ public class CalcTempoControl : UserControl {
 		
 		lblPlayingTrack.Size = new Size(100, 20);
 		lblPlayingTrack.Location = new Point(10, 90);
-		lblPlayingTrack.Text = PLAYING_TRACK;
 		
 		btnPlayNext.Location = new Point(30, 130);
 		btnPlayNext.Text = "Play &Next";
@@ -136,6 +134,18 @@ public class CalcTempoControl : UserControl {
 		Controls.AddRange(new Control[] {
 			gbCalcTempo,
 			gbMuteTracks});
+			
+		Common.vegas.ProjectClosed += HandleProjectClosed;
+		InitializeForm();
+	}
+	
+	private void InitializeForm() {
+		txtTempo.Text = "000.0000";
+		chkDoubleTime.Checked = false;
+		chkMonitorRegion.Checked = false;
+		chkMuteAll.Checked = false;
+		chkSoloAll.Checked = false;
+		lblPlayingTrack.Text = PLAYING_TRACK;
 	}
 	
 	//
@@ -244,6 +254,7 @@ public class CalcTempoControl : UserControl {
 			// if the unmuted track happens to be the only audio track in the project
 			// nothing needs to be done
 			if (tracks.Count == 1) {
+				lblPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
 				return;
 			}
 			
@@ -264,6 +275,10 @@ public class CalcTempoControl : UserControl {
 				}
 			}
 		}
+	}
+	
+	void HandleProjectClosed(Object sender, EventArgs args) {
+		InitializeForm();
 	}
 	
 	//
