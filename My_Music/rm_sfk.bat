@@ -1,2 +1,9 @@
-FOR /R %%i IN (*.exe;*.dll;*.sfk;*.bak) DO DEL "%%i"
+cd %1
+IF NOT "%ERRORLEVEL%" == "0" (
+	goto label
+)
+
+for /R %%i in (*.exe;*.dll;*.sfk;*.bak) do del "%%i"
+
+:label
 pause
