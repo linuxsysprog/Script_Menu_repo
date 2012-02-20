@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using Sony.Vegas;
 using AddRulerNamespace;
 
@@ -69,7 +70,8 @@ public class CalcTempoControl : UserControl {
 	public CheckBox chkMuteAll= new CheckBox();
 	public CheckBox chkSoloAll= new CheckBox();
 	private Label lblPlayingTrack = new Label();
-	private Button btnPlayNext= new Button();
+	private Button btnPlayPrev = new Button();
+	private Button btnPlayNext = new Button();
 
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 170);
@@ -111,6 +113,7 @@ public class CalcTempoControl : UserControl {
 			chkMuteAll,
 			chkSoloAll,
 			lblPlayingTrack,
+			btnPlayPrev,
 			btnPlayNext});
 			
 		chkMuteAll.Size = new Size(100, 20);
@@ -124,7 +127,11 @@ public class CalcTempoControl : UserControl {
 		chkSoloAll.Click += new EventHandler(chkSoloAll_Click);
 		
 		lblPlayingTrack.Size = new Size(100, 20);
-		lblPlayingTrack.Location = new Point(10, 90);
+		lblPlayingTrack.Location = new Point(10, 70);
+		
+		btnPlayPrev.Location = new Point(30, 100);
+		btnPlayPrev.Text = "Play &Prev";
+		btnPlayPrev.Click += new EventHandler(btnPlayNext_Click);
 		
 		btnPlayNext.Location = new Point(30, 130);
 		btnPlayNext.Text = "Play &Next";
@@ -227,10 +234,20 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnPlayNext_Click(object sender, EventArgs e) {
-		List<Track> tracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		List<Track> unfilteredTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		
+		// only keep tracks matching ^Audio
+		List<Track> tracks = new List<Track>();
+		Regex regex = new Regex("^Audio");
+		foreach (Track track in unfilteredTracks) {
+			if (regex.Match(track.Name == null ? "" : track.Name).Success) {
+				tracks.Add(track);
+			}
+		}
 		
 		if (tracks.Count < 1) {
-			MessageBox.Show(NO_TRACKS, Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show("No audio tracks starting with \"Audio\" found",
+				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
@@ -266,13 +283,25 @@ public class CalcTempoControl : UserControl {
 			for (int i = 0; i < tracks.Count; i++) {
 				if (!tracks[i].Mute) {
 					muteAllTracks(tracks, true);
-					if (i < tracks.Count - 1) {
-						tracks[i + 1].Mute = false;
-						lblPlayingTrack.Text = PLAYING_TRACK + tracks[i + 1].DisplayIndex;
-					} else {
-						tracks[0].Mute = false;
-						lblPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+					
+					if (sender == btnPlayPrev) {
+						if (i > 0) {
+							tracks[i - 1].Mute = false;
+							lblPlayingTrack.Text = PLAYING_TRACK + tracks[i - 1].DisplayIndex;
+						} else {
+							tracks[tracks.Count - 1].Mute = false;
+							lblPlayingTrack.Text = PLAYING_TRACK + tracks[tracks.Count - 1].DisplayIndex;
+						}
+					} else { // btnPlayNext
+						if (i < tracks.Count - 1) {
+							tracks[i + 1].Mute = false;
+							lblPlayingTrack.Text = PLAYING_TRACK + tracks[i + 1].DisplayIndex;
+						} else {
+							tracks[0].Mute = false;
+							lblPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+						}
 					}
+					
 					if (chkMuteAll.Checked) {
 						chkMuteAll.Checked = false;
 					}
