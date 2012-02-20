@@ -24,6 +24,7 @@ public class Common {
 	public const string RULERS_RULERS = "Rulers to Rulers" + CP_RIGHT;
 	public const string FILL_RULERS = "Fill Rulers" + CP_RIGHT;
 	public const string RULERS_OBJECTS = "Rulers to Objects" + CP_RIGHT;
+	public const string SLICE_TRACK = "Slice Track" + CP_RIGHT;
 	
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
@@ -265,6 +266,20 @@ public class Common {
 		foreach (TrackEvent @event in track.Events) {
 			if (@event.Start >= selection.SelectionStart
 					&& @event.Start < selection.SelectionEnd) {
+				events.Add(@event);
+			}
+		}
+		
+		return events;
+	}
+	
+	// finds events by another event
+	public static List<TrackEvent> FindEventsByEvent(Track track, TrackEvent sourceEvent) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent @event in track.Events) {
+			if (sourceEvent.Start >= @event.Start &&
+					sourceEvent.Start < @event.End) {
 				events.Add(@event);
 			}
 		}
