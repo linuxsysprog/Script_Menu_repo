@@ -1,0 +1,449 @@
+$Id$
+1. Take the last frame of a video event. Copy and paste it multiple times
+   at the end of the event. Thus freezing the last frame for a certain time
+   when playing back.
+
+2. Make a Video Progressions type of effect. The screen is split horizontally with
+   left/right hand in upper/lower (or vice-versa) half of the screen.
+
+3. Study Takes, 50%, 25% slow down.
+
+4. Study Track left hand/cookie cutter
+
+5. Idea with frames, start every file name with a frame number, then possibly,
+   measure number
+
+6. Takes/Moving cookie cutter
+
+
+---
+TODO:
+
+- Find a way to do typeof().
+- Find a way to compile and link without Vegas.
+- Convert Common to a singleton
+---
+- Write a script to generate a series of beeps at a specified tempo.
+  Input tempo (period) from a selection.
+  Calculate the number of beeps from the length of the "input" track.
+- Revise error messages from UtilTrack.GetInputAudioTrack()
+- Write a dialog asking "The tempo is ...Continue?"  OK/Cancel
+
+
+
+--- 28 November 2011
+
+x install x) Vegas x) API guides x) examples x) books x) compilers etc..
+  x learn how-to link *.cs modules
+x install x) svn ?) IDE
+x go through the crash course on C#
+x work through 13.1 Creating a Simple Windows Form
+/ have a look at Vegas API FAQ
+x download C# reference/.NET reference
+x have a look at what's in insightful folder
+x start re-writing the four scripts FINISHED!! 27 December 2011
+  x write a dialog window
+    x write a dockable Vegas window for AddRuler command
+	  x base the window on DockableControl.DLL
+	  x run UserControl example stand-alone
+	  x embed UserControl example into dockable Vegas window
+	  ? write a batch file to recursively delete *.EXE and *.DLL files
+	  ! write a test script to build our own dialog window
+	  x build Add Ruler dialog window and test it with the test script
+	    x jot dialog layout
+		x create Location border
+		x create Top/Bottom radio buttons
+		  x underscores (keyboard shortcuts)
+		  x initialize
+		  ? focus
+		x create Number drop-down
+		  x Study MSDN ComboBox example
+		  $ right align items in the combo box
+		  x bind combo box to Location group box
+		  x check value on lost focus
+		  $ fix ruler number validation when manipulating Location
+		! implement TabIndex
+		x think about Section/Measure/Beat
+		x create Notes text field
+		xcreate Add/Fill Gaps buttons
+		  ? check out ENTER or ESC keys
+		x create message box
+	  x embed dialog into Vegas dockable window
+	  x set x) caption x) size !) position !)remove "hello world" label
+	  $ make it docked by default
+  x read through Section 2: Tracks and Events
+    x create Common.cs out of how-to
+	? learn to use CustomDataContainer
+  x add libraries x) Audio.cs x) Video.cs x) Common.cs
+  x AddRuler.cs
+    x show "exactly one video track dialog" before the form
+    x find all Video tracks
+	x find all Audio tracks
+	x make sure only one track is selected and it is a video track
+	  x find all selected tracks
+	  x display an error message box
+	x let's operate List<AudioTrack> and List<VideoTrack>
+		x write the four (horsemen) functions:
+		  x List<AudioTrack> to List<Track>
+		  x List<Track> to List<AudioTrack>
+		  x List<VideoTrack> to List<Track>
+		  x List<Track> to List<VideoTrack>
+	x add the ruler
+	  x using Vegas check that one 32nd note is 0.0625s
+	  x let's work with frames for video tracks and with milliseconds for audio tracks
+	  x insert an event at the current cursor position, 1 frame long, with PNG picture as its media and with Notes: and Number: as its take names
+	    $ make Add Ruler dialog non modal
+	  x convert Location&Number into basename
+	    x learn how-to format a number
+	  x check if there already exist, at the current cursor position, events and if so display a dialog window, with Ok/Cancel buttons, to continue or cancel
+	    x handle singular/plural
+		! remove .000 from frame number
+		  x rephrase the message
+	    ! write a function to return a list of all events on the current track
+		x write a function to find an events by specifying their position
+		x learn to compare events position-wise
+	  x find out the differnece in directories between Extensions and Scripts
+	  x remove HOME_DIR in favor of vegas.InstallationDirectory
+	  x substitute new Media() with ->) vegas.OpenFile or x) use MediaPool's AddMedia()/Find() methods
+	  x convert Application Extension to regular script
+	    ?) assign icon x) trim size x) locate the dialog at the center of the parent window
+		x) remove Max/Min buttons x) add window title x) handle ESC/Enter (Add) keys
+	  x introduce Globals.cs, keep vegas instance there
+	    x http://www.dotnetperls.com/global-variable
+  x make a constant for "Add Ruler" string
+  x DumpTrack.cs
+    x create all necessary files, icons, etc..
+	x write event neutral (or video only) DumpTrack.cs first
+	  x check for tracks
+	  x dump all event's take's Name fields
+	    x use regex to remove XXX and trim the string of spaces
+		x get basename of the filename
+    x narrow down the search with a selection
+	  x write Normalize() method
+	  x write a method to select a subset of events if current selection length > 0
+	x back up everything
+  x FillGaps.cs
+    x Check for x) exactly one track selected x) track is video x) at least two events on the track
+	x iterate over 1.. N-1 events
+	x trim N event's End to be equal N+1 event's Start on a condition
+	  x that N.End < N+1.Start
+	x display a MessageBox with how many events were touched
+  x AddBeep.cs
+    x create all files, icons, etc..
+    x copy the dialog window off AddRuler
+	  x get rid of UserControl class
+	x re-engineer dialog window
+	  x) remove x) Location part x) Fill Gaps button x) move everything up, trim window's height
+	    x) change Number drop-down with two Measure&Beat text boxes x) center Add button
+	x implement validation of all fields
+	x add the beep
+  x fix the bug with empty Notes
+    x make sure DumpTrack handles event created manually
+x back up everything
+x write AddObject.cs
+  x create all file/icons, copy GUI off AddBeep.cs
+  x learn how-to add text events to the timeline (see FAQ/example)
+  x learn how-to list Video Media Generator's presets
+  x write GUI
+    x) remove Beat: x) rename Measure: to Frame Size: x) change Measure text box into Frame Size combo box
+	  x) change Notes: into Object: x) remove Notes: text box x) add the rest of lables/combo boxes
+      x) create three drop-downs x) Object: x) Preset: x) Frame Size:
+	x populate drop-downs by filtering the strings
+	  x create sample presets
+	  x write Preset class
+	  x populate 1st drop-down
+	  x make sure to include presets that start from a number and pass Preset() contstructor
+	  x remove duplicates
+	  x make sure items are sorted in drop-down boxes
+	  x populate 2nd drop-down
+	  x populate 3rd drop-down
+	  x 3rd box depends on 2nd, 2nd on 1st
+	x trim drop-downs size
+	x check Sony Text plug-in for null
+  x insert text event
+  x re-create presets from Untitled.mpg
+    x move top ruler 15 pixels down
+	  x resolve the problem with frame_r.4.png not matching ruler_top_01.png
+	  x create frame_r.4.png
+	  x edit all 12 top rulers
+	x create a text file in svn with all custom presets' settings (for most important presets only)
+	x create a demo project to show off AddObject
+	$ fix the bug with input not being validated when Enter is pressed over cbNumber
+	x fix DumpTrack: take name is different (stock name) for events created with AddObject. This is probably
+	  due to text media
+	x move DLLExample into Temp
+    x think how-to accomodate different frame sizes
+	  x create a demo project in 720x576 resolution
+	x create a production set of presets just for one 320x240 resolution
+	  x add 26 Notes presets ([A], [B] etc.)
+	  x add 200 Measure presets
+    x) Notes x) Rate x) Tempo x) Measure
+	  x Match: x)font name x) font size x) font style x) color x) position
+	x chart down x) frame_g.4.png and x) frame_r.4.png
+    x add Filename preset
+	$ use phantom script to create batches of presets
+  x find out where Vegas stores generator presets
+  x learn how-to back up/restore presets when moving from one PC to another (http://forums.creativecow.net/archivethread/24/755317)
+  ! move messages like "Please make sure you have exactly one video track selected" into Common.cs
+  ? sort Measure Presets numerically
+  x back up
+x write CalcTempo.cs app extension
+  x monitors current selection and calculates tempo
+  x provide a "Double time" tickbox
+  x add source/config files, icons, etc..
+  x write GUI
+  x figure out how-to assign an icon
+  x learn how-to monitor selection from an application extension
+    x we can only monitor markers/regions
+  x learn how-to make a text box read-only
+  x get Tempo region, display an error if not found
+  x calculate tempo
+    x round off the number
+    x mind Double Time check box
+  x put all pieces together in app ext
+    x re-calculate tempo when x) Double Time x) Monitor Regions is ticked
+	x avoid "Tempo region not found" message boxes at Vegas start time
+	  x add "Monitor Tempo Region" check box
+	  x add "Calculate Tempo" button
+	    x calculate tempo based on selection
+  x back up
+x write GenBeeps.cs (assign Ctrl+Shift+B key)
+  x create all files and icons
+  x write basic GUI without handlers/validation
+	x strip down AddBeep GUI
+    x borrow parts from AddBeep, AddRuler etc..
+	x adjust How many beeps height
+	x add Beats per Measure box
+	x adjust tab order
+	x double check mnemonics
+    x add handlers
+	x solve the problem with validating input when submitting forms
+	  / read "Handling and Raising Events"
+	    ? Next: "How to: Implement Events in Your Class"
+	  x do form validation on submit
+	    x find how-to select text
+	  x fix x) GenBeeps x) AddRuler and x) AddBeep forms
+	  ? consolidate all scripts in a tabbed form
+	x implement validation
+  x input: x) tempo x) number of beeps x) beats per measure x) start from Measure.Beat
+  x generate beeps
+    x insert Number of beeps at Tempo interval
+	  x create a list of beep positions
+	  x check for pre-existing events
+	  x insert beeps with dumb data
+	x implement Measure.Beat label
+	x implement three modes
+	  x accomodate validateForm() function
+	  x change btnGenerate_Click() to implement 3 modes
+		  x tempo and number
+		  x tempo and selection (find out number)
+		  x selection and number (find out tempo)
+	  x change GUI
+	    x move number text box next to tempo text box
+		x add a radio button
+	  x create a dialog window with a text box
+  x back up
+  / selection seems to work differently in DumpTrack and GenBeeps (Tempo and Selection)
+x write TrackOutline.cs
+  x make the script media-neutral
+    x rename the script to TO (Track Outline)
+	! match target track type to the source track type
+  x create all files and icons (borrow from AddBeep)
+  x input: two tracks should be selected, one should be empty and another should have at least one event
+  x implement selection (see DumpTrack)
+  x find events with a take that matches ^N.1 pattern for audio and ^1 X pattern for video
+    x find out if a take carries audio or video
+  x create an event with empty media, with one take whose name is concatination of source event take names
+     print 1 T (1.1) first
+    x compose label
+	x create an event
+	x report
+    x find out how-to create events/takes w/o media
+	  x write AddEmptyEvent()
+	! see if we need to attach XXXX suffix for DumpTrack to recognise our events
+	x add to demo project x) create a new demo project
+	x for audio for measure events show only measure number
+	x for video for measure events..think..same
+  x back up
+x write Beeps2Rulers.cs
+  x input: two tracks should be selected, one audio (source), the other video (target)
+  x script should work with partial tracks (selection)
+  x script won't need a dialog window
+  x create all files and icons
+  x implement "target empty, source at least one event" check
+  x insert frames at beeps' positions in seconds
+    x re-create all takes names in the target event (using empty media)
+	  x extract common code dealing with take names from TrackOutline.cs into Common.ch
+	  ? move getTakeNames() back to where it belongs
+  x report
+  x add (active) to Dumptrack.cs
+  x study how quantization works
+	x the picture appears when the cursor reaches slot's start
+	x the picture disappeares when the cursor goes beyond slot's end
+	x the slot is rendered with the first media the system can find
+	x what an overlapped video event look like with different media?
+	  x they mask each other. The one that has owned its position wins.
+	x one 32nd note at 240 bpm is about 0.8 of a frame
+	x let 16th notes at 240 bpm be our reference
+	x write a function to insert a frame into the nearest frame slot. Write to log
+	  x) if the slot is taken, do not insert in the same slot more than once, but mention in the log
+	  x to find the nearest time slot: x) get the position value in absolute frames
+	    x) round it off
+	  x write to log frame status (fast/slow) and the offset
+  ! think how to accomodate insert function for frames
+  x create demo project
+  x in the log mention not only event index, but event's full name
+    x move getFullName() to Common.cs
+  x back up
+? write a script to add N measures to the right/left
+x write Rulers2Rulers.cs, a script to insert top rulers given bottom rulers
+  ? move AddVideoEvent() to Common.cs, extend it to add top rulers
+  x in Beeps2Rulers.cs, change audio label to video label (^N X), so the track could be further processed
+  x create files and icons
+  x input: exactly two video tracks should be selected
+  x deal with selection
+  x insert top rulers
+    x carry on all takes from the source event
+  x report
+  x add to Qunatization demo project
+  x back up
+x write FillRulers.cs, a script to fill top/bottom ruler tracks with subdivision
+  x create all files and icons
+  x input: exactly one video track (selection)
+  x fill the rulers in
+    x check the Nth event for being top or bottom
+	x refactor
+	x calculate nRulers, step and offset
+	? move AddVideoEvent() from beeps2rulers/rulers2rulers to Common.cs
+	x introduce Common.QuantizedEvent class
+	x first off, go thru all events and make sure all are labeled correctly
+	x check for double insertion
+	x fill the rulers in
+  x report
+  x add to the demo project
+  ? back up
+? write Rulers2Notes.cs, a script to insert Notes objects given a ruler track
+  ? input: TBD
+  ? back up
+x write Rulers2Objects.cs, a script to insert Measure objects given a ruler track
+  x input: x) exactly two video tracks x) he target track should be empty, the source has at least one
+      event x) check for events that lack 1 (T|B) pattern
+  x model the script after RR
+  x replace individual BAT with BuildAll.BAT
+  x create all files and icons
+  x insert objects
+    x find out the maximum range of measures, check if it's enough
+  x create a big new Show all objects demo
+  x back up
+- GenBeeps.cs: join "calculated tempo" and similar dialogs with report dialogs to save on key presses
+-> write LayoutAll.cs (CopyAll.cs?)
+  x establish one project directory, one version of ffmpeg, keep only source FLV files,
+    under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
+  x see if its possible to have more than one preview window, each showing a different video
+    x create a demo project with two videos ?) try to build a layout where RH1 RH2 LH1 LH2
+    x read through "Multicamera Editing"
+	  x read about synchronizing event by moving/splitting
+	  x see how to switch between audio while playback
+	    x write an addition to CalcTempo.cs to mute/solo tracks
+		  / see if we can process key presses from within an app ext
+		  x draft in MyScript.cs
+		  x put all CT widgets into a group box
+		  x Add "Mute/Solo Audio Tracks" group box
+			  x add "Activate" checkbox
+			  x add "Mute All" and "Solo All" check boxes
+			  x Add "Playing Track: " text
+		      x add "Solo &Next" button
+			  x go over all mnemonics
+			  x solve the problem with vegas crash
+			    / read through the forum article
+				x study UndoBlock and x) using statement
+		  x implement event handlers
+			x scrap Activate (vegas has centralized Undo)
+			$ update Mute All, Solo All, Playing Track upon track state change
+			x update Playing Track:
+			x back up
+		  x when there's only one audio track we still need to update Playing Track:
+		  x reset GUI form on closing current project
+		  x add Play Previous button; filter by ^Audio
+	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"
+      x compare x) slow down / ?) speed up quality with Transcribe!/Cool Edit
+	x see how we can use Transcribe!'s superior stretch algorithm
+  x see how we can the following:
+	x manually
+		x audio
+		  x slow down Rightxclick, Properties, Time stretch, double New length
+		  x speed up Rightxclick, Properties, Time stretch, half New length
+		x video
+		  x slow down Rightxclick, Properties, half Playback rate; double event's length (with the mouse)
+		  x speed up Rightxclick, Properties, double Playback rate; half event's length (with the mouse)
+	x programatically
+		x audio
+		  x slow down audioEvent.Length = audioEvent.Length + audioEvent.Length; audioEvent.AdjustPlaybackRate(0.5, true);
+		  x speed up audioEvent.Length = Timecode.FromNanos((int)Math.Round(audioEvent.Length.Nanos / 2.0)); audioEvent.AdjustPlaybackRate(2.0, true);
+		x video
+		  x slow down See audio
+		  x speed up See audio
+    - see what happens to the event positions
+	- write a script to match two videos time-wise
+	  x add alternative media to Show all objects demo 2 create ?) beep, x) outline and x) tempo tracks
+	    - extract each track, write to xvid/mp3, normalize audio, remove avi/png/text media files from media pool
+  - see how Split() works with audio and video events
+  - learn to make copies of bunches of (partials) audio and video tracks -) vertically and -) horizontally
+    - see how "Insert Time" works
+	- learn to -) copy -) move arrays of audio/video events -) see what happens
+	  - copy ...
+  - see how we can switch over (move cursor) between copies
+  - find out how-to move cursor back and forth in history or write a script
+  - mind alternative media and playback rates
+  - back up
+- write a script to split one long event at positions of events of an outline track
+- write SliceTrack.cs
+  x model the script after TrackOutline.cs. The script is media-neutral
+  - input: two tracks should be selected, source and target
+    x write FindEventsByEvent()
+	-> implement the rest of the checks
+  x create all files and icons
+  - back up
+- write RenderAll.cs
+  - make this one an app extension with an option to interrupt rendering
+  - ask the user for the output folder
+  - cut into 0.5, 1 and 2 measure chunks
+  - imlement 0 and 0.5 offsets
+  - implement pre- and post- gaps
+  - back up
+x add copyright headers to all source files x) show copyright in all window headers
+x add $Id$ to source files, adjust headers
+- split source code and projects (My_Music) repositories
+  -> move Vegas Challenges.txt into source code repo, add $Id$
+? compile everything into one big binary
+x consolidate everything in Vegas Challenges folder on drive D:
+/ re-create the four icons
+x Check what's in
+\\192.168.0.1\(H) My Book\Aussie-Backup-September-2009\Aussie\My_Music\Zakk_Wylde_-_Pentatonic_Hardcore\SVNRepository
+x learn how-to print debugging information
+x remove Hello World View from the Extensions submenu
+- fix the icon for Add Ruler View (for any app ext)
+x learn how-to test csc return value and conditionally start the program
+- 
+
+Phone Enlightments
+
+x AddBeep: takes can hold Notes, beat, measure. Then I can press T to circle thru them
+? write AddFrameBeeps script for Clauderen
+- write an app ext to monitor cursor position and display the event under it
+
+---
+Measures & &Beats
+
+1.1.000
+
+Gr&id Spacing
+
+&Ruler Marks
+
+Me&asures
+&Quarter Notes
+Q&uarter Note Triplets
+
+---
+Vegas icon format: 16 X 16 pixels, 32-bit color depth with an alpha channel for transparency. Font: Arial Narrow Condensed, Size: 13, (v) Hinting () Force auto-hinter () Antialiasing
