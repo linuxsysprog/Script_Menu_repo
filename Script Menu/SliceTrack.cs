@@ -1,6 +1,7 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: SliceTrack.cs - Split event(s) on the target track at the start of
-//                       each event on the source track
+// $Id$
+// Split event(s) on the target track at the start of
+// each event on the source track
 
 using System;
 using System.Drawing;
@@ -45,21 +46,25 @@ public class EntryPoint {
 		// and which is the target
 		sourceTrack = tracks[0];
 		targetTrack = tracks[1];
+		
 		sourceEvents = events[0];
 		targetEvents = events[1];
 		
-		// to continue, one track (selection) should be empty and the other should not
+		List<TrackEvent> foundEvents = Common.FindEventsByEvent(targetTrack, events[0][0]);
+		Common.vegas.DebugOut("" + foundEvents.Count);
+		
 		// to continue: a) source track (selection) should have at least one event
-		// b) target track (selection) should have an event under source event start position
-		/*if ((events[0].Count == 0 && events[1].Count == 0) ||
-				(events[0].Count != 0 && events[1].Count != 0)) {
-			MessageBox.Show("Please make sure one track (selection) is empty and the other has at least one event",
+		// b) at every source event start position there should exist a target event
+		if (sourceEvents.Count > 1 &&
+				) {
+			MessageBox.Show("Please make sure source track (selection) has at least one event" +
+				" and at every source event start position there exist a target event",
 				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
 		// find and insert events
-		int insertedEvents = 0;
+		/*int insertedEvents = 0;
 		foreach (TrackEvent @event in sourceEvents) {
 			// for event to qualify it should have at least one take that matches our pattern
 			bool eventOK = false;

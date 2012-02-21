@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: Common.cs - Helper functions common to tracks and events
+// $Id$
+// Helper functions common to tracks and events
 
 using System;
 using System.Collections;
@@ -278,7 +279,7 @@ public class Common {
 		List<TrackEvent> events = new List<TrackEvent>();
 		
 		foreach (TrackEvent @event in track.Events) {
-			if (sourceEvent.Start >= @event.Start &&
+			if (sourceEvent.Start > @event.Start &&
 					sourceEvent.Start < @event.End) {
 				events.Add(@event);
 			}

@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: TrackOutline.cs - Create a track which outlines an existing track
+// $Id$
+// Create a track which outlines an existing track
 
 using System;
 using System.Drawing;

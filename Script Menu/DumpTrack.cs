@@ -1,6 +1,7 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: DumpTrack.cs - Print a dump of a selection of a track's
-//           event's take's Name fields
+// $Id$
+// Print a dump of a selection of a track's
+// event's take's Name fields
 
 using System;
 using System.Drawing;

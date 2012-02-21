@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: Beeps2Rulers.cs - Promote beeps to bottom rulers
+// $Id$
+// Promote beeps to bottom rulers
 
 using System;
 using System.Drawing;

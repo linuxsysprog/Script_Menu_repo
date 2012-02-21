@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: FillRulers.cs - Fill top/bottom ruler tracks with subdivision
+// $Id$
+// Fill top/bottom ruler tracks with subdivision
 
 using System;
 using System.Drawing;

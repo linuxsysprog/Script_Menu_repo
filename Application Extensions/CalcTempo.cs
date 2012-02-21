@@ -1,6 +1,7 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: CalcTempo.cs - Monitor current selection and calculate tempo
-//                    - Added "Mute/Solo Audio Tracks" feature
+// $Id$
+// Monitor current selection and calculate tempo
+// Added "Mute/Solo Audio Tracks" feature
 
 using System;
 using System.Drawing;

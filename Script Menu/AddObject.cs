@@ -1,6 +1,7 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: AddObject.cs - Insert an object given a Sony Text media generator preset.
-//                        This could be Notes, Rate, Tempo, Measure or Filename
+// $Id$
+// Insert an object given a Sony Text media generator preset.
+// This could be Notes, Rate, Tempo, Measure or Filename
 
 using System;
 using System.Drawing;

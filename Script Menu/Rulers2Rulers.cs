@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: Rulers2Rulers.cs - Promote bottom rulers to top rulers
+// $Id$
+// Promote bottom rulers to top rulers
 
 using System;
 using System.Drawing;

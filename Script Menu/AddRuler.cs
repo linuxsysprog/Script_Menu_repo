@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: AddRuler.cs - Insert a frame with a ruler at the top or bottom
+// $Id$
+// Insert a frame with a ruler at the top or bottom
 
 using System;
 using System.Drawing;

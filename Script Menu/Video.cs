@@ -1,5 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
-// File: Video.cs - Helper functions common to video tracks
+// $Id$
+// Helper functions common to video tracks
 
 using System;
 using System.Collections;
