@@ -40,7 +40,7 @@ public class CalcTempo : ICustomCommandModule {
 			calcTempoControl = new CalcTempoControl();
 			calcTempoView.Controls.Add(calcTempoControl);
 			
-			calcTempoView.DefaultFloatingSize = new Size(315, 215);
+			calcTempoView.DefaultFloatingSize = new Size(465, 215);
 			Common.vegas.LoadDockView(calcTempoView);
 		}
 	}
@@ -58,7 +58,9 @@ public class CalcTempo : ICustomCommandModule {
 public class CalcTempoControl : UserControl {
 	const string PLAYING_TRACK = "Playing Track: ";
 	const string UNDO_STRING = "Mute/Solo Audio Tracks";
+	const string UNDO_VSTRING = "Mute/Solo Video Tracks";
 	const string NO_TRACKS = "No audio tracks found";
+	const string NO_VTRACKS = "No video tracks found";
 
 	private GroupBox gbCalcTempo = new GroupBox();
 	private Label lblTempo = new Label();
@@ -74,9 +76,18 @@ public class CalcTempoControl : UserControl {
 	private Button btnPlayPrev = new Button();
 	private Button btnPlayNext = new Button();
 
+	private GroupBox gbVMuteTracks= new GroupBox();
+	public CheckBox chkVMuteAll= new CheckBox();
+	public CheckBox chkVSoloAll= new CheckBox();
+	private Label lblVPlayingTrack = new Label();
+	private Button btnLPlayPrev = new Button();
+	private Button btnLPlayNext = new Button();
+	private Button btnRPlayPrev = new Button();
+	private Button btnRPlayNext = new Button();
+
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 170);
-		gbCalcTempo.Location = new Point(10, 10);
+		gbCalcTempo.Location = new Point(310, 10);
 		gbCalcTempo.Text = "Calculate Tempo";
 		gbCalcTempo.Controls.AddRange(new Control[] {
 			lblTempo,
@@ -108,7 +119,7 @@ public class CalcTempoControl : UserControl {
 		btnCalcTempo.Click += new EventHandler(btnCalcTempo_Click);
 		
 		gbMuteTracks.Size = new Size(135, 170);
-		gbMuteTracks.Location = new Point(160, 10);
+		gbMuteTracks.Location = new Point(10, 10);
 		gbMuteTracks.Text = "Mute/Solo Au Tracks";
 		gbMuteTracks.Controls.AddRange(new Control[] {
 			chkMuteAll,
@@ -138,15 +149,63 @@ public class CalcTempoControl : UserControl {
 		btnPlayNext.Text = "Play &Next";
 		btnPlayNext.Click += new EventHandler(btnPlayNext_Click);
 		
+		gbVMuteTracks.Size = new Size(135, 170);
+		gbVMuteTracks.Location = new Point(160, 10);
+		gbVMuteTracks.Text = "Mute/Solo Vid Tracks";
+		gbVMuteTracks.Controls.AddRange(new Control[] {
+			chkVMuteAll,
+			chkVSoloAll,
+			lblVPlayingTrack,
+			btnLPlayPrev,
+			btnLPlayNext,
+			btnRPlayPrev,
+			btnRPlayNext});
+			
+		chkVMuteAll.Size = new Size(100, 20);
+		chkVMuteAll.Location = new Point(10, 20);
+		chkVMuteAll.Text = "&Mute All";
+		chkVMuteAll.Click += new EventHandler(chkMuteAll_Click);
+		
+		chkVSoloAll.Size = new Size(100, 20);
+		chkVSoloAll.Location = new Point(10, 40);
+		chkVSoloAll.Text = "&Solo All";
+		chkVSoloAll.Click += new EventHandler(chkSoloAll_Click);
+		
+		lblVPlayingTrack.Size = new Size(100, 20);
+		lblVPlayingTrack.Location = new Point(10, 70);
+		
+		// btnLPlayPrev.Size = new Size(75, 23);
+		btnLPlayPrev.Size = new Size(35, 23);
+		btnLPlayPrev.Location = new Point(30, 100);
+		btnLPlayPrev.Text = "Prev";
+		btnLPlayPrev.Click += new EventHandler(btnPlayNext_Click);
+		
+		btnLPlayNext.Size = new Size(35, 23);
+		btnLPlayNext.Location = new Point(30, 130);
+		btnLPlayNext.Text = "Next";
+		btnLPlayNext.Click += new EventHandler(btnPlayNext_Click);
+		
+		btnRPlayPrev.Size = new Size(35, 23);
+		btnRPlayPrev.Location = new Point(70, 100);
+		btnRPlayPrev.Text = "Prev";
+		btnRPlayPrev.Click += new EventHandler(btnPlayNext_Click);
+		
+		btnRPlayNext.Size = new Size(35, 23);
+		btnRPlayNext.Location = new Point(70, 130);
+		btnRPlayNext.Text = "Next";
+		btnRPlayNext.Click += new EventHandler(btnPlayNext_Click);
+		
 		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
 			gbCalcTempo,
-			gbMuteTracks});
+			gbMuteTracks,
+			gbVMuteTracks});
 			
 		Common.vegas.ProjectClosed += HandleProjectClosed;
 		Common.vegas.TrackCountChanged += HandleTrackCountChanged;
 		InitializeCalcTempoForm();
 		InitializeMuteTracksForm();
+		InitializeVMuteTracksForm();
 	}
 	
 	private void InitializeCalcTempoForm() {
@@ -159,6 +218,12 @@ public class CalcTempoControl : UserControl {
 		chkMuteAll.Checked = false;
 		chkSoloAll.Checked = false;
 		lblPlayingTrack.Text = PLAYING_TRACK;
+	}
+	
+	private void InitializeVMuteTracksForm() {
+		chkVMuteAll.Checked = false;
+		chkVSoloAll.Checked = false;
+		lblVPlayingTrack.Text = PLAYING_TRACK;
 	}
 	
 	//
