@@ -335,6 +335,15 @@ public class Common {
 		}
 	}
 	
+	// returns a regex to match a measure start event.
+	public static Regex getMeasureStartRegex(Take take) {
+		if (take.MediaStream.MediaType == MediaType.Audio) {
+			return new Regex("^\\d+\\.1");
+		} else {
+			return new Regex("^1 (T|B)");
+		}
+	}
+	
 	// returns a full name as a concatinated string of individual take names
 	public static string getFullName(List<string> takeNames) {
 		string fullName = "";

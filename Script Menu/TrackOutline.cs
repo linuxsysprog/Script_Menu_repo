@@ -81,7 +81,7 @@ public class EntryPoint {
 					continue;
 				}
 				
-				if (getRegex(take).Matches(take.Name).Count > 0) {
+				if (Common.getMeasureStartRegex(take).Matches(take.Name).Count > 0) {
 					eventOK = true;
 					break;
 				}
@@ -97,15 +97,6 @@ public class EntryPoint {
 		
 		// report
 		MessageBox.Show("Inserted " + insertedEvents + " events", Common.TRACK_OUT);
-	}
-	
-	// returns a regex to match a measure start event.
-	private static Regex getRegex(Take take) {
-		if (take.MediaStream.MediaType == MediaType.Audio) {
-			return new Regex("^\\d+\\.1");
-		} else {
-			return new Regex("^1 (T|B)");
-		}
 	}
 	
 	// add an empty event to the track specified at the position specified.
