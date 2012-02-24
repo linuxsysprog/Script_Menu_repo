@@ -50,17 +50,23 @@ public class EntryPoint {
 		sourceEvents = events[0];
 		targetEvents = events[1];
 		
-		List<TrackEvent> foundEvents = Common.FindEventsByEvent(targetTrack, events[0][0]);
-		Common.vegas.DebugOut("" + foundEvents.Count);
-		
-		// to continue: a) source track (selection) should have at least one event
-		// b) at every source event start position there should exist a target event
-		if (sourceEvents.Count > 1 &&
-				) {
-			MessageBox.Show("Please make sure source track (selection) has at least one event" +
-				" and at every source event start position there exist a target event",
+		// source track (selection) should have at least one event to continue
+		if (sourceEvents.Count < 1) {
+			MessageBox.Show("Please make sure source track (selection) has at least one event",
 				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
+		}
+		
+		// make sure each source event has at least one target event that
+		// could be split
+		foreach (TrackEvent sourceEvent in sourceEvents) {
+			string eventName = Common.getFullName(Common.getTakeNames(sourceEvent));
+			if (Common.FindEventsByEvent(targetTrack, sourceEvent).Count < 1) {
+				MessageBox.Show("Source event " + sourceEvent.Index +
+				(eventName == "" ? "" : " (" + eventName + ")") + " does not have a matching target event",
+					Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 		}
 		
 		// find and insert events

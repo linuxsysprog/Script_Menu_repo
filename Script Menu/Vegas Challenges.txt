@@ -1,4 +1,5 @@
 $Id$
+
 1. Take the last frame of a video event. Copy and paste it multiple times
    at the end of the event. Thus freezing the last frame for a certain time
    when playing back.
@@ -207,6 +208,10 @@ x write CalcTempo.cs app extension
 	  x add "Calculate Tempo" button
 	    x calculate tempo based on selection
   x back up
+  - add mute video tracks
+    x add mute video tracks group, rearrange groups
+	- implement event handlers
+	- add Lock with Audio checkbox
 x write GenBeeps.cs (assign Ctrl+Shift+B key)
   x create all files and icons
   x write basic GUI without handlers/validation
@@ -265,6 +270,7 @@ x write TrackOutline.cs
 	x for audio for measure events show only measure number
 	x for video for measure events..think..same
   x back up
+  - remove .1 from Notes
 x write Beeps2Rulers.cs
   x input: two tracks should be selected, one audio (source), the other video (target)
   x script should work with partial tracks (selection)
@@ -401,7 +407,9 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
   x model the script after TrackOutline.cs. The script is media-neutral
   - input: two tracks should be selected, source and target
     x write FindEventsByEvent()
-	-> implement the rest of the checks
+	x implement the rest of the checks
+  - do the split
+  - copy all take names
   x create all files and icons
   - back up
 - write RenderAll.cs
@@ -413,8 +421,9 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
   - back up
 x add copyright headers to all source files x) show copyright in all window headers
 x add $Id$ to source files, adjust headers
-- split source code and projects (My_Music) repositories
-  -> move Vegas Challenges.txt into source code repo, add $Id$
+x split source code and projects (My_Music) repositories
+  x move Vegas Challenges.txt into source code repo, add $Id
+  $ convert Subclip How-to.doc to DocBook and -) move it under source control
 ? compile everything into one big binary
 x consolidate everything in Vegas Challenges folder on drive D:
 / re-create the four icons
