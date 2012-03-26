@@ -288,6 +288,38 @@ public class Common {
 		return events;
 	}
 	
+	// finds measure start events
+	public static List<TrackEvent> FindMeasureStartEvents(List<TrackEvent> sourceEvents) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent @event in sourceEvents) {
+			bool eventOK = false;
+			
+			// for event to qualify it should have at least one take that matches our pattern
+			foreach (Take take in @event.Takes) {
+				if (take.MediaStream == null) {
+					continue;
+				}
+				
+				if (take.MediaStream.MediaType != MediaType.Audio &&
+						take.MediaStream.MediaType != MediaType.Video) {
+					continue;
+				}
+				
+				if (getMeasureStartRegex(take).Matches(take.Name).Count > 0) {
+					eventOK = true;
+					break;
+				}
+			}
+			
+			if (eventOK) {
+				events.Add(@event);
+			}
+		}
+		
+		return events;
+	}
+	
 	// convert Location&Number to basename
 	public static string LocationNumber2Basename(bool top, int number) {
 		return "ruler_" + (top ? "top" : "bot") + "_" +  number.ToString("D2") + ".png";
