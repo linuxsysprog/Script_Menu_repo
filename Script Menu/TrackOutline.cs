@@ -67,36 +67,13 @@ public class EntryPoint {
 		
 		
 		// find and insert events
-		int insertedEvents = 0;
-		foreach (TrackEvent @event in sourceEvents) {
-			// for event to qualify it should have at least one take that matches our pattern
-			bool eventOK = false;
-			foreach (Take take in @event.Takes) {
-				if (take.MediaStream == null) {
-					continue;
-				}
-				
-				if (take.MediaStream.MediaType != MediaType.Audio &&
-						take.MediaStream.MediaType != MediaType.Video) {
-					continue;
-				}
-				
-				if (Common.getMeasureStartRegex(take).Matches(take.Name).Count > 0) {
-					eventOK = true;
-					break;
-				}
-			}
-			if (!eventOK) {
-				continue;
-			}
-			
-			// create event
+		List<TrackEvent> measureStartEvents = Common.FindMeasureStartEvents(sourceEvents);
+		foreach (TrackEvent @event in measureStartEvents) {
 			AddEmptyEvent(targetTrack, @event.Start, Common.getFullName(Common.getTakeNames(@event)));
-			insertedEvents++;
 		}
 		
 		// report
-		MessageBox.Show("Inserted " + insertedEvents + " events", Common.TRACK_OUT);
+		MessageBox.Show("Inserted " + measureStartEvents.Count + " events", Common.TRACK_OUT);
 	}
 	
 	// add an empty event to the track specified at the position specified.
