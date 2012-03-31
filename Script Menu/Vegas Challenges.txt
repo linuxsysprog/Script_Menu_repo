@@ -402,16 +402,22 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
   - find out how-to move cursor back and forth in history or write a script
   - mind alternative media and playback rates
   - back up
-- write a script to split one long event at positions of events of an outline track
 - write SliceTrack.cs
+  x create all files and icons
   x model the script after TrackOutline.cs. The script is media-neutral
-  - input: two tracks should be selected, source and target
+  x input: two tracks should be selected, source and target
     x write FindEventsByEvent()
 	x implement the rest of the checks
-  - do the split
-  - copy all take names
-  x create all files and icons
-  - back up
+  x write FindMeasureStartEvents()
+    x find&replace all instances of inline code: x) TO !) B2R !)R2R
+  x do the split
+    x study the return value of Split()
+  x copy all take names
+  x report
+  x solve the problem with ever adding labels
+    x remove empty takes
+  x demo the script
+  -> back up
 - write RenderAll.cs
   - make this one an app extension with an option to interrupt rendering
   - ask the user for the output folder

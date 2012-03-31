@@ -1,7 +1,7 @@
 // Copyright (C) 2011 Andrey Chislenko
 // $Id$
 // Split event(s) on the target track at the start of
-// each event on the source track
+// each (measure start) event on the source track
 
 using System;
 using System.Drawing;
@@ -18,7 +18,6 @@ public class EntryPoint {
 		Track sourceTrack;
 		Track targetTrack;
 		List<TrackEvent> sourceEvents;
-		List<TrackEvent> targetEvents;
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -47,12 +46,11 @@ public class EntryPoint {
 		sourceTrack = tracks[0];
 		targetTrack = tracks[1];
 		
-		sourceEvents = events[0];
-		targetEvents = events[1];
+		sourceEvents = Common.FindMeasureStartEvents(events[0]);
 		
-		// source track (selection) should have at least one event to continue
+		// source track (selection) should have at least one (measure start) event to continue
 		if (sourceEvents.Count < 1) {
-			MessageBox.Show("Please make sure source track (selection) has at least one event",
+			MessageBox.Show("Please make sure source track (selection) has at least one (measure start) event",
 				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
@@ -69,76 +67,53 @@ public class EntryPoint {
 			}
 		}
 		
-		// find and insert events
-		/*int insertedEvents = 0;
-		foreach (TrackEvent @event in sourceEvents) {
-			// for event to qualify it should have at least one take that matches our pattern
-			bool eventOK = false;
-			foreach (Take take in @event.Takes) {
-				if (take.MediaStream == null) {
-					continue;
-				}
-				
-				if (take.MediaStream.MediaType != MediaType.Audio &&
-						take.MediaStream.MediaType != MediaType.Video) {
-					continue;
-				}
-				
-				if (getRegex(take).Matches(take.Name).Count > 0) {
-					eventOK = true;
-					break;
-				}
-			}
-			if (!eventOK) {
-				continue;
-			}
+		// find and split events. Copy take names
+		int splitEvents = 0;
+		foreach (TrackEvent sourceEvent in sourceEvents) {
+			string sourceEventName = Common.getFullName(Common.getTakeNames(sourceEvent));
 			
-			// create event
-			AddEmptyEvent(targetTrack, @event.Start, Common.getFullName(Common.getTakeNames(@event)));
-			insertedEvents++;
+			List<TrackEvent> targetEvents = Common.FindEventsByEvent(targetTrack, sourceEvent);
+			foreach (TrackEvent targetEvent in targetEvents) {
+				// split event
+				TrackEvent secondHalfEvent = targetEvent.Split(sourceEvent.Start - targetEvent.Start);
+				
+				// copy take names
+				RemoveEmptyTakes(secondHalfEvent);
+				AddEmptyTake(secondHalfEvent, sourceEventName);
+				
+				splitEvents++;
+			}
 		}
 		
 		// report
-		MessageBox.Show("Inserted " + insertedEvents + " events", Common.SLICE_TRACK);*/
+		MessageBox.Show("Split " + splitEvents + " events", Common.SLICE_TRACK);
 	}
 	
-	// returns a regex to match a measure start event.
-	private static Regex getRegex(Take take) {
-		if (take.MediaStream.MediaType == MediaType.Audio) {
-			return new Regex("^\\d+\\.1");
-		} else {
-			return new Regex("^1 (T|B)");
-		}
-	}
-	
-	// add an empty event to the track specified at the position specified.
-	// The track could be either audio or video
-	private TrackEvent AddEmptyEvent(Track track, Timecode position, string label) {
+	// add an empty take to the event specified.
+	// The event could be either audio or video
+	private TrackEvent AddEmptyTake(TrackEvent @event, string label) {
 		Media media;
-		TrackEvent @event;
-		Timecode length;
-		Regex regex = new Regex("(^\\d+\\.1 .$)|(^1 (T|B) .$)");
-
-		if (regex.Matches(label).Count > 0) {
-			length = Timecode.FromMilliseconds(1000.0);
-			label = new Regex("^\\d+").Match(label).Groups[0].Value;
-		} else {
-			length = Timecode.FromMilliseconds(4000.0);
-		}
 		
-		if (track.IsAudio()) {
+		if (@event.MediaType == MediaType.Audio) {
 			media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddBeep.wav\\empty.wav");
-			@event = (TrackEvent)((AudioTrack)track).AddAudioEvent(position, length);
 			(@event.AddTake(media.GetAudioStreamByIndex(0))).Name = label + Common.SPACER;
-		} else if (track.IsVideo()) {
+		} else if (@event.MediaType == MediaType.Video) {
 			media = new Media(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\empty.png");
-			@event = (TrackEvent)((VideoTrack)track).AddVideoEvent(position, length);
 			(@event.AddTake(media.GetVideoStreamByIndex(0))).Name = label + Common.SPACER;
 		} else {
-			throw new Exception("track type is neither audio nor video");
+			throw new Exception("event media type is neither audio nor video");
 		}
 
 		return @event;
+	}
+	
+	// remove empty takes from the event specified
+	private void RemoveEmptyTakes(TrackEvent @event) {
+		foreach (Take take in @event.Takes) {
+			if (new Regex("empty\\.(wav|png)$").Match(take.MediaPath).Success) {
+				@event.Takes.Remove(take);
+			}
+		}
 	}
 	
 }
