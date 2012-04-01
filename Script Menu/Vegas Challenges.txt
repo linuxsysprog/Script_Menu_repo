@@ -390,7 +390,7 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
 		  x slow down See audio
 		  x speed up See audio
     - see what happens to the event positions
-	- write a script to match two videos time-wise
+	-> write a script to match two videos time-wise
 	  x add alternative media to Show all objects demo 2 create ?) beep, x) outline and x) tempo tracks
 	    - extract each track, write to xvid/mp3, normalize audio, remove avi/png/text media files from media pool
   - see how Split() works with audio and video events
@@ -402,7 +402,7 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
   - find out how-to move cursor back and forth in history or write a script
   - mind alternative media and playback rates
   - back up
-- write SliceTrack.cs
+x write SliceTrack.cs
   x create all files and icons
   x model the script after TrackOutline.cs. The script is media-neutral
   x input: two tracks should be selected, source and target
@@ -417,7 +417,23 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
   x solve the problem with ever adding labels
     x remove empty takes
   x demo the script
-  -> back up
+  x back up
+  ! fix the problem with empty media in the second half event
+- write MatchTrack.cs
+  x model the script after SliceTrack.cs. The script is media-neutral
+  x create all files and icons
+  x check input:
+    x exactly two tracks of any type should be selected, source and target
+    x source track (selection) should have at least one (measure start) event to continue
+	x make sure that for each source event there's exatly one namesake target event
+	  x a namesake event has the same ^N (T|B) or ^N.N take
+  x go over all measure start source events and adjust Start and Length of all target events accordingly
+    x employ fill gaps technique
+  -> extract TrimEventName() and FindEventsByName() to common code
+  - accomodate media
+  x report
+  / create a new demo project
+  - back up
 - write RenderAll.cs
   - make this one an app extension with an option to interrupt rendering
   - ask the user for the output folder
