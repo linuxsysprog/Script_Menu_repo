@@ -1,5 +1,5 @@
 // Copyright (C) 2011 Andrey Chislenko
-// $Id: SliceTrack.cs 214 2012-03-31 02:50:36Z Andrey $
+// $Id$
 // Trim Start and End of each target event according to
 // its corresponding (measure start) source event.
 // Accomodate (compress/stretch) media to the new event's length.
