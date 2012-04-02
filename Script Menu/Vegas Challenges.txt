@@ -377,11 +377,11 @@ x write Rulers2Objects.cs, a script to insert Measure objects given a ruler trac
   x see how we can the following:
 	x manually
 		x audio
-		  x slow down Rightxclick, Properties, Time stretch, double New length
-		  x speed up Rightxclick, Properties, Time stretch, half New length
+		  x slow down Right-click, Properties, Time stretch, double New length
+		  x speed up Right-click, Properties, Time stretch, half New length
 		x video
-		  x slow down Rightxclick, Properties, half Playback rate; double event's length (with the mouse)
-		  x speed up Rightxclick, Properties, double Playback rate; half event's length (with the mouse)
+		  x slow down Right-click, Properties, half Playback rate; double event's length (with the mouse)
+		  x speed up Right-click, Properties, double Playback rate; half event's length (with the mouse)
 	x programatically
 		x audio
 		  x slow down audioEvent.Length = audioEvent.Length + audioEvent.Length; audioEvent.AdjustPlaybackRate(0.5, true);
@@ -429,10 +429,10 @@ x write SliceTrack.cs
 	  x a namesake event has the same ^N (T|B) or ^N.N take
   x go over all measure start source events and adjust Start and Length of all target events accordingly
     x employ fill gaps technique
-  -> extract TrimEventName() and FindEventsByName() to common code
-  - accomodate media
+  x accomodate media
   x report
-  / create a new demo project
+  x create a new demo project
+  -> add to the bigger demo project
   - back up
 - write RenderAll.cs
   - make this one an app extension with an option to interrupt rendering

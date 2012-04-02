@@ -104,7 +104,18 @@ public class EntryPoint {
 				FindEventsByName(Common.TrackEventsToTrackEvents(targetTrack.Events), nextSourceEventName);
 
 			if (prevTargetEvents[0].End != nextTargetEvents[0].Start) {
+				// adjust the length
+				Timecode oldLength = prevTargetEvents[0].Length;
 				prevTargetEvents[0].End = nextTargetEvents[0].Start;
+				
+				// accomodate media
+				if (prevTargetEvents[0].Length.Nanos == 0) {
+					throw new Exception("event " + prevTargetEvents[0].Index + " has zero length");
+				}
+				
+				Double playbackRate = oldLength.Nanos / (double)prevTargetEvents[0].Length.Nanos;
+				prevTargetEvents[0].AdjustPlaybackRate(playbackRate, true);
+				
 				adjustedEvents++;
 			}
 		}
