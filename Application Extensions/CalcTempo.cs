@@ -164,7 +164,7 @@ public class CalcTempoControl : UserControl {
 		chkVMuteAll.Size = new Size(100, 20);
 		chkVMuteAll.Location = new Point(10, 20);
 		chkVMuteAll.Text = "&Mute All";
-		chkVMuteAll.Click += new EventHandler(chkMuteAll_Click);
+		chkVMuteAll.Click += new EventHandler(chkVMuteAll_Click);
 		
 		chkVSoloAll.Size = new Size(100, 20);
 		chkVSoloAll.Location = new Point(10, 40);
@@ -284,6 +284,21 @@ public class CalcTempoControl : UserControl {
 		}
 	}
 	
+	void chkVMuteAll_Click(object sender, EventArgs e) {
+		List<Track> tracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
+		
+		if (tracks.Count < 1) {
+			MessageBox.Show(NO_VTRACKS, Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			chkVMuteAll.Checked = chkVMuteAll.Checked ? false : true;
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			muteAllTracks(tracks, chkVMuteAll.Checked);
+			lblVPlayingTrack.Text = PLAYING_TRACK;
+		}
+	}
+	
 	void chkSoloAll_Click(object sender, EventArgs e) {
 		List<Track> tracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
 		
@@ -380,10 +395,12 @@ public class CalcTempoControl : UserControl {
 	void HandleProjectClosed(Object sender, EventArgs args) {
 		InitializeCalcTempoForm();
 		InitializeMuteTracksForm();
+		InitializeVMuteTracksForm();
 	}
 	
 	void HandleTrackCountChanged(Object sender, EventArgs args) {
 		InitializeMuteTracksForm();
+		InitializeVMuteTracksForm();
 	}
 	
 	//
