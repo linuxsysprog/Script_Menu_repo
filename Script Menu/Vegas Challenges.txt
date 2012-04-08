@@ -363,9 +363,10 @@ x see if its possible to have more than one preview window, each showing a diffe
 	  x when there's only one audio track we still need to update Playing Track:
 	  x reset GUI form on closing current project
 	  x add Play Previous button; filter by ^Audio
-	-> add mute video tracks
+	- add mute video tracks
 		x add mute video tracks group, rearrange groups
-		-> implement event handlers
+		- implement event handlers
+		  x) mute all x) solo all x) Left Prev/Next x) Right Prev/Next
 		- add Lock with Audio checkbox
 x write a script to match two videos time-wise
   x read about synchronizing event by moving/splitting

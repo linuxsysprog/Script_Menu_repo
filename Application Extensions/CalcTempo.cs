@@ -178,22 +178,22 @@ public class CalcTempoControl : UserControl {
 		btnLPlayPrev.Size = new Size(35, 23);
 		btnLPlayPrev.Location = new Point(30, 100);
 		btnLPlayPrev.Text = "Prev";
-		btnLPlayPrev.Click += new EventHandler(btnPlayNext_Click);
+		btnLPlayPrev.Click += new EventHandler(btnVPlayNext_Click);
 		
 		btnLPlayNext.Size = new Size(35, 23);
 		btnLPlayNext.Location = new Point(30, 130);
 		btnLPlayNext.Text = "Next";
-		btnLPlayNext.Click += new EventHandler(btnPlayNext_Click);
+		btnLPlayNext.Click += new EventHandler(btnVPlayNext_Click);
 		
 		btnRPlayPrev.Size = new Size(35, 23);
 		btnRPlayPrev.Location = new Point(70, 100);
 		btnRPlayPrev.Text = "Prev";
-		btnRPlayPrev.Click += new EventHandler(btnPlayNext_Click);
+		btnRPlayPrev.Click += new EventHandler(btnVPlayNext_Click);
 		
 		btnRPlayNext.Size = new Size(35, 23);
 		btnRPlayNext.Location = new Point(70, 130);
 		btnRPlayNext.Text = "Next";
-		btnRPlayNext.Click += new EventHandler(btnPlayNext_Click);
+		btnRPlayNext.Click += new EventHandler(btnVPlayNext_Click);
 		
 		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
@@ -400,6 +400,85 @@ public class CalcTempoControl : UserControl {
 					
 					if (chkMuteAll.Checked) {
 						chkMuteAll.Checked = false;
+					}
+					return;
+				}
+			}
+		}
+	}
+	
+	void btnVPlayNext_Click(object sender, EventArgs e) {
+		string label = (sender == btnLPlayPrev || sender == btnLPlayNext) ? "LVideo" : "RVideo";
+		List<Track> unfilteredTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
+		
+		// only keep tracks matching ^LVideo or ^RVideo
+		List<Track> tracks = new List<Track>();
+		Regex regex = new Regex("^" + label);
+		foreach (Track track in unfilteredTracks) {
+			if (regex.Match(track.Name == null ? "" : track.Name).Success) {
+				tracks.Add(track);
+			}
+		}
+		
+		if (tracks.Count < 1) {
+			MessageBox.Show("No video tracks starting with \"" + label + "\" found",
+				Common.MUTE_VTRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			// unsolo soloed tracks if there are any
+			soloAllTracks(tracks, false);
+			if (chkVSoloAll.Checked) {
+				chkVSoloAll.Checked = false;
+			}
+			
+			List<Track> unmutedTracks = findUnmutedTracks(tracks);
+			
+			// zero or more than one unmuted tracks
+			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
+				muteAllTracks(tracks, true);
+				tracks[0].Mute = false;
+				if (chkVMuteAll.Checked) {
+					chkVMuteAll.Checked = false;
+				}
+				lblVPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+				return;
+			}
+			
+			// exactly one unmuted track
+			
+			// if the unmuted track happens to be the only video track in the project
+			// nothing needs to be done
+			if (tracks.Count == 1) {
+				lblVPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+				return;
+			}
+			
+			for (int i = 0; i < tracks.Count; i++) {
+				if (!tracks[i].Mute) {
+					muteAllTracks(tracks, true);
+					
+					if (sender == btnLPlayPrev || sender == btnRPlayPrev) {
+						if (i > 0) {
+							tracks[i - 1].Mute = false;
+							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[i - 1].DisplayIndex;
+						} else {
+							tracks[tracks.Count - 1].Mute = false;
+							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[tracks.Count - 1].DisplayIndex;
+						}
+					} else { // btnLPlayNext || btnRPlayNext
+						if (i < tracks.Count - 1) {
+							tracks[i + 1].Mute = false;
+							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[i + 1].DisplayIndex;
+						} else {
+							tracks[0].Mute = false;
+							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+						}
+					}
+					
+					if (chkVMuteAll.Checked) {
+						chkVMuteAll.Checked = false;
 					}
 					return;
 				}
