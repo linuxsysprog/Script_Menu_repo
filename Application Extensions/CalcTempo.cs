@@ -169,7 +169,7 @@ public class CalcTempoControl : UserControl {
 		chkVSoloAll.Size = new Size(100, 20);
 		chkVSoloAll.Location = new Point(10, 40);
 		chkVSoloAll.Text = "&Solo All";
-		chkVSoloAll.Click += new EventHandler(chkSoloAll_Click);
+		chkVSoloAll.Click += new EventHandler(chkVSoloAll_Click);
 		
 		lblVPlayingTrack.Size = new Size(100, 20);
 		lblVPlayingTrack.Location = new Point(10, 70);
@@ -311,6 +311,21 @@ public class CalcTempoControl : UserControl {
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			soloAllTracks(tracks, chkSoloAll.Checked);
 			lblPlayingTrack.Text = PLAYING_TRACK;
+		}
+	}
+	
+	void chkVSoloAll_Click(object sender, EventArgs e) {
+		List<Track> tracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
+		
+		if (tracks.Count < 1) {
+			MessageBox.Show(NO_VTRACKS, Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			chkVSoloAll.Checked = chkVSoloAll.Checked ? false : true;
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			soloAllTracks(tracks, chkVSoloAll.Checked);
+			lblVPlayingTrack.Text = PLAYING_TRACK;
 		}
 	}
 	
