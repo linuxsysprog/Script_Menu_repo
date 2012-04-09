@@ -57,6 +57,7 @@ public class CalcTempo : ICustomCommandModule {
 
 public class CalcTempoControl : UserControl {
 	const string PLAYING_TRACK = "Playing Track: ";
+	const string PLAYING_TRACKS = "Playing Tracks: ";
 	const string UNDO_STRING = "Mute/Solo Audio Tracks";
 	const string UNDO_VSTRING = "Mute/Solo Video Tracks";
 	const string NO_TRACKS = "No audio tracks found";
@@ -80,6 +81,8 @@ public class CalcTempoControl : UserControl {
 	public CheckBox chkVMuteAll= new CheckBox();
 	public CheckBox chkVSoloAll= new CheckBox();
 	private Label lblVPlayingTrack = new Label();
+	private Label lblVLPlayingTrack = new Label();
+	private Label lblVRPlayingTrack = new Label();
 	private Button btnLPlayPrev = new Button();
 	private Button btnLPlayNext = new Button();
 	private Button btnRPlayPrev = new Button();
@@ -156,6 +159,8 @@ public class CalcTempoControl : UserControl {
 			chkVMuteAll,
 			chkVSoloAll,
 			lblVPlayingTrack,
+			lblVLPlayingTrack,
+			lblVRPlayingTrack,
 			btnLPlayPrev,
 			btnLPlayNext,
 			btnRPlayPrev,
@@ -171,8 +176,14 @@ public class CalcTempoControl : UserControl {
 		chkVSoloAll.Text = "&Solo All";
 		chkVSoloAll.Click += new EventHandler(chkVSoloAll_Click);
 		
-		lblVPlayingTrack.Size = new Size(100, 20);
+		lblVPlayingTrack.Size = new Size(82, 20);
 		lblVPlayingTrack.Location = new Point(10, 70);
+		
+		lblVLPlayingTrack.Size = new Size(20, 20);
+		lblVLPlayingTrack.Location = new Point(90, 70);
+		
+		lblVRPlayingTrack.Size = new Size(20, 20);
+		lblVRPlayingTrack.Location = new Point(110, 70);
 		
 		// btnLPlayPrev.Size = new Size(75, 23);
 		btnLPlayPrev.Size = new Size(35, 23);
@@ -223,7 +234,9 @@ public class CalcTempoControl : UserControl {
 	private void InitializeVMuteTracksForm() {
 		chkVMuteAll.Checked = false;
 		chkVSoloAll.Checked = false;
-		lblVPlayingTrack.Text = PLAYING_TRACK;
+		lblVPlayingTrack.Text = PLAYING_TRACKS;
+		lblVLPlayingTrack.Text = "";
+		lblVRPlayingTrack.Text = "";
 	}
 	
 	//
@@ -295,7 +308,8 @@ public class CalcTempoControl : UserControl {
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			muteAllTracks(tracks, chkVMuteAll.Checked);
-			lblVPlayingTrack.Text = PLAYING_TRACK;
+			lblVLPlayingTrack.Text = "";
+			lblVRPlayingTrack.Text = "";
 		}
 	}
 	
@@ -325,7 +339,8 @@ public class CalcTempoControl : UserControl {
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			soloAllTracks(tracks, chkVSoloAll.Checked);
-			lblVPlayingTrack.Text = PLAYING_TRACK;
+			lblVLPlayingTrack.Text = "";
+			lblVRPlayingTrack.Text = "";
 		}
 	}
 	
@@ -408,7 +423,16 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnVPlayNext_Click(object sender, EventArgs e) {
-		string label = (sender == btnLPlayPrev || sender == btnLPlayNext) ? "LVideo" : "RVideo";
+		string label;
+		Label lbl;
+		if (sender == btnLPlayPrev || sender == btnLPlayNext) {
+			label = "LVideo";
+			lbl = lblVLPlayingTrack;
+		} else {
+			label = "RVideo";
+			lbl = lblVRPlayingTrack;
+		}
+
 		List<Track> unfilteredTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
 		
 		// only keep tracks matching ^LVideo or ^RVideo
@@ -442,7 +466,7 @@ public class CalcTempoControl : UserControl {
 				if (chkVMuteAll.Checked) {
 					chkVMuteAll.Checked = false;
 				}
-				lblVPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+				lbl.Text = "" + tracks[0].DisplayIndex;
 				return;
 			}
 			
@@ -451,7 +475,7 @@ public class CalcTempoControl : UserControl {
 			// if the unmuted track happens to be the only video track in the project
 			// nothing needs to be done
 			if (tracks.Count == 1) {
-				lblVPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+				lbl.Text = "" + tracks[0].DisplayIndex;
 				return;
 			}
 			
@@ -462,18 +486,18 @@ public class CalcTempoControl : UserControl {
 					if (sender == btnLPlayPrev || sender == btnRPlayPrev) {
 						if (i > 0) {
 							tracks[i - 1].Mute = false;
-							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[i - 1].DisplayIndex;
+							lbl.Text = "" + tracks[i - 1].DisplayIndex;
 						} else {
 							tracks[tracks.Count - 1].Mute = false;
-							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[tracks.Count - 1].DisplayIndex;
+							lbl.Text = "" + tracks[tracks.Count - 1].DisplayIndex;
 						}
 					} else { // btnLPlayNext || btnRPlayNext
 						if (i < tracks.Count - 1) {
 							tracks[i + 1].Mute = false;
-							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[i + 1].DisplayIndex;
+							lbl.Text = "" + tracks[i + 1].DisplayIndex;
 						} else {
 							tracks[0].Mute = false;
-							lblVPlayingTrack.Text = PLAYING_TRACK + tracks[0].DisplayIndex;
+							lbl.Text = "" + tracks[0].DisplayIndex;
 						}
 					}
 					
