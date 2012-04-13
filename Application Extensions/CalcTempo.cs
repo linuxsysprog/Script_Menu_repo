@@ -513,31 +513,21 @@ public class CalcTempoControl : UserControl {
 						if (i > 0) {
 							tracks[i - 1].Mute = false;
 							lbl.Text = "" + tracks[i - 1].DisplayIndex;
+							unmutePeerTrack(tracks[i - 1], sender);
 						} else {
 							tracks[tracks.Count - 1].Mute = false;
 							lbl.Text = "" + tracks[tracks.Count - 1].DisplayIndex;
+							unmutePeerTrack(tracks[tracks.Count - 1], sender);
 						}
 					} else { // btnLPlayNext || btnRPlayNext
 						if (i < tracks.Count - 1) {
 							tracks[i + 1].Mute = false;
 							lbl.Text = "" + tracks[i + 1].DisplayIndex;
-							
-							// unmute peer track
-							if (chkLockLeftRight.Checked) {
-								int peerTrackIndex =
-									sender == btnLPlayNext ? tracks[i + 1].Index + 1 : tracks[i + 1].Index - 1;
-								if (peerTrackIndex < Common.vegas.Project.Tracks.Count &&
-										peerTrackIndex > -1) {
-									Track peerTrack = Common.vegas.Project.Tracks[peerTrackIndex];
-									if (peerTrack.IsVideo() &&
-											peerTrackRegex.Match(peerTrack.Name == null ? "" : peerTrack.Name).Success) {
-										peerTrack.Mute = false;
-									}
-								}
-							}
+							unmutePeerTrack(tracks[i + 1], sender);
 						} else {
 							tracks[0].Mute = false;
 							lbl.Text = "" + tracks[0].DisplayIndex;
+							unmutePeerTrack(tracks[0], sender);
 						}
 					}
 					
@@ -546,6 +536,31 @@ public class CalcTempoControl : UserControl {
 					}
 					return;
 				}
+			}
+		}
+	}
+	
+	private void unmutePeerTrack(Track track, object sender) {
+		if (!chkLockLeftRight.Checked) {
+			return;
+		}
+	
+		Regex peerTrackRegex;
+		int peerTrackIndex;
+		if (sender == btnLPlayPrev || sender == btnLPlayNext) {
+			peerTrackRegex = new Regex("^RVideo");
+			peerTrackIndex = track.Index + 1;
+		} else { // btnRPlayPrev || btnRPlayNext
+			peerTrackRegex = new Regex("^LVideo");
+			peerTrackIndex = track.Index - 1;
+		}
+		
+		if (peerTrackIndex < Common.vegas.Project.Tracks.Count &&
+				peerTrackIndex > -1) {
+			Track peerTrack = Common.vegas.Project.Tracks[peerTrackIndex];
+			if (peerTrack.IsVideo() &&
+					peerTrackRegex.Match(peerTrack.Name == null ? "" : peerTrack.Name).Success) {
+				peerTrack.Mute = false;
 			}
 		}
 	}
