@@ -547,12 +547,15 @@ public class CalcTempoControl : UserControl {
 	
 		Regex peerTrackRegex;
 		int peerTrackIndex;
+		Label lbl;
 		if (sender == btnLPlayPrev || sender == btnLPlayNext) {
 			peerTrackRegex = new Regex("^RVideo");
 			peerTrackIndex = track.Index + 1;
+			lbl = lblVRPlayingTrack;
 		} else { // btnRPlayPrev || btnRPlayNext
 			peerTrackRegex = new Regex("^LVideo");
 			peerTrackIndex = track.Index - 1;
+			lbl = lblVLPlayingTrack;
 		}
 		
 		if (peerTrackIndex < Common.vegas.Project.Tracks.Count &&
@@ -561,6 +564,7 @@ public class CalcTempoControl : UserControl {
 			if (peerTrack.IsVideo() &&
 					peerTrackRegex.Match(peerTrack.Name == null ? "" : peerTrack.Name).Success) {
 				peerTrack.Mute = false;
+				lbl.Text = "" + peerTrack.DisplayIndex;
 			}
 		}
 	}
