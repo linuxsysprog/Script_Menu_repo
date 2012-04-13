@@ -363,11 +363,24 @@ x see if its possible to have more than one preview window, each showing a diffe
 	  x when there's only one audio track we still need to update Playing Track:
 	  x reset GUI form on closing current project
 	  x add Play Previous button; filter by ^Audio
-	- add mute video tracks
+	x add mute video tracks
 		x add mute video tracks group, rearrange groups
-		- implement event handlers
+		x implement event handlers
 		  x) mute all x) solo all x) Left Prev/Next x) Right Prev/Next
-		- add Lock with Audio checkbox
+		x add Right Playing Track
+		  x amend GUI
+		    x Playing TrackS!!!
+			x move L R track numbers down closer to the buttons
+				x increase height of x) the form x) groupbox x) move the four buttons x) lock l&r tickbox down 
+				x set both numbers to 99 on white bg x) move numbers down/center x) move LPrev, RPrev to PlayNext's
+					height
+	-> add Lock LVideo with RVideo
+		x bulk mute/unsolo peer tracks also
+		- update Playing Tracks
+		- check with other returns
+		- write a handler for lock l&r checkbox
+	- add Lock with Audio checkbox
+	- add Pan Audio Left Right/Audio Restore
 x write a script to match two videos time-wise
   x read about synchronizing event by moving/splitting
   ! add alternative media to "Show all objects demo 2" create ?) beep, x) outline and x) tempo tracks
@@ -437,6 +450,7 @@ x write MatchTrack.cs
 	  - copy ...
   - see how we can switch over (move cursor) between copies
   - find out how-to move cursor back and forth in history or write a script
+  - think how to get same piece at two different times in Left and Right screen
   x mind alternative media and playback rates
   - back up
 - write RenderAll.cs

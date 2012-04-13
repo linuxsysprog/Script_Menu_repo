@@ -432,23 +432,32 @@ public class CalcTempoControl : UserControl {
 	
 	void btnVPlayNext_Click(object sender, EventArgs e) {
 		string label;
+		string peerTracklabel;
 		Label lbl;
+		
 		if (sender == btnLPlayPrev || sender == btnLPlayNext) {
 			label = "LVideo";
+			peerTracklabel = "RVideo";
 			lbl = lblVLPlayingTrack;
 		} else {
 			label = "RVideo";
+			peerTracklabel = "LVideo";
 			lbl = lblVRPlayingTrack;
 		}
 
+		Regex regex = new Regex("^" + label);
+		Regex peerTrackRegex = new Regex("^" + peerTracklabel);
+		
 		List<Track> unfilteredTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
 		
 		// only keep tracks matching ^LVideo or ^RVideo
 		List<Track> tracks = new List<Track>();
-		Regex regex = new Regex("^" + label);
+		List<Track> peerTracks = new List<Track>();
 		foreach (Track track in unfilteredTracks) {
 			if (regex.Match(track.Name == null ? "" : track.Name).Success) {
 				tracks.Add(track);
+			} else if (peerTrackRegex.Match(track.Name == null ? "" : track.Name).Success) {
+				peerTracks.Add(track);
 			}
 		}
 		
@@ -461,6 +470,9 @@ public class CalcTempoControl : UserControl {
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			// unsolo soloed tracks if there are any
 			soloAllTracks(tracks, false);
+			if (chkLockLeftRight.Checked) {
+				soloAllTracks(peerTracks, false);
+			}
 			if (chkVSoloAll.Checked) {
 				chkVSoloAll.Checked = false;
 			}
@@ -470,6 +482,9 @@ public class CalcTempoControl : UserControl {
 			// zero or more than one unmuted tracks
 			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
 				muteAllTracks(tracks, true);
+				if (chkLockLeftRight.Checked) {
+					muteAllTracks(peerTracks, true);
+				}
 				tracks[0].Mute = false;
 				if (chkVMuteAll.Checked) {
 					chkVMuteAll.Checked = false;
@@ -490,6 +505,9 @@ public class CalcTempoControl : UserControl {
 			for (int i = 0; i < tracks.Count; i++) {
 				if (!tracks[i].Mute) {
 					muteAllTracks(tracks, true);
+					if (chkLockLeftRight.Checked) {
+						muteAllTracks(peerTracks, true);
+					}
 					
 					if (sender == btnLPlayPrev || sender == btnRPlayPrev) {
 						if (i > 0) {
@@ -504,19 +522,17 @@ public class CalcTempoControl : UserControl {
 							tracks[i + 1].Mute = false;
 							lbl.Text = "" + tracks[i + 1].DisplayIndex;
 							
-							// check for Lock L and R
+							// unmute peer track
 							if (chkLockLeftRight.Checked) {
-								if (sender == btnLPlayPrev || sender == btnLPlayNext) {
-									int rTrackIndex = tracks[i + 1].Index + 1;
-									Track rTrack = Common.vegas.Project.Tracks[rTrackIndex];
-									if (rTrackIndex < Common.vegas.Project.Tracks.Count /*&&
-											.IsVideo() &&
-											regex.Match(track.Name == null ? "" : track.Name).Success*/) {
-										Common.vegas.Project.Tracks[rTrackIndex].Mute = false;
-									} else {
-										Common.vegas.DebugOut("no complimentray track");
+								int peerTrackIndex =
+									sender == btnLPlayNext ? tracks[i + 1].Index + 1 : tracks[i + 1].Index - 1;
+								if (peerTrackIndex < Common.vegas.Project.Tracks.Count &&
+										peerTrackIndex > -1) {
+									Track peerTrack = Common.vegas.Project.Tracks[peerTrackIndex];
+									if (peerTrack.IsVideo() &&
+											peerTrackRegex.Match(peerTrack.Name == null ? "" : peerTrack.Name).Success) {
+										peerTrack.Mute = false;
 									}
-								} else { // btnRPlayPrev || btnRPlayNext
 								}
 							}
 						} else {
