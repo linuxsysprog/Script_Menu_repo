@@ -40,7 +40,7 @@ public class CalcTempo : ICustomCommandModule {
 			calcTempoControl = new CalcTempoControl();
 			calcTempoView.Controls.Add(calcTempoControl);
 			
-			calcTempoView.DefaultFloatingSize = new Size(465, 215);
+			calcTempoView.DefaultFloatingSize = new Size(465, 240);
 			Common.vegas.LoadDockView(calcTempoView);
 		}
 	}
@@ -87,6 +87,7 @@ public class CalcTempoControl : UserControl {
 	private Button btnLPlayNext = new Button();
 	private Button btnRPlayPrev = new Button();
 	private Button btnRPlayNext = new Button();
+	public CheckBox chkLockLeftRight= new CheckBox();
 
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 170);
@@ -121,7 +122,7 @@ public class CalcTempoControl : UserControl {
 		btnCalcTempo.Text = "&Calculate";
 		btnCalcTempo.Click += new EventHandler(btnCalcTempo_Click);
 		
-		gbMuteTracks.Size = new Size(135, 170);
+		gbMuteTracks.Size = new Size(135, 200);
 		gbMuteTracks.Location = new Point(10, 10);
 		gbMuteTracks.Text = "Mute/Solo Au Tracks";
 		gbMuteTracks.Controls.AddRange(new Control[] {
@@ -144,15 +145,15 @@ public class CalcTempoControl : UserControl {
 		lblPlayingTrack.Size = new Size(100, 20);
 		lblPlayingTrack.Location = new Point(10, 70);
 		
-		btnPlayPrev.Location = new Point(30, 100);
+		btnPlayPrev.Location = new Point(30, 105);
 		btnPlayPrev.Text = "Play &Prev";
 		btnPlayPrev.Click += new EventHandler(btnPlayNext_Click);
 		
-		btnPlayNext.Location = new Point(30, 130);
+		btnPlayNext.Location = new Point(30, 135);
 		btnPlayNext.Text = "Play &Next";
 		btnPlayNext.Click += new EventHandler(btnPlayNext_Click);
 		
-		gbVMuteTracks.Size = new Size(135, 170);
+		gbVMuteTracks.Size = new Size(135, 200);
 		gbVMuteTracks.Location = new Point(160, 10);
 		gbVMuteTracks.Text = "Mute/Solo Vid Tracks";
 		gbVMuteTracks.Controls.AddRange(new Control[] {
@@ -164,7 +165,8 @@ public class CalcTempoControl : UserControl {
 			btnLPlayPrev,
 			btnLPlayNext,
 			btnRPlayPrev,
-			btnRPlayNext});
+			btnRPlayNext,
+			chkLockLeftRight});
 			
 		chkVMuteAll.Size = new Size(100, 20);
 		chkVMuteAll.Location = new Point(10, 20);
@@ -176,35 +178,40 @@ public class CalcTempoControl : UserControl {
 		chkVSoloAll.Text = "&Solo All";
 		chkVSoloAll.Click += new EventHandler(chkVSoloAll_Click);
 		
-		lblVPlayingTrack.Size = new Size(82, 20);
+		lblVPlayingTrack.Size = new Size(82, 15);
 		lblVPlayingTrack.Location = new Point(10, 70);
 		
-		lblVLPlayingTrack.Size = new Size(20, 20);
-		lblVLPlayingTrack.Location = new Point(90, 70);
+		lblVLPlayingTrack.Size = new Size(20, 15);
+		lblVLPlayingTrack.Location = new Point(39, 87);
 		
-		lblVRPlayingTrack.Size = new Size(20, 20);
-		lblVRPlayingTrack.Location = new Point(110, 70);
+		lblVRPlayingTrack.Size = new Size(20, 15);
+		lblVRPlayingTrack.Location = new Point(79, 87);
 		
 		// btnLPlayPrev.Size = new Size(75, 23);
 		btnLPlayPrev.Size = new Size(35, 23);
-		btnLPlayPrev.Location = new Point(30, 100);
+		btnLPlayPrev.Location = new Point(30, 105);
 		btnLPlayPrev.Text = "Prev";
 		btnLPlayPrev.Click += new EventHandler(btnVPlayNext_Click);
 		
 		btnLPlayNext.Size = new Size(35, 23);
-		btnLPlayNext.Location = new Point(30, 130);
+		btnLPlayNext.Location = new Point(30, 135);
 		btnLPlayNext.Text = "Next";
 		btnLPlayNext.Click += new EventHandler(btnVPlayNext_Click);
 		
 		btnRPlayPrev.Size = new Size(35, 23);
-		btnRPlayPrev.Location = new Point(70, 100);
+		btnRPlayPrev.Location = new Point(70, 105);
 		btnRPlayPrev.Text = "Prev";
 		btnRPlayPrev.Click += new EventHandler(btnVPlayNext_Click);
 		
 		btnRPlayNext.Size = new Size(35, 23);
-		btnRPlayNext.Location = new Point(70, 130);
+		btnRPlayNext.Location = new Point(70, 135);
 		btnRPlayNext.Text = "Next";
 		btnRPlayNext.Click += new EventHandler(btnVPlayNext_Click);
+		
+		chkLockLeftRight.Size = new Size(100, 20);
+		chkLockLeftRight.Location = new Point(10, 165);
+		chkLockLeftRight.Text = "&Lock L and R";
+		chkLockLeftRight.Click += new EventHandler(chkLockLeftRight_Click);
 		
 		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
@@ -237,6 +244,7 @@ public class CalcTempoControl : UserControl {
 		lblVPlayingTrack.Text = PLAYING_TRACKS;
 		lblVLPlayingTrack.Text = "";
 		lblVRPlayingTrack.Text = "";
+		chkLockLeftRight.Checked = false;
 	}
 	
 	//
@@ -495,6 +503,22 @@ public class CalcTempoControl : UserControl {
 						if (i < tracks.Count - 1) {
 							tracks[i + 1].Mute = false;
 							lbl.Text = "" + tracks[i + 1].DisplayIndex;
+							
+							// check for Lock L and R
+							if (chkLockLeftRight.Checked) {
+								if (sender == btnLPlayPrev || sender == btnLPlayNext) {
+									int rTrackIndex = tracks[i + 1].Index + 1;
+									Track rTrack = Common.vegas.Project.Tracks[rTrackIndex];
+									if (rTrackIndex < Common.vegas.Project.Tracks.Count /*&&
+											.IsVideo() &&
+											regex.Match(track.Name == null ? "" : track.Name).Success*/) {
+										Common.vegas.Project.Tracks[rTrackIndex].Mute = false;
+									} else {
+										Common.vegas.DebugOut("no complimentray track");
+									}
+								} else { // btnRPlayPrev || btnRPlayNext
+								}
+							}
 						} else {
 							tracks[0].Mute = false;
 							lbl.Text = "" + tracks[0].DisplayIndex;
@@ -510,10 +534,14 @@ public class CalcTempoControl : UserControl {
 		}
 	}
 	
+	void chkLockLeftRight_Click(object sender, EventArgs e) {
+	}
+	
 	void HandleProjectClosed(Object sender, EventArgs args) {
 		InitializeCalcTempoForm();
 		InitializeMuteTracksForm();
 		InitializeVMuteTracksForm();
+		Common.vegas.DebugClear();
 	}
 	
 	void HandleTrackCountChanged(Object sender, EventArgs args) {
