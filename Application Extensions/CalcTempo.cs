@@ -40,7 +40,7 @@ public class CalcTempo : ICustomCommandModule {
 			calcTempoControl = new CalcTempoControl();
 			calcTempoView.Controls.Add(calcTempoControl);
 			
-			calcTempoView.DefaultFloatingSize = new Size(465, 240);
+			calcTempoView.DefaultFloatingSize = new Size(465, 260);
 			Common.vegas.LoadDockView(calcTempoView);
 		}
 	}
@@ -78,6 +78,7 @@ public class CalcTempoControl : UserControl {
 	private Button btnPlayPrev = new Button();
 	private Button btnPlayNext = new Button();
 	private CheckBox chkLockWithVideo = new CheckBox();
+	private CheckBox chkSplitAudio = new CheckBox();
 
 	private GroupBox gbVMuteTracks= new GroupBox();
 	public CheckBox chkVMuteAll= new CheckBox();
@@ -92,7 +93,7 @@ public class CalcTempoControl : UserControl {
 	public CheckBox chkLockLeftRight = new CheckBox();
 
 	public CalcTempoControl() {
-		gbCalcTempo.Size = new Size(135, 170);
+		gbCalcTempo.Size = new Size(135, 220);
 		gbCalcTempo.Location = new Point(310, 10);
 		gbCalcTempo.Text = "Calculate Tempo";
 		gbCalcTempo.Controls.AddRange(new Control[] {
@@ -124,7 +125,7 @@ public class CalcTempoControl : UserControl {
 		btnCalcTempo.Text = "&Calculate";
 		btnCalcTempo.Click += new EventHandler(btnCalcTempo_Click);
 		
-		gbMuteTracks.Size = new Size(135, 200);
+		gbMuteTracks.Size = new Size(135, 220);
 		gbMuteTracks.Location = new Point(10, 10);
 		gbMuteTracks.Text = "Mute/Solo Au Tracks";
 		gbMuteTracks.Controls.AddRange(new Control[] {
@@ -134,7 +135,8 @@ public class CalcTempoControl : UserControl {
 			lblPlayingTrackIndex,
 			btnPlayPrev,
 			btnPlayNext,
-			chkLockWithVideo});
+			chkLockWithVideo,
+			chkSplitAudio});
 			
 		chkMuteAll.Size = new Size(100, 20);
 		chkMuteAll.Location = new Point(10, 20);
@@ -165,7 +167,12 @@ public class CalcTempoControl : UserControl {
 		chkLockWithVideo.Text = "Lock w/ &Video";
 		chkLockWithVideo.Click += new EventHandler(chkLockWithVideo_Click);
 		
-		gbVMuteTracks.Size = new Size(135, 200);
+		chkSplitAudio.Size = new Size(100, 20);
+		chkSplitAudio.Location = new Point(10, 185);
+		chkSplitAudio.Text = "Split &Audio";
+		chkSplitAudio.Click += new EventHandler(chkSplitAudio_Click);
+		
+		gbVMuteTracks.Size = new Size(135, 220);
 		gbVMuteTracks.Location = new Point(160, 10);
 		gbVMuteTracks.Text = "Mute/Solo Vid Tracks";
 		gbVMuteTracks.Controls.AddRange(new Control[] {
@@ -250,6 +257,7 @@ public class CalcTempoControl : UserControl {
 		lblPlayingTrack.Text = PLAYING_TRACK;
 		lblPlayingTrackIndex.Text = "";
 		chkLockWithVideo.Checked = false;
+		chkSplitAudio.Checked = false;
 	}
 	
 	private void InitializeVMuteTracksForm() {
@@ -626,6 +634,32 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void chkLockWithVideo_Click(object sender, EventArgs e) {
+	}
+	
+	void chkSplitAudio_Click(object sender, EventArgs e) {
+		List<Track> videoTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
+		List<Track> unmutedLVideoTracks =
+			findUnmutedTracks(Common.FindTracksByRegex(videoTracks, new Regex("^LVideo")));
+		List<Track> unmutedRVideoTracks =
+			findUnmutedTracks(Common.FindTracksByRegex(videoTracks, new Regex("^RVideo")));
+		
+		if (!(unmutedLVideoTracks.Count == 1 && unmutedRVideoTracks.Count == 1)) {
+			MessageBox.Show("Please make sure exactly one \"LVideo\" track and one \"RVideo\" track are unmuted",
+				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		if (unmutedLVideoTracks[0].Index + 1 == unmutedRVideoTracks[0].Index) {
+			MessageBox.Show("Please make sure \"LVideo\" and \"RVideo\" tracks are not adjacent",
+				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		List<Track> unfilteredAudioTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		List<Track> audioTracks = Common.FindTracksByRegex(unfilteredAudioTracks, new Regex("^Audio"));
+		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			muteAllTracks(audioTracks, true);
+		}
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {
