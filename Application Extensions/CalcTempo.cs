@@ -564,14 +564,6 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void chkLockLeftRight_Click(object sender, EventArgs e) {
-		if (lblVLPlayingTrack.Text == "" && lblVRPlayingTrack.Text == "") {
-			return;
-		}
-		
-		if (lblVLPlayingTrack.Text != "") {
-			// TODO: 
-			return;
-		}
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {

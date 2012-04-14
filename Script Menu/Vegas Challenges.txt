@@ -374,13 +374,13 @@ x see if its possible to have more than one preview window, each showing a diffe
 				x increase height of x) the form x) groupbox x) move the four buttons x) lock l&r tickbox down 
 				x set both numbers to 99 on white bg x) move numbers down/center x) move LPrev, RPrev to PlayNext's
 					height
-	-> add Lock LVideo with RVideo
+	x add Lock LVideo with RVideo
 		x bulk mute/unsolo peer tracks also
 		x deal with prev buttons
 		x update Playing Tracks
 		x check with other returns
-		-> write a handler for lock l&r checkbox
-			- extract FindTracksByRegex()
+		$ write a handler for lock l&r checkbox
+			x extract FindTracksByRegex()
 	- add Lock with Audio checkbox
 		- lock solo/mute as well
 	- add Pan Audio Left Right/Audio Restore
