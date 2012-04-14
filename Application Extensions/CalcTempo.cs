@@ -491,20 +491,22 @@ public class CalcTempoControl : UserControl {
 				if (chkLockLeftRight.Checked) {
 					muteAllTracks(peerTracks, true);
 				}
-				tracks[0].Mute = false;
 				if (chkVMuteAll.Checked) {
 					chkVMuteAll.Checked = false;
 				}
+				tracks[0].Mute = false;
 				lbl.Text = "" + tracks[0].DisplayIndex;
+				unmutePeerTrack(tracks[0], sender);
 				return;
 			}
 			
 			// exactly one unmuted track
 			
-			// if the unmuted track happens to be the only video track in the project
+			// if the unmuted track happens to be the only (labeled) video track in the project
 			// nothing needs to be done
 			if (tracks.Count == 1) {
 				lbl.Text = "" + tracks[0].DisplayIndex;
+				unmutePeerTrack(tracks[0], sender);
 				return;
 			}
 			
