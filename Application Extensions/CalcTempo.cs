@@ -77,6 +77,7 @@ public class CalcTempoControl : UserControl {
 	private Label lblPlayingTrackIndex = new Label();
 	private Button btnPlayPrev = new Button();
 	private Button btnPlayNext = new Button();
+	private CheckBox chkLockWithVideo = new CheckBox();
 
 	private GroupBox gbVMuteTracks= new GroupBox();
 	public CheckBox chkVMuteAll= new CheckBox();
@@ -88,7 +89,7 @@ public class CalcTempoControl : UserControl {
 	private Button btnLPlayNext = new Button();
 	private Button btnRPlayPrev = new Button();
 	private Button btnRPlayNext = new Button();
-	public CheckBox chkLockLeftRight= new CheckBox();
+	public CheckBox chkLockLeftRight = new CheckBox();
 
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 170);
@@ -132,7 +133,8 @@ public class CalcTempoControl : UserControl {
 			lblPlayingTrack,
 			lblPlayingTrackIndex,
 			btnPlayPrev,
-			btnPlayNext});
+			btnPlayNext,
+			chkLockWithVideo});
 			
 		chkMuteAll.Size = new Size(100, 20);
 		chkMuteAll.Location = new Point(10, 20);
@@ -157,6 +159,11 @@ public class CalcTempoControl : UserControl {
 		btnPlayNext.Location = new Point(30, 135);
 		btnPlayNext.Text = "Play &Next";
 		btnPlayNext.Click += new EventHandler(btnPlayNext_Click);
+		
+		chkLockWithVideo.Size = new Size(100, 20);
+		chkLockWithVideo.Location = new Point(10, 165);
+		chkLockWithVideo.Text = "Lock w/ &Video";
+		chkLockWithVideo.Click += new EventHandler(chkLockWithVideo_Click);
 		
 		gbVMuteTracks.Size = new Size(135, 200);
 		gbVMuteTracks.Location = new Point(160, 10);
@@ -242,6 +249,7 @@ public class CalcTempoControl : UserControl {
 		chkSoloAll.Checked = false;
 		lblPlayingTrack.Text = PLAYING_TRACK;
 		lblPlayingTrackIndex.Text = "";
+		chkLockWithVideo.Checked = false;
 	}
 	
 	private void InitializeVMuteTracksForm() {
@@ -448,10 +456,12 @@ public class CalcTempoControl : UserControl {
 		Regex peerTrackRegex = new Regex("^" + peerTracklabel);
 		
 		List<Track> unfilteredTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
+		List<Track> unfilteredAudioTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
 		
 		// only keep tracks matching ^LVideo or ^RVideo
 		List<Track> tracks = Common.FindTracksByRegex(unfilteredTracks, regex);
 		List<Track> peerTracks = Common.FindTracksByRegex(unfilteredTracks, peerTrackRegex);
+		List<Track> peerAudioTracks = Common.FindTracksByRegex(unfilteredAudioTracks, new Regex("^Audio"));
 
 		if (tracks.Count < 1) {
 			MessageBox.Show("No video tracks starting with \"" + label + "\" found",
@@ -465,6 +475,12 @@ public class CalcTempoControl : UserControl {
 			if (chkLockLeftRight.Checked) {
 				soloAllTracks(peerTracks, false);
 			}
+			if (chkLockWithVideo.Checked) {
+				soloAllTracks(peerAudioTracks, false);
+				if (chkSoloAll.Checked) {
+					chkSoloAll.Checked = false;
+				}
+			}
 			if (chkVSoloAll.Checked) {
 				chkVSoloAll.Checked = false;
 			}
@@ -477,12 +493,19 @@ public class CalcTempoControl : UserControl {
 				if (chkLockLeftRight.Checked) {
 					muteAllTracks(peerTracks, true);
 				}
+				if (chkLockWithVideo.Checked) {
+					muteAllTracks(peerAudioTracks, true);
+					if (chkMuteAll.Checked) {
+						chkMuteAll.Checked = false;
+					}
+				}
 				if (chkVMuteAll.Checked) {
 					chkVMuteAll.Checked = false;
 				}
 				tracks[0].Mute = false;
 				lbl.Text = "" + tracks[0].DisplayIndex;
 				unmutePeerTrack(tracks[0], sender);
+				unmutePeerAudioTrack(tracks[0], sender);
 				return;
 			}
 			
@@ -493,6 +516,7 @@ public class CalcTempoControl : UserControl {
 			if (tracks.Count == 1) {
 				lbl.Text = "" + tracks[0].DisplayIndex;
 				unmutePeerTrack(tracks[0], sender);
+				unmutePeerAudioTrack(tracks[0], sender);
 				return;
 			}
 			
@@ -502,31 +526,43 @@ public class CalcTempoControl : UserControl {
 					if (chkLockLeftRight.Checked) {
 						muteAllTracks(peerTracks, true);
 					}
+					if (chkLockWithVideo.Checked) {
+						muteAllTracks(peerAudioTracks, true);
+					}
 					
 					if (sender == btnLPlayPrev || sender == btnRPlayPrev) {
 						if (i > 0) {
 							tracks[i - 1].Mute = false;
 							lbl.Text = "" + tracks[i - 1].DisplayIndex;
 							unmutePeerTrack(tracks[i - 1], sender);
+							unmutePeerAudioTrack(tracks[i - 1], sender);
 						} else {
 							tracks[tracks.Count - 1].Mute = false;
 							lbl.Text = "" + tracks[tracks.Count - 1].DisplayIndex;
 							unmutePeerTrack(tracks[tracks.Count - 1], sender);
+							unmutePeerAudioTrack(tracks[tracks.Count - 1], sender);
 						}
 					} else { // btnLPlayNext || btnRPlayNext
 						if (i < tracks.Count - 1) {
 							tracks[i + 1].Mute = false;
 							lbl.Text = "" + tracks[i + 1].DisplayIndex;
 							unmutePeerTrack(tracks[i + 1], sender);
+							unmutePeerAudioTrack(tracks[i + 1], sender);
 						} else {
 							tracks[0].Mute = false;
 							lbl.Text = "" + tracks[0].DisplayIndex;
 							unmutePeerTrack(tracks[0], sender);
+							unmutePeerAudioTrack(tracks[0], sender);
 						}
 					}
 					
 					if (chkVMuteAll.Checked) {
 						chkVMuteAll.Checked = false;
+					}
+					if (chkLockWithVideo.Checked) {
+						if (chkMuteAll.Checked) {
+							chkMuteAll.Checked = false;
+						}
 					}
 					return;
 				}
@@ -563,7 +599,33 @@ public class CalcTempoControl : UserControl {
 		}
 	}
 	
+	private void unmutePeerAudioTrack(Track track, object sender) {
+		if (!chkLockWithVideo.Checked) {
+			return;
+		}
+	
+		int peerAudioTrackIndex;
+		if (sender == btnLPlayPrev || sender == btnLPlayNext) {
+			peerAudioTrackIndex = track.Index + 2;
+		} else { // btnRPlayPrev || btnRPlayNext
+			peerAudioTrackIndex = track.Index + 1;
+		}
+		
+		if (peerAudioTrackIndex < Common.vegas.Project.Tracks.Count &&
+				peerAudioTrackIndex > -1) {
+			Track peerAudioTrack = Common.vegas.Project.Tracks[peerAudioTrackIndex];
+			if (peerAudioTrack.IsAudio() &&
+					new Regex("^Audio").Match(peerAudioTrack.Name == null ? "" : peerAudioTrack.Name).Success) {
+				peerAudioTrack.Mute = false;
+				lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+			}
+		}
+	}
+	
 	void chkLockLeftRight_Click(object sender, EventArgs e) {
+	}
+	
+	void chkLockWithVideo_Click(object sender, EventArgs e) {
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {

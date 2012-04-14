@@ -381,8 +381,11 @@ x see if its possible to have more than one preview window, each showing a diffe
 		x check with other returns
 		$ write a handler for lock l&r checkbox
 			x extract FindTracksByRegex()
-	- add Lock with Audio checkbox
-		- lock solo/mute as well
+	-> add Lock with Audio checkbox
+		x add GUI element
+		x implement event handler
+			x include mute/solo
+		-> do the other direction
 	- add Pan Audio Left Right/Audio Restore
 	x move Playing audio Track number down next to Play Prev button
 	- clean out debug statements
