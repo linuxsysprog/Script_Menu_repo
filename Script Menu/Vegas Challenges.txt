@@ -376,11 +376,18 @@ x see if its possible to have more than one preview window, each showing a diffe
 					height
 	-> add Lock LVideo with RVideo
 		x bulk mute/unsolo peer tracks also
-		- update Playing Tracks
-		- check with other returns
-		- write a handler for lock l&r checkbox
+		x deal with prev buttons
+		x update Playing Tracks
+		x check with other returns
+		-> write a handler for lock l&r checkbox
+			- extract FindTracksByRegex()
 	- add Lock with Audio checkbox
+		- lock solo/mute as well
 	- add Pan Audio Left Right/Audio Restore
+	x move Playing audio Track number down next to Play Prev button
+	- clean out debug statements
+	- back up
+	- have a look at Selectively Prerender Video
 x write a script to match two videos time-wise
   x read about synchronizing event by moving/splitting
   ! add alternative media to "Show all objects demo 2" create ?) beep, x) outline and x) tempo tracks
@@ -452,6 +459,7 @@ x write MatchTrack.cs
   - find out how-to move cursor back and forth in history or write a script
   - think how to get same piece at two different times in Left and Right screen
   x mind alternative media and playback rates
+  - implement my own play controls
   - back up
 - write RenderAll.cs
   - make this one an app extension with an option to interrupt rendering

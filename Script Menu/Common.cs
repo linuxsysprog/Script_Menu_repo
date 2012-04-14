@@ -153,6 +153,19 @@ public class Common {
 		return tracks;
 	}
 	
+	// filters out tracks given a regex
+	public static List<Track> FindTracksByRegex(List<Track> sourceTracks, Regex regex) {
+		List<Track> tracks = new List<Track>();
+		
+		foreach (Track sourceTrack in sourceTracks) {
+			if (regex.Match(sourceTrack.Name == null ? "" : sourceTrack.Name).Success) {
+				tracks.Add(sourceTrack);
+			}
+		}
+		
+		return tracks;
+	}
+	
 	//
 	// The "Four Horsemen" functions for tracks
 	//

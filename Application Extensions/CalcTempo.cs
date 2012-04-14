@@ -362,14 +362,7 @@ public class CalcTempoControl : UserControl {
 		List<Track> unfilteredTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
 		
 		// only keep tracks matching ^Audio
-		List<Track> tracks = new List<Track>();
-		Regex regex = new Regex("^Audio");
-		foreach (Track track in unfilteredTracks) {
-			if (regex.Match(track.Name == null ? "" : track.Name).Success) {
-				tracks.Add(track);
-			}
-		}
-		
+		List<Track> tracks = Common.FindTracksByRegex(unfilteredTracks, new Regex("^Audio"));
 		if (tracks.Count < 1) {
 			MessageBox.Show("No audio tracks starting with \"Audio\" found",
 				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -457,16 +450,9 @@ public class CalcTempoControl : UserControl {
 		List<Track> unfilteredTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
 		
 		// only keep tracks matching ^LVideo or ^RVideo
-		List<Track> tracks = new List<Track>();
-		List<Track> peerTracks = new List<Track>();
-		foreach (Track track in unfilteredTracks) {
-			if (regex.Match(track.Name == null ? "" : track.Name).Success) {
-				tracks.Add(track);
-			} else if (peerTrackRegex.Match(track.Name == null ? "" : track.Name).Success) {
-				peerTracks.Add(track);
-			}
-		}
-		
+		List<Track> tracks = Common.FindTracksByRegex(unfilteredTracks, regex);
+		List<Track> peerTracks = Common.FindTracksByRegex(unfilteredTracks, peerTrackRegex);
+
 		if (tracks.Count < 1) {
 			MessageBox.Show("No video tracks starting with \"" + label + "\" found",
 				Common.MUTE_VTRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -578,6 +564,14 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void chkLockLeftRight_Click(object sender, EventArgs e) {
+		if (lblVLPlayingTrack.Text == "" && lblVRPlayingTrack.Text == "") {
+			return;
+		}
+		
+		if (lblVLPlayingTrack.Text != "") {
+			// TODO: 
+			return;
+		}
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {
