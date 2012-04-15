@@ -678,6 +678,26 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void chkSplitAudio_Click(object sender, EventArgs e) {
+		List<Track> unfilteredAudioTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
+		List<Track> audioTracks = Common.FindTracksByRegex(unfilteredAudioTracks, new Regex("^Audio"));
+
+		// unsplit
+		if (!chkSplitAudio.Checked) {
+			lblPlayingTrackIndex.Text = "";
+			
+			using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+				muteAllTracks(audioTracks, true);
+				foreach (Track audioTrack in audioTracks) {
+					audioTrack.Mute = true;
+					((AudioTrack)audioTrack).PanX = 0;
+				}
+			}
+			
+			return;
+		}
+		
+		// split
+		
 		List<Track> videoTracks = Common.VideoTracksToTracks(Video.FindVideoTracks(Common.vegas.Project));
 		List<Track> unmutedLVideoTracks =
 			findUnmutedTracks(Common.FindTracksByRegex(videoTracks, new Regex("^LVideo")));
@@ -696,8 +716,6 @@ public class CalcTempoControl : UserControl {
 			return;
 		}
 		
-		List<Track> unfilteredAudioTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
-		List<Track> audioTracks = Common.FindTracksByRegex(unfilteredAudioTracks, new Regex("^Audio"));
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			muteAllTracks(audioTracks, true);
 			
