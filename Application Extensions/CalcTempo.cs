@@ -1,7 +1,7 @@
 // Copyright (C) 2011 Andrey Chislenko
 // $Id$
 // Monitor current selection and calculate tempo
-// Added "Mute/Solo Audio Tracks" feature
+// Added "Mute/Solo Audio/Video Tracks" feature
 
 using System;
 using System.Drawing;
@@ -754,7 +754,6 @@ public class CalcTempoControl : UserControl {
 		InitializeCalcTempoForm();
 		InitializeMuteTracksForm();
 		InitializeVMuteTracksForm();
-		Common.vegas.DebugClear();
 	}
 	
 	void HandleTrackCountChanged(Object sender, EventArgs args) {

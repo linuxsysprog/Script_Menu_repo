@@ -396,8 +396,8 @@ x see if its possible to have more than one preview window, each showing a diffe
 			x implement "unsplit"
 			x update split audio checkbox
 	x move Playing audio Track number down next to Play Prev button
-	- clean out debug statements
-	- back up
+	x clean out debug statements
+	-> back up
 	- have a look at Selectively Prerender Video
 x write a script to match two videos time-wise
   x read about synchronizing event by moving/splitting
