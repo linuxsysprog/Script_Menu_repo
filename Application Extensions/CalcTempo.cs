@@ -513,11 +513,15 @@ public class CalcTempoControl : UserControl {
 				tracks[0].Mute = false;
 				lbl.Text = "" + tracks[0].DisplayIndex;
 				unmutePeerTrack(tracks[0], sender);
-				Track peerAudioTrack = findPeerAudioTrack(tracks[0], sender);
-				if (peerAudioTrack != null) {
-					peerAudioTrack.Mute = false;
-					lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+				
+				if (chkLockWithVideo.Checked) {
+					Track peerAudioTrack = findPeerAudioTrack(tracks[0], sender);
+					if (peerAudioTrack != null) {
+						peerAudioTrack.Mute = false;
+						lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+					}
 				}
+				
 				return;
 			}
 			
@@ -528,11 +532,15 @@ public class CalcTempoControl : UserControl {
 			if (tracks.Count == 1) {
 				lbl.Text = "" + tracks[0].DisplayIndex;
 				unmutePeerTrack(tracks[0], sender);
-				Track peerAudioTrack = findPeerAudioTrack(tracks[0], sender);
-				if (peerAudioTrack != null) {
-					peerAudioTrack.Mute = false;
-					lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+				
+				if (chkLockWithVideo.Checked) {
+					Track peerAudioTrack = findPeerAudioTrack(tracks[0], sender);
+					if (peerAudioTrack != null) {
+						peerAudioTrack.Mute = false;
+						lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+					}
 				}
+				
 				return;
 			}
 			
@@ -551,19 +559,25 @@ public class CalcTempoControl : UserControl {
 							tracks[i - 1].Mute = false;
 							lbl.Text = "" + tracks[i - 1].DisplayIndex;
 							unmutePeerTrack(tracks[i - 1], sender);
-							Track peerAudioTrack = findPeerAudioTrack(tracks[i - 1], sender);
-							if (peerAudioTrack != null) {
-								peerAudioTrack.Mute = false;
-								lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+							
+							if (chkLockWithVideo.Checked) {
+								Track peerAudioTrack = findPeerAudioTrack(tracks[i - 1], sender);
+								if (peerAudioTrack != null) {
+									peerAudioTrack.Mute = false;
+									lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+								}
 							}
 						} else {
 							tracks[tracks.Count - 1].Mute = false;
 							lbl.Text = "" + tracks[tracks.Count - 1].DisplayIndex;
 							unmutePeerTrack(tracks[tracks.Count - 1], sender);
-							Track peerAudioTrack = findPeerAudioTrack(tracks[tracks.Count - 1], sender);
-							if (peerAudioTrack != null) {
-								peerAudioTrack.Mute = false;
-								lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+							
+							if (chkLockWithVideo.Checked) {
+								Track peerAudioTrack = findPeerAudioTrack(tracks[tracks.Count - 1], sender);
+								if (peerAudioTrack != null) {
+									peerAudioTrack.Mute = false;
+									lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+								}
 							}
 						}
 					} else { // btnLPlayNext || btnRPlayNext
@@ -571,19 +585,25 @@ public class CalcTempoControl : UserControl {
 							tracks[i + 1].Mute = false;
 							lbl.Text = "" + tracks[i + 1].DisplayIndex;
 							unmutePeerTrack(tracks[i + 1], sender);
-							Track peerAudioTrack = findPeerAudioTrack(tracks[i + 1], sender);
-							if (peerAudioTrack != null) {
-								peerAudioTrack.Mute = false;
-								lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+							
+							if (chkLockWithVideo.Checked) {
+								Track peerAudioTrack = findPeerAudioTrack(tracks[i + 1], sender);
+								if (peerAudioTrack != null) {
+									peerAudioTrack.Mute = false;
+									lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+								}
 							}
 						} else {
 							tracks[0].Mute = false;
 							lbl.Text = "" + tracks[0].DisplayIndex;
 							unmutePeerTrack(tracks[0], sender);
-							Track peerAudioTrack = findPeerAudioTrack(tracks[0], sender);
-							if (peerAudioTrack != null) {
-								peerAudioTrack.Mute = false;
-								lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+							
+							if (chkLockWithVideo.Checked) {
+								Track peerAudioTrack = findPeerAudioTrack(tracks[0], sender);
+								if (peerAudioTrack != null) {
+									peerAudioTrack.Mute = false;
+									lblPlayingTrackIndex.Text = "" + peerAudioTrack.DisplayIndex;
+								}
 							}
 						}
 					}
@@ -632,10 +652,6 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	private  Track findPeerAudioTrack(Track track, object sender) {
-		if (!chkLockWithVideo.Checked) {
-			return null;
-		}
-	
 		int peerAudioTrackIndex;
 		if (sender == btnLPlayPrev || sender == btnLPlayNext) {
 			peerAudioTrackIndex = track.Index + 2;
@@ -684,6 +700,21 @@ public class CalcTempoControl : UserControl {
 		List<Track> audioTracks = Common.FindTracksByRegex(unfilteredAudioTracks, new Regex("^Audio"));
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
 			muteAllTracks(audioTracks, true);
+			
+			Track lPeerAudioTrack = findPeerAudioTrack(unmutedLVideoTracks[0], btnLPlayPrev);
+			if (lPeerAudioTrack != null) {
+				lPeerAudioTrack.Mute = false;
+				lblPlayingTrackIndex.Text = "";
+				((AudioTrack)lPeerAudioTrack).PanX = -1;
+			}
+			
+			Track rPeerAudioTrack = findPeerAudioTrack(unmutedRVideoTracks[0], btnRPlayPrev);
+			if (rPeerAudioTrack != null) {
+				rPeerAudioTrack.Mute = false;
+				lblPlayingTrackIndex.Text = "";
+				((AudioTrack)rPeerAudioTrack).PanX = 1;
+			}
+			
 		}
 	}
 	
