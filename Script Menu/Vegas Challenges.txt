@@ -386,11 +386,15 @@ x see if its possible to have more than one preview window, each showing a diffe
 		x implement event handler
 			x include mute/solo
 		? do the other direction
-	-> add Pan Audio Left Right/Audio Restore
+	x add Pan Audio Left Right/Audio Restore
 		x find out if we can pan programmatically
 		x add Split Audio checkbox
-		-> implement hanlder
+		x implement handler
 			x check for exactly one LVideo and one RVideo unmuted (nonadjacent)
+			x mute all audio tracks x) but two x) pan tracks
+				x extract FindPeerAudioTrack()
+			x implement "unsplit"
+			x update split audio checkbox
 	x move Playing audio Track number down next to Play Prev button
 	- clean out debug statements
 	- back up

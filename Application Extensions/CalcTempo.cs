@@ -386,6 +386,12 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			// unsplit audio
+			if (chkSplitAudio.Checked) {
+				chkSplitAudio.Checked = false;
+				chkSplitAudio_Click(sender, e);
+			}
+		
 			// unsolo soloed tracks if there are any
 			soloAllTracks(tracks, false);
 			if (chkSoloAll.Checked) {
@@ -478,6 +484,12 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
+			// unsplit audio
+			if (chkSplitAudio.Checked) {
+				chkSplitAudio.Checked = false;
+				chkSplitAudio_Click(sender, e);
+			}
+		
 			// unsolo soloed tracks if there are any
 			soloAllTracks(tracks, false);
 			if (chkLockLeftRight.Checked) {
@@ -707,12 +719,14 @@ public class CalcTempoControl : UserControl {
 		if (!(unmutedLVideoTracks.Count == 1 && unmutedRVideoTracks.Count == 1)) {
 			MessageBox.Show("Please make sure exactly one \"LVideo\" track and one \"RVideo\" track are unmuted",
 				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			chkSplitAudio.Checked = false;
 			return;
 		}
 		
 		if (unmutedLVideoTracks[0].Index + 1 == unmutedRVideoTracks[0].Index) {
 			MessageBox.Show("Please make sure \"LVideo\" and \"RVideo\" tracks are not adjacent",
 				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			chkSplitAudio.Checked = false;
 			return;
 		}
 		
