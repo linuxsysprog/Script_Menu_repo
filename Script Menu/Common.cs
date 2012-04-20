@@ -336,6 +336,33 @@ public class Common {
 		return events;
 	}
 	
+	// finds events that have at least one take whose name matches "^\\d+\\.\\d+" for audio
+	// and "^\\d+ (T|B)" for video
+	public static List<TrackEvent> FindNativeEvents(List<TrackEvent> sourceEvents) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		Regex audioRegex = new Regex(AUDIO_RE);
+		Regex videoRegex = new Regex(VIDEO_RE);
+		
+		foreach (TrackEvent sourceEvent in sourceEvents) {
+			string sourceEventName = getFullName(getTakeNames(sourceEvent));
+			
+			Regex regex;
+			if (sourceEvent.IsAudio()) {
+				regex = audioRegex;
+			} else if (sourceEvent.IsVideo()) {
+				regex = videoRegex;
+			} else {
+				throw new Exception("source event neither audio nor video");
+			}
+			
+			if (regex.Match(sourceEventName).Success) {
+				events.Add(sourceEvent);
+			}
+		}
+		
+		return events;
+	}
+	
 	// convert Location&Number to basename
 	public static string LocationNumber2Basename(bool top, int number) {
 		return "ruler_" + (top ? "top" : "bot") + "_" +  number.ToString("D2") + ".png";

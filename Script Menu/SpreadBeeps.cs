@@ -22,14 +22,25 @@ public class EntryPoint {
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
 		
-		// check for the user has selected exactly two tracks. Either track could be
-		// audio or video
-		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
-		if (tracks.Count != 2) {
-			MessageBox.Show("Please make sure you have exactly two tracks selected",
+		// check for the user has selected exactly one audio track
+		// List<Track> tracks =
+			// Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)));
+		List<Track> tracks =
+			Common.FindSelectedTracks(Common.vegas.Project.Tracks);
+		if (tracks.Count != 1) {
+			MessageBox.Show("Please make sure you have selected exactly one audio track",
 				Common.SPREAD_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
+		
+		Common.vegas.DebugClear();
+		List<TrackEvent> elmoList = Common.FindNativeEvents(Common.TrackEventsToTrackEvents(tracks[0].Events));
+		foreach (TrackEvent elmoEvent in elmoList) {
+			string fullName = Common.getFullName(Common.getTakeNames(elmoEvent));
+			Common.vegas.DebugOut("" + elmoEvent.Index + (fullName == "" ? "" : " (" + fullName + ")"));
+		}
+		
+		return;
 		
 		// find events
 		List<TrackEvent>[] events = new List<TrackEvent>[2];
