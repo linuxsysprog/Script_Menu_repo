@@ -440,9 +440,15 @@ x write MatchTrack.cs
 	x render the new tracks
 	x solve the problem with 640 vs. 320 frame width
   x back up
--> write SlowDownBeepTrack.cs
-	- think which script to use as a model
+-> write SpreadBeeps.cs
+	x think which script to use as a model (SliceTrack.cs). The script is audio only.
+		The script supports selections (partial tracks)
+	x create all files and icons
+	-> input: exactly one audio track should be selected
+		- check 
+	- write GUI to prompt for percentage
 	- back up
+	- compare against audio/video tracks -) add to some existing demo project
 - write LayoutTrack.cs
 	- think which script to use as a model
   x establish one project directory, one version of ffmpeg, keep only source FLV files,

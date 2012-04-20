@@ -28,6 +28,7 @@ public class Common {
 	public const string RULERS_OBJECTS = "Rulers to Objects" + CP_RIGHT;
 	public const string SLICE_TRACK = "Slice Track" + CP_RIGHT;
 	public const string MATCH_TRACK = "Match Track" + CP_RIGHT;
+	public const string SPREAD_BEEPS = "Spread Beeps" + CP_RIGHT;
 	
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
