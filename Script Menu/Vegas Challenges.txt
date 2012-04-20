@@ -397,8 +397,8 @@ x see if its possible to have more than one preview window, each showing a diffe
 			x update split audio checkbox
 	x move Playing audio Track number down next to Play Prev button
 	x clean out debug statements
-	-> back up
-	- have a look at Selectively Prerender Video
+	x back up
+	x have a look at Selectively Prerender Video
 x write a script to match two videos time-wise
   x read about synchronizing event by moving/splitting
   ! add alternative media to "Show all objects demo 2" create ?) beep, x) outline and x) tempo tracks
@@ -440,7 +440,11 @@ x write MatchTrack.cs
 	x render the new tracks
 	x solve the problem with 640 vs. 320 frame width
   x back up
--> write LayoutAll.cs (CopyAll.cs?)
+-> write SlowDownBeepTrack.cs
+	- think which script to use as a model
+	- back up
+- write LayoutTrack.cs
+	- think which script to use as a model
   x establish one project directory, one version of ffmpeg, keep only source FLV files,
     under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
 	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"
@@ -462,16 +466,30 @@ x write MatchTrack.cs
 		  x slow down See audio
 		  x speed up See audio
     x see what happens to the event positions
-  - learn to make copies of bunches of (partials) audio and video tracks -) vertically and -) horizontally
-    - see how "Insert Time" works
-	- learn to -) copy -) move arrays of audio/video events -) see what happens
-	  - copy ...
-  - see how we can switch over (move cursor) between copies
-  - find out how-to move cursor back and forth in history or write a script
-  - think how to get same piece at two different times in Left and Right screen
-  x mind alternative media and playback rates
-  - implement my own play controls
-  - back up
+	x mind alternative media and playback rates
+	x draft a layout
+		x LMargin LBeep Body RBeep RMargin
+		x see how-to make a "still frame" (->event copy/paste or manipulate event's media)
+		x manually layout tracks 
+			x build a layout with x) full measure x) 1/2 measure x) full measure with offset x) 1/2 measure with offset
+		- implement "tail" option
+		- lay out slowed down (50% and 25%) audio/video/ruler/beep tracks
+			x move Quantization demo project into a separate folder
+			/ render down ruler track, compare with pre-rendered track
+				$ find out why the rendered track is lagging 2 frames behind
+					x move ruler track 2 frames left for now
+			- slow down x) video/ruler/audio ->) beep tracks 25% -) compare with 100% versions
+	- think how-to properly split audio and video tracks
+	- learn to make copies of bunches of (partials) audio and video tracks -) vertically and -) horizontally
+		- see how "Insert Time" works
+		- learn to -) copy -) move arrays of audio/video events -) see what happens
+	- back up
+	! "Funky Su - Guitar Jam": move beep.1.wav etc under project folder
+- write horizontal navigation plus my own play controls
+	- see how we can switch over (move cursor) between copies
+	- think how to get same piece at two different times in Left and Right screen
+	- find out how-to move cursor back and forth in history or write a script
+	- back up
 - write RenderAll.cs
   - make this one an app extension with an option to interrupt rendering
   - ask the user for the output folder
