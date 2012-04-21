@@ -31,12 +31,13 @@ public class EntryPoint : Form {
 		lblLabel2.Location = new Point(310, 20);
 		lblLabel2.Text = "%";
 		
-		btnOK.Location = new Point(145, 60);
+		btnOK.Location = new Point(100, 60);
 		btnOK.Text = "&OK";
 		btnOK.Click += new EventHandler(btnOK_Click);
 
-		btnCancel.Click += new EventHandler(btnCancel_Click);
-		btnCancel.Size = new Size(0, 0);
+		btnCancel.Location = new Point(180, 60);
+		btnCancel.Text = "&Cancel";
+		btnCancel.Click += new EventHandler(btnOK_Click);
 
 		Controls.AddRange(new Control[] {
 			lblLabel,
