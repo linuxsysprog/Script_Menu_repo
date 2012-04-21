@@ -446,10 +446,12 @@ x write MatchTrack.cs
 	x create all files and icons
 	-> input:
 		x check 1. Exactly one audio track should be selected
-		-> check 2. At least two native events should exist to continue
+		x check 2. At least two native events should exist to continue
 			x write Common.FindNativeEvents()
-	- write GUI to prompt for percentage
+	-> write GUI to prompt for percentage
+		- validate form
 	- report
+	- clear out debug statements
 	- back up
 	- compare against audio/video tracks -) add to some existing demo project
 - write LayoutTrack.cs
