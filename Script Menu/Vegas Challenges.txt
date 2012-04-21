@@ -451,10 +451,11 @@ x write MatchTrack.cs
 	x write GUI to prompt for percentage
 		x add Cancel button
 		x validate form
-	- report
-	- clear out debug statements
+	x spread out events
+	x report
+	x clear out debug statements
+	-> compare against audio/video tracks -) add to some existing demo project
 	- back up
-	- compare against audio/video tracks -) add to some existing demo project
 - write LayoutTrack.cs
 	- think which script to use as a model
   x establish one project directory, one version of ffmpeg, keep only source FLV files,

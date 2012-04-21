@@ -1,6 +1,6 @@
 // Copyright (C) 2011 Andrey Chislenko
 // $Id$
-// Spread out (or bring closer together) the beeps by a certain percentage.
+// Spread out (or bring closer together) the beeps proportionally by a certain percentage.
 // This script operates on a single audio track
 
 using System;
@@ -66,7 +66,43 @@ public class EntryPoint : Form {
 			return;
 		}
 		
-		MessageBox.Show("" + Convert.ToDouble(txtTextBox.Text));
+		Selection selection =
+			new Selection(Common.vegas.Transport.SelectionStart, Common.vegas.Transport.SelectionLength);
+		selection.Normalize();
+		
+		List<Track> tracks =
+			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)));
+		
+		List<TrackEvent> events;
+		if (selection.SelectionLength == new Timecode()) {
+			events = Common.FindNativeEvents(Common.TrackEventsToTrackEvents(tracks[0].Events));
+		} else {
+			events = Common.FindNativeEvents(Common.FindEventsBySelection(tracks[0], selection));
+		}
+		
+		// spread out events proportionally
+		int adjustedEvents = 0;
+		for (int i = 0; i < events.ToArray().Length - 1; i++) {
+			Timecode offset = (events[i + 1].Start - events[i].Start) -
+				Timecode.FromNanos((int)Math.Round(
+					(events[i + 1].Start - events[i].Start).Nanos * (Convert.ToDouble(txtTextBox.Text) / 100.0))
+				);
+				
+			int count = 0;
+			for (int j = i + 1; j < events.ToArray().Length; j++) {
+				if (events[j].Start != events[j].Start - offset) {
+					events[j].Start = events[j].Start - offset;
+					count++;
+				}
+			}
+			
+			if (count != 0) {
+				adjustedEvents++;
+			}
+		}
+		
+		// report
+		MessageBox.Show("Adjusted the start of " + adjustedEvents + " events", Common.SPREAD_BEEPS);
 		Close();
 	}
 	
@@ -88,7 +124,6 @@ public class EntryPoint : Form {
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		Common.vegas.DebugClear();
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -105,7 +140,6 @@ public class EntryPoint : Form {
 		// at least two native events should exist to continue
 		List<TrackEvent> events;
 		if (selection.SelectionLength == new Timecode()) {
-			// events = Common.TrackEventsToTrackEvents(tracks.Events);
 			events = Common.FindNativeEvents(Common.TrackEventsToTrackEvents(tracks[0].Events));
 		} else {
 			events = Common.FindNativeEvents(Common.FindEventsBySelection(tracks[0], selection));
@@ -118,54 +152,6 @@ public class EntryPoint : Form {
 		}
 		
 		ShowDialog();
-		return;
-
-		/*// sort out which track and event collection is the source
-		// and which is the target
-		sourceTrack = tracks[0];
-		targetTrack = tracks[1];
-		
-		sourceEvents = Common.FindMeasureStartEvents(events[0]);
-		
-		// source track (selection) should have at least one (measure start) event to continue
-		if (sourceEvents.Count < 1) {
-			MessageBox.Show("Please make sure source track (selection) has at least one (measure start) event",
-				Common.SPREAD_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		// make sure each source event has at least one target event that
-		// could be split
-		foreach (TrackEvent sourceEvent in sourceEvents) {
-			string eventName = Common.getFullName(Common.getTakeNames(sourceEvent));
-			if (Common.FindEventsByEvent(targetTrack, sourceEvent).Count < 1) {
-				MessageBox.Show("Source event " + sourceEvent.Index +
-				(eventName == "" ? "" : " (" + eventName + ")") + " does not have a matching target event",
-					Common.SPREAD_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-		}
-		
-		// find and split events. Copy take names
-		int splitEvents = 0;
-		foreach (TrackEvent sourceEvent in sourceEvents) {
-			string sourceEventName = Common.getFullName(Common.getTakeNames(sourceEvent));
-			
-			List<TrackEvent> targetEvents = Common.FindEventsByEvent(targetTrack, sourceEvent);
-			foreach (TrackEvent targetEvent in targetEvents) {
-				// split event
-				TrackEvent secondHalfEvent = targetEvent.Split(sourceEvent.Start - targetEvent.Start);
-				
-				// copy take names
-				// RemoveEmptyTakes(secondHalfEvent);
-				// AddEmptyTake(secondHalfEvent, sourceEventName);
-				
-				splitEvents++;
-			}
-		}
-		
-		// report
-		MessageBox.Show("Split " + splitEvents + " events", Common.SPREAD_BEEPS);*/
 	}
 	
 }
