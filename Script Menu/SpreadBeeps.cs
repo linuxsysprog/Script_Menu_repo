@@ -37,7 +37,7 @@ public class EntryPoint : Form {
 
 		btnCancel.Location = new Point(180, 60);
 		btnCancel.Text = "&Cancel";
-		btnCancel.Click += new EventHandler(btnOK_Click);
+		btnCancel.Click += new EventHandler(btnCancel_Click);
 
 		Controls.AddRange(new Control[] {
 			lblLabel,
@@ -57,11 +57,33 @@ public class EntryPoint : Form {
 	}
 
 	void btnOK_Click(object sender, EventArgs e) {
+		try {
+			validateForm();
+		} catch (Exception ex) {
+			MessageBox.Show(ex.Message, Common.SPREAD_BEEPS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			txtTextBox.Focus();
+			txtTextBox.SelectAll();
+			return;
+		}
+		
+		MessageBox.Show("" + Convert.ToDouble(txtTextBox.Text));
 		Close();
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
 		Close();
+	}
+	
+	private void validateForm() {
+		double f;
+		try {
+			f = Convert.ToDouble(txtTextBox.Text);
+		} catch (Exception ex) {
+			throw new Exception("Invalid percentage");
+		}
+		if (f < 25.0 || f > 400.0) {
+			throw new Exception("Percentage should stay within 25.0% - 400.0% range");
+		}
 	}
 	
     public void FromVegas(Vegas vegas) {

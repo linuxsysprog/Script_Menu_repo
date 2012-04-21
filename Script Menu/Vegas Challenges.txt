@@ -448,9 +448,9 @@ x write MatchTrack.cs
 		x check 1. Exactly one audio track should be selected
 		x check 2. At least two native events should exist to continue
 			x write Common.FindNativeEvents()
-	-> write GUI to prompt for percentage
+	x write GUI to prompt for percentage
 		x add Cancel button
-		-> validate form
+		x validate form
 	- report
 	- clear out debug statements
 	- back up
