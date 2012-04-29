@@ -454,8 +454,23 @@ x write MatchTrack.cs
 	x spread out events
 	x report
 	x clear out debug statements
-	-> compare against audio/video tracks -) add to some existing demo project
-	- back up
+	- add to "Funky Su - Guitar Jam.veg" x) 100% and x) 200% ruler tracks x) 200% beep track
+		x recreate VideoTrack1 (all tracks) x) 100%, x) 200% and x) 400%
+			x let's try to embed ruler track
+				x don't embed Tempo&Rate&Filename
+			! find original video/audio/beep tracks
+				! !!! couldn't find - always keep original video/audio/beep tracks !!!
+		x compare how ruler and beep tracks align at different speeds
+			x streach everything starting from 1.1
+		x xsc audio tracks
+		x deal with Rate and Tempo tracks
+		- render down tracks
+			- learn network rendering
+				- 
+	- back up (Japanese Phantom scripts as well)
+- add "events found" to DumpTrack.cs
+- add partial tracks (selection) to Fill Gaps
+- troubleshoot manifold
 - write LayoutTrack.cs
 	- think which script to use as a model
   x establish one project directory, one version of ffmpeg, keep only source FLV files,
@@ -547,3 +562,29 @@ Q&uarter Note Triplets
 
 ---
 Vegas icon format: 16 X 16 pixels, 32-bit color depth with an alpha channel for transparency. Font: Arial Narrow Condensed, Size: 13, (v) Hinting () Force auto-hinter () Antialiasing
+---
+NETWORK RENDERING HOW-TO
+x check windows binding order
+x check firewall on both machines: services.msc
+x restore config files
+	192.168.0.2 (owner computer) D:\Program Files\Sony\Vegas Pro 8.0
+	192.168.0.1 (render host) C:\Program Files\Sony\Vegas Pro 8.0
+	NetRenderClient.config
+	NetRenderService.config
+x remove recursively
+	(owner computer) C:\Documents and Settings\Andrey\Local Settings\Application Data\Sony\Vegas Pro
+	(render host) C:\Documents and Settings\Remote\Local Settings\Application Data\Sony\Vegas Pro
+	(render host) C:\Documents and Settings\Andrey\Local Settings\Application Data\Sony\Vegas Pro
+x install Divx codec on the render host
+x install AddRuler scripts/resources on the render host
+	C:\Program Files\Sony\Vegas Pro 8.0
+	copy Application Extensions
+	copy Script Menu\*
+	add csc.exe to path: C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+	Script Menu\BuildAll.BAT
+	Application Extensions\CalcTempo.bat
+	copy Presets\{0FE8789D-0C47-442A-AFB0-0DAF97669317}\*
+		create elmo preset, search/export/edit/import registry keys
+-> check serial number on the render host
+- render a clip on owner computer/render host
+- 
