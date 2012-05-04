@@ -1,7 +1,8 @@
 // Copyright (C) 2011 Andrey Chislenko
-// $Id: SpreadBeeps.cs 244 2012-04-21 09:38:38Z Andrey $
-// Spread out (or bring closer together) the beeps proportionally by a certain percentage.
-// This script operates on a single audio track
+// $Id$
+// Layout the track according to user's preferences.
+// The script accepts two tracks, source and target. Source track is the audio beep track.
+// Target track is either audio or video. The script supports selection.
 
 using System;
 using System.Drawing;

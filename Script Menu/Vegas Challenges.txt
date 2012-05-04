@@ -440,7 +440,7 @@ x write MatchTrack.cs
 	x render the new tracks
 	x solve the problem with 640 vs. 320 frame width
   x back up
--> write SpreadBeeps.cs
+x write SpreadBeeps.cs
 	x think which script to use as a model (SliceTrack.cs). The script is audio only.
 		The script supports selections (partial tracks)
 	x create all files and icons
@@ -466,12 +466,19 @@ x write MatchTrack.cs
 		x deal with Rate and Tempo tracks
 		x render down tracks
 			x learn network rendering
-	-> back up (Japanese Phantom scripts as well)
-- add "events found" to DumpTrack.cs
+	x back up (Japanese Phantom scripts as well)
+x add "events found" to DumpTrack.cs
 - add partial tracks (selection) to Fill Gaps
 - troubleshoot manifold
 - write LayoutTrack.cs
-	- think which script to use as a model
+	x think which script to use as a model (SpreadBeeps.cs)
+	x create files and icons
+	-> input
+		- two tracks, one beep and the other audio/video
+		- works on selection
+	- write GUI
+	- implement head/tail option
+	- implement start from the beginning/middle option
   x establish one project directory, one version of ffmpeg, keep only source FLV files,
     under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
 	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"
@@ -494,22 +501,19 @@ x write MatchTrack.cs
 		  x speed up See audio
     x see what happens to the event positions
 	x mind alternative media and playback rates
+	x learn to make copies of bunches of (partials) audio and video tracks ?) vertically and x) horizontally
+		x see how "Insert Time" works
 	x draft a layout
 		x LMargin LBeep Body RBeep RMargin
-		x see how-to make a "still frame" (->event copy/paste or manipulate event's media)
+		x see how-to make a "still frame" (event copy/paste or manipulate event's media)
 		x manually layout tracks 
 			x build a layout with x) full measure x) 1/2 measure x) full measure with offset x) 1/2 measure with offset
-		- implement "tail" option
-		- lay out slowed down (50% and 25%) audio/video/ruler/beep tracks
+		x lay out one full measure given 124 ruler/video/audio/beep tracks
+			/ think how-to properly split audio and video tracks
 			x move Quantization demo project into a separate folder
 			/ render down ruler track, compare with pre-rendered track
 				$ find out why the rendered track is lagging 2 frames behind
 					x move ruler track 2 frames left for now
-			- slow down x) video/ruler/audio ->) beep tracks 25% -) compare with 100% versions
-	- think how-to properly split audio and video tracks
-	- learn to make copies of bunches of (partials) audio and video tracks -) vertically and -) horizontally
-		- see how "Insert Time" works
-		- learn to -) copy -) move arrays of audio/video events -) see what happens
 	- back up
 	! "Funky Su - Guitar Jam": move beep.1.wav etc under project folder
 - write horizontal navigation plus my own play controls
