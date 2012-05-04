@@ -454,7 +454,7 @@ x write MatchTrack.cs
 	x spread out events
 	x report
 	x clear out debug statements
-	- add to "Funky Su - Guitar Jam.veg" x) 100% and x) 200% ruler tracks x) 200% beep track
+	x add to "Funky Su - Guitar Jam.veg" x) 100% and x) 200% ruler tracks x) 200% beep track
 		x recreate VideoTrack1 (all tracks) x) 100%, x) 200% and x) 400%
 			x let's try to embed ruler track
 				x don't embed Tempo&Rate&Filename
@@ -464,10 +464,9 @@ x write MatchTrack.cs
 			x streach everything starting from 1.1
 		x xsc audio tracks
 		x deal with Rate and Tempo tracks
-		- render down tracks
-			- learn network rendering
-				- 
-	- back up (Japanese Phantom scripts as well)
+		x render down tracks
+			x learn network rendering
+	-> back up (Japanese Phantom scripts as well)
 - add "events found" to DumpTrack.cs
 - add partial tracks (selection) to Fill Gaps
 - troubleshoot manifold
@@ -585,6 +584,12 @@ x install AddRuler scripts/resources on the render host
 	Application Extensions\CalcTempo.bat
 	copy Presets\{0FE8789D-0C47-442A-AFB0-0DAF97669317}\*
 		create elmo preset, search/export/edit/import registry keys
--> check serial number on the render host
-- render a clip on owner computer/render host
+x check serial number on the render host
+x render a clip on owner computer/render host
+	x 00:02:04.300 clip, video only, xvid: 4:09 local, 0:44 remote (5.7 times faster)
+x do a simple remote render
+	x 0:46
+x try 2 instances of the render service (distributed rendering)
+	x 1:25
+	? check for double encoding
 - 
