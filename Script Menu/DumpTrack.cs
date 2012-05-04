@@ -64,6 +64,8 @@ public class EntryPoint {
 				}
 			}
 		}
+		
+		vegas.DebugOut(events.Count + " " + (events.Count > 1 ? "events" : "event") + " found.");
 	}
 	
 }
