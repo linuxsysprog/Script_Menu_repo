@@ -479,9 +479,11 @@ x add "events found" to DumpTrack.cs
 		- check for exactly one target event, long enough to make two cuts
 		- implement "enough space" check
 		x implement selection
-	-> write GUI
-	- implement head/tail option
-	- implement start from the beginning/middle option
+	x write GUI (model after GenBeeps.cs)
+		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4)
+		x cut at the middle (for chunk size > 1)
+			x update checkbox
+		x Include Head x) Include Tail
   x establish one project directory, one version of ffmpeg, keep only source FLV files,
     under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
 	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"

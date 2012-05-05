@@ -14,36 +14,86 @@ using Sony.Vegas;
 using AddRulerNamespace;
 
 public class EntryPoint : Form {
-	private Label lblLabel = new Label();
-	private TextBox txtTextBox = new TextBox();
-	private Label lblLabel2 = new Label();
+	private GroupBox gbSize= new GroupBox();
+	private Label lblChunk = new Label();
+	private ComboBox cbChunk = new ComboBox();
+	private Label lblCount = new Label();
+	private ComboBox cbCount = new ComboBox();
+	private Label lblMargins = new Label();
+	private ComboBox cbMargins = new ComboBox();
+	private CheckBox chkMiddle = new CheckBox();
+	private CheckBox chkHead = new CheckBox();
+	private CheckBox chkTail = new CheckBox();
+	
 	private Button btnOK = new Button();
-	private Button btnCancel = new Button();
+	private Button btnCancel = new Button();		
 	
 	public EntryPoint() {
-		lblLabel.Size = new Size(245, 20);
-		lblLabel.Location = new Point(30, 20);
-		lblLabel.Text = "Spread out (bring closer together) the beeps by ";
+		gbSize.Size = new Size(140, 110);
+		gbSize.Location = new Point(10, 10);
+		gbSize.Text = "Size in beats";
+		gbSize.Controls.AddRange(new Control[] {
+			lblChunk,
+			cbChunk,
+			lblCount,
+			cbCount,
+			lblMargins,
+			cbMargins});
 		
-		txtTextBox.Size = new Size(30, 20);
-		txtTextBox.Location = new Point(275, 20);
+		lblChunk.Size = new Size(75, 20);
+		lblChunk.Location = new Point(10, 20);
+		lblChunk.Text = "&Chunk:";
 		
-		lblLabel2.Size = new Size(20, 20);
-		lblLabel2.Location = new Point(310, 20);
-		lblLabel2.Text = "%";
+		cbChunk.Size = new Size(40, 20);
+		cbChunk.Location = new Point(90, 20);
+		cbChunk.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbChunk.SelectedValueChanged += new EventHandler(cbChunk_SelectedValueChanged);
 		
-		btnOK.Location = new Point(100, 60);
+		lblCount.Size = new Size(75, 20);
+		lblCount.Location = new Point(10, 50);
+		lblCount.Text = "&In/Out Count:";
+		
+		cbCount.Size = new Size(40, 20);
+		cbCount.Location = new Point(90, 50);
+		cbCount.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbCount.SelectedValueChanged += new EventHandler(cbCount_SelectedValueChanged);
+		
+		lblMargins.Size = new Size(75, 20);
+		lblMargins.Location = new Point(10, 80);
+		lblMargins.Text = "M&argins:";
+		
+		cbMargins.Size = new Size(40, 20);
+		cbMargins.Location = new Point(90, 80);
+		cbMargins.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbMargins.SelectedValueChanged += new EventHandler(cbMargins_SelectedValueChanged);
+		
+		chkMiddle.Size = new Size(150, 20);
+		chkMiddle.Location = new Point(10, 130);
+		chkMiddle.Text = "Cut at the &Middle";
+		chkMiddle.Click += new EventHandler(chkMiddle_Click);
+		
+		chkHead.Size = new Size(150, 20);
+		chkHead.Location = new Point(10, 150);
+		chkHead.Text = "Include &Head";
+		chkHead.Click += new EventHandler(chkHead_Click);
+		
+		chkTail.Size = new Size(150, 20);
+		chkTail.Location = new Point(10, 170);
+		chkTail.Text = "Include &Tail";
+		chkTail.Click += new EventHandler(chkTail_Click);
+		
+		btnOK.Location = new Point(45, 205);
 		btnOK.Text = "&OK";
 		btnOK.Click += new EventHandler(btnOK_Click);
 
-		btnCancel.Location = new Point(180, 60);
-		btnCancel.Text = "&Cancel";
 		btnCancel.Click += new EventHandler(btnCancel_Click);
+		btnCancel.Size = new Size(0, 0);
 
 		Controls.AddRange(new Control[] {
-			lblLabel,
-			txtTextBox,
-			lblLabel2,
+			gbSize,
+			chkMiddle,
+			chkHead,
+			chkTail,
 			btnOK,
 			btnCancel});
 
@@ -54,10 +104,48 @@ public class EntryPoint : Form {
 		AcceptButton = btnOK;
 		CancelButton = btnCancel;
 		StartPosition = FormStartPosition.CenterParent;
-		Size = new Size(365, 120);
+		Size = new Size(170, 265);
+		
+		initializeForm();
 	}
 
+	//
+	// Event handlers BEGIN
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
 	void btnOK_Click(object sender, EventArgs e) {
+	}
+	
+	void btnCancel_Click(object sender, EventArgs e) {
+		Close();
+	}
+	
+	void cbChunk_SelectedValueChanged(object sender, EventArgs e) {
+		if (cbChunk.Text == "1") {
+			chkMiddle.Enabled = false;
+		} else {
+			chkMiddle.Enabled = true;
+		}
+	}
+	
+	void cbCount_SelectedValueChanged(object sender, EventArgs e) {
+	}
+	
+	void cbMargins_SelectedValueChanged(object sender, EventArgs e) {
+	}
+	
+	void chkMiddle_Click(object sender, EventArgs e) {
+	}
+	
+	void chkHead_Click(object sender, EventArgs e) {
+	}
+	
+	void chkTail_Click(object sender, EventArgs e) {
+	}
+	
+	/*void btnOK_Click(object sender, EventArgs e) {
 		try {
 			validateForm();
 		} catch (Exception ex) {
@@ -105,13 +193,38 @@ public class EntryPoint : Form {
 		// report
 		MessageBox.Show("Adjusted the start of " + adjustedEvents + " events", Common.LAYOUT_TRACK);
 		Close();
+	}*/
+	
+	//
+	// Event handlers END
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
+	private void initializeForm() {
+		cbChunk.Items.AddRange(getRange(1, 16));
+		cbChunk.SelectedIndex = 3;
+		
+		cbCount.Items.AddRange(getRange(2, 4));
+		cbCount.SelectedIndex = 0;
+		
+		cbMargins.Items.AddRange(getRange(1, 4));
+		cbMargins.SelectedIndex = 0;
+		
+		chkMiddle.Checked = false;
+		chkMiddle.Checked = false;
+		chkMiddle.Checked = false;
 	}
 	
-	void btnCancel_Click(object sender, EventArgs e) {
-		Close();
+	private string[] getRange(int min, int max) {
+		List<string> list = new List<string>();
+		for (int i = min; i < max + 1; i++) {
+			list.Add("" + i);
+		}
+		return list.ToArray();
 	}
 	
-	private void validateForm() {
+	/*private void validateForm() {
 		double f;
 		try {
 			f = Convert.ToDouble(txtTextBox.Text);
@@ -121,7 +234,7 @@ public class EntryPoint : Form {
 		if (f < 25.0 || f > 400.0) {
 			throw new Exception("Percentage should stay within 25.0% - 400.0% range");
 		}
-	}
+	}*/
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
@@ -135,7 +248,7 @@ public class EntryPoint : Form {
 		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
 		if (tracks.Count != 2) {
 			MessageBox.Show("Please make sure you have exactly two tracks selected",
-				Common.MATCH_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
@@ -146,7 +259,7 @@ public class EntryPoint : Form {
 		// source track must be audio
 		if (!sourceTrack.IsAudio()) {
 			MessageBox.Show("Please make sure the source (upper) track is audio",
-				Common.MATCH_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
