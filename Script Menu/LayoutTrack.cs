@@ -125,30 +125,28 @@ public class EntryPoint : Form {
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
+		Track sourceTrack;
+		Track targetTrack;
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
 		
-		// check for the user has selected exactly one audio track
-		List<Track> tracks =
-			Common.FindSelectedTracks(Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project)));
-		if (tracks.Count != 1) {
-			MessageBox.Show("Please make sure you have selected exactly one audio track",
-				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		// check for the user has selected exactly two tracks
+		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
+		if (tracks.Count != 2) {
+			MessageBox.Show("Please make sure you have exactly two tracks selected",
+				Common.MATCH_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
-		// at least two native events should exist to continue
-		List<TrackEvent> events;
-		if (selection.SelectionLength == new Timecode()) {
-			events = Common.FindNativeEvents(Common.TrackEventsToTrackEvents(tracks[0].Events));
-		} else {
-			events = Common.FindNativeEvents(Common.FindEventsBySelection(tracks[0], selection));
-		}
+		// sort out which track is the source and which is the target
+		sourceTrack = tracks[0];
+		targetTrack = tracks[1];
 		
-		if (events.Count < 2) {
-			MessageBox.Show("Please make sure you have at least two (native) events selected to continue",
-				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		// source track must be audio
+		if (!sourceTrack.IsAudio()) {
+			MessageBox.Show("Please make sure the source (upper) track is audio",
+				Common.MATCH_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		

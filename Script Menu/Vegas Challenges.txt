@@ -473,10 +473,13 @@ x add "events found" to DumpTrack.cs
 - write LayoutTrack.cs
 	x think which script to use as a model (SpreadBeeps.cs)
 	x create files and icons
-	-> input
-		- two tracks, one beep and the other audio/video
-		- works on selection
-	- write GUI
+	- input
+		x two tracks, one audio and the other audio/video
+		- check source track for the minimum number of beep events
+		- check for exactly one target event, long enough to make two cuts
+		- implement "enough space" check
+		x implement selection
+	-> write GUI
 	- implement head/tail option
 	- implement start from the beginning/middle option
   x establish one project directory, one version of ffmpeg, keep only source FLV files,
