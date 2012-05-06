@@ -153,8 +153,18 @@ public class EntryPoint : Form {
 		// make sure the first and the last source events have at least one target event that
 		// could be split
 		for (int i = 0; i < sourceEvents.Count; i += sourceEvents.Count - 1) {
-			string eventName = Common.getFullName(Common.getTakeNames(sourceEvents[i]));
-			if (Common.FindEventsByEvent(targetTrack, sourceEvents[i]).Count < 1) {
+			int targetEventCount;
+			if (targetTrack.IsAudio()) {
+				targetEventCount = Common.FindEventsByEvent(targetTrack, sourceEvents[i]).Count;
+			} else if (targetTrack.IsVideo()) {
+				QuantizedEvent quantizedEvent = QuantizedEvent.FromTimecode(sourceEvents[i].Start);
+				targetEventCount = Common.FindEventsByQuantizedEvent(targetTrack, quantizedEvent).Count;
+			} else {
+				throw new Exception("target track neither audio nor video");
+			}
+			
+			if (targetEventCount < 1) {
+				string eventName = Common.getFullName(Common.getTakeNames(sourceEvents[i]));
 				MessageBox.Show("Source event " + sourceEvents[i].Index +
 				(eventName == "" ? "" : " (" + eventName + ")") + " does not have a matching target event",
 					Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);

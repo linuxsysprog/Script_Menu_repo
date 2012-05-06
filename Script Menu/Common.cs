@@ -305,6 +305,20 @@ public class Common {
 		return events;
 	}
 	
+	// finds events by a quantized event
+	public static List<TrackEvent> FindEventsByQuantizedEvent(Track track, QuantizedEvent quantizedEvent) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent @event in track.Events) {
+			if (quantizedEvent.QuantizedStart > @event.Start &&
+					quantizedEvent.QuantizedStart < @event.End) {
+				events.Add(@event);
+			}
+		}
+		
+		return events;
+	}
+	
 	// finds measure start events
 	public static List<TrackEvent> FindMeasureStartEvents(List<TrackEvent> sourceEvents) {
 		List<TrackEvent> events = new List<TrackEvent>();
