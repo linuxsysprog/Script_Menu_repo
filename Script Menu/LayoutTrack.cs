@@ -24,9 +24,13 @@ public class EntryPoint : Form {
 	private CheckBox chkMiddle = new CheckBox();
 	private CheckBox chkHead = new CheckBox();
 	private CheckBox chkTail = new CheckBox();
-	
 	private Button btnOK = new Button();
-	private Button btnCancel = new Button();		
+	private Button btnCancel = new Button();
+	
+	private List<Track> tracks;
+	private Track sourceTrack;
+	private Track targetTrack;
+	private Selection selection;
 	
 	public EntryPoint() {
 		gbSize.Size = new Size(140, 110);
@@ -116,6 +120,36 @@ public class EntryPoint : Form {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	void btnOK_Click(object sender, EventArgs e) {
+		// find events on both tracks
+		List<TrackEvent>[] events = new List<TrackEvent>[2];
+		for (int i = 0; i < 2; i++) {
+			if (selection.SelectionLength == new Timecode()) {
+				events[i] = Common.TrackEventsToTrackEvents(tracks[i].Events);
+			} else {
+				events[i] = Common.FindEventsBySelection(tracks[i], selection);
+			}
+		}
+
+		// sort out which event collection is the source and which is the target
+		List<TrackEvent> sourceEvents = events[0];
+		List<TrackEvent> targetEvents = events[1];
+		
+		int chunkSize = Convert.ToInt32(cbChunk.Text);
+		
+		// source track (selection) should have at least (chunkSize + 1) beats
+		if (sourceEvents.Count < chunkSize + 1) {
+			MessageBox.Show("Please make sure you have selected at least (chunk size + 1) beats",
+				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		// the number of beats should be in increments of chunk size plus one beat
+		if (((sourceEvents.Count - 1) % chunkSize) != 0) {
+			MessageBox.Show("Please make sure the number of beats is in increments of chunk size plus one beat",
+				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -238,14 +272,12 @@ public class EntryPoint : Form {
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		Track sourceTrack;
-		Track targetTrack;
 		
-		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
+		selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
 		
 		// check for the user has selected exactly two tracks
-		List<Track> tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
+		tracks = Common.FindSelectedTracks(vegas.Project.Tracks);
 		if (tracks.Count != 2) {
 			MessageBox.Show("Please make sure you have exactly two tracks selected",
 				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
