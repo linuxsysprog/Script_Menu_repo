@@ -477,9 +477,8 @@ x add "events found" to DumpTrack.cs
 		x two tracks, one audio and the other audio/video
 		x check the selection to have enough events
 		x check the selection to be in increments of chunk size
-		-> check for exactly one target event, long enough to make two cuts
-			-) for video ->) for audio
-		- implement "enough space" check
+		x check that there's something to cut
+		-> implement "enough space" check
 		x implement selection
 	x write GUI (model after GenBeeps.cs)
 		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4)

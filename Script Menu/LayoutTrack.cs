@@ -139,16 +139,30 @@ public class EntryPoint : Form {
 		// source track (selection) should have at least (chunkSize + 1) beats
 		if (sourceEvents.Count < chunkSize + 1) {
 			MessageBox.Show("Please make sure you have selected at least (chunk size + 1) beats",
-				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
 		// the number of beats should be in increments of chunk size plus one beat
 		if (((sourceEvents.Count - 1) % chunkSize) != 0) {
 			MessageBox.Show("Please make sure the number of beats is in increments of chunk size plus one beat",
-				Common.SLICE_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
+		
+		// make sure the first and the last source events have at least one target event that
+		// could be split
+		for (int i = 0; i < sourceEvents.Count; i += sourceEvents.Count - 1) {
+			string eventName = Common.getFullName(Common.getTakeNames(sourceEvents[i]));
+			if (Common.FindEventsByEvent(targetTrack, sourceEvents[i]).Count < 1) {
+				MessageBox.Show("Source event " + sourceEvents[i].Index +
+				(eventName == "" ? "" : " (" + eventName + ")") + " does not have a matching target event",
+					Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+		}
+		
+		MessageBox.Show("Invaders!");
 		
 	}
 	
