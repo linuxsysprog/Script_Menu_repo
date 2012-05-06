@@ -44,6 +44,8 @@ public class EntryPoint {
 			return;
 		}
 		
+		vegas.DebugOut(events.Count + " " + (events.Count > 1 ? "events" : "event") + " found.");
+
 		string spacer = "    " + "    ";
 		foreach (TrackEvent @event in events) {
 			vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
