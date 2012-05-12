@@ -172,7 +172,31 @@ public class EntryPoint : Form {
 			}
 		}
 		
-		MessageBox.Show("Invaders!");
+		// create an array of chunks
+		int nChunks = (sourceEvents.Count - 1) / chunkSize;
+		List<TrackEvent>[] chunks = new List<TrackEvent>[nChunks];
+		for (int i = 0; i < chunks.Length; i++) {
+			int index = (i + 1) * chunkSize - chunkSize;
+			chunks[i] = new List<TrackEvent>();
+			chunks[i].AddRange(sourceEvents.GetRange(index, chunkSize + 1));
+		}
+		
+		// dump array of chunks
+		// for (int i = 0; i < chunks.Length; i++) {
+			// string str = i + " [" + chunks[i].Count + "]: ";
+			// foreach (TrackEvent @event in chunks[i]) {
+				// string eventName = Common.getFullName(Common.getTakeNames(@event));
+				// str = str + @event.Index + (eventName == "" ? "" : " (" + eventName + ")") + "   ";
+			// }
+			// Common.vegas.DebugOut(str);
+		// }
+		// Common.vegas.DebugOut(chunks.Length + " chunks found.");
+		
+		// 
+		int countSize = Convert.ToInt32(cbCount.Text);
+		int marginSize = Convert.ToInt32(cbMargins.Text);
+		LaidoutChunk laidoutChunk = new LaidoutChunk(chunkSize, countSize, marginSize, chunks[0]);
+		Common.vegas.DebugOut("" + laidoutChunk.ToString());
 		
 	}
 	
@@ -296,6 +320,7 @@ public class EntryPoint : Form {
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
+		vegas.DebugClear();
 		
 		selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -320,6 +345,167 @@ public class EntryPoint : Form {
 		}
 		
 		ShowDialog();
+	}
+	
+}
+
+public class LaidoutChunk {
+	private int chunkSize;
+	private int countSize;
+	private int marginSize;
+	List<TrackEvent> chunk;
+	
+	private QuantizedEvent lMargin;
+	private Timecode lBeep;
+	private Timecode body;
+	private Timecode rBeep;
+	private Timecode rMargin;
+	private QuantizedEvent rMarginEnd;
+	
+	private QuantizedEvent start;
+	private QuantizedEvent end;
+	private QuantizedEvent length;
+	
+	public LaidoutChunk(int chunkSize, int countSize, int marginSize, List<TrackEvent> chunk) {
+		this.chunkSize = chunkSize;
+		this.countSize = countSize;
+		this.marginSize = marginSize;
+		this.chunk = chunk;
+		init();
+	}
+	
+	public int ChunkSize {
+		get {
+			return chunkSize;
+		}
+	}
+	
+	public int CountSize {
+		get {
+			return countSize;
+		}
+	}
+	
+	public int MarginSize {
+		get {
+			return marginSize;
+		}
+	}
+	
+	public List<TrackEvent> Chunk {
+		get {
+			return chunk;
+		}
+	}
+	
+	public QuantizedEvent LMargin {
+		get {
+			return lMargin;
+		}
+	}
+	
+	public Timecode LBeep {
+		get {
+			return lBeep;
+		}
+	}
+	
+	public Timecode Body {
+		get {
+			return body;
+		}
+	}
+	
+	public Timecode RBeep {
+		get {
+			return rBeep;
+		}
+	}
+	
+	public Timecode RMargin {
+		get {
+			return rMargin;
+		}
+	}
+	
+	public QuantizedEvent RMarginEnd {
+		get {
+			return rMarginEnd;
+		}
+	}
+	
+	public QuantizedEvent Start {
+		get {
+			return start;
+		}
+	}
+	
+	public QuantizedEvent End {
+		get {
+			return end;
+		}
+	}
+	
+	public QuantizedEvent Length {
+		get {
+			return length;
+		}
+	}
+	
+	public override string ToString() {
+		return "start = " + start + " end = " + end + " length = " + length +
+			" lMargin = " + lMargin + " lBeep = " + lBeep + " body = " + body +
+			" rBeep = " + rBeep + " rMargin = " + rMargin + " rMarginEnd = " + rMarginEnd;
+	}
+	
+	public string ToExtendedString() {
+		string str = "chunk.Count = " + chunk.Count + " chunk = ";
+		foreach (TrackEvent @event in chunk) {
+			string eventName = Common.getFullName(Common.getTakeNames(@event));
+			str = str + @event.Index + (eventName == "" ? "" : " (" + eventName + ")") + "   ";
+		}
+		return ToString() + " chunkSize = " + chunkSize + " countSize = " + countSize +
+			" marginSize = " + marginSize + " " + str;
+	}
+	
+	private void init() {
+		// body
+		body = chunk[0].Start;
+	
+		// lBeep
+		Timecode lBeepSize = new Timecode();
+		for (int i = 0; i < countSize; i++) {
+			lBeepSize = lBeepSize + (chunk[1].Start - chunk[0].Start);
+		}
+		lBeep = body - lBeepSize;
+		
+		// lMargin
+		Timecode lMarginSize = new Timecode();
+		for (int i = 0; i < marginSize; i++) {
+			lMarginSize = lMarginSize + (chunk[1].Start - chunk[0].Start);
+		}
+		lMargin = QuantizedEvent.FromTimecode(lBeep - lMarginSize);
+		
+		// rBeep
+		rBeep = chunk[chunk.Count - 1].Start;
+	
+		// rMargin
+		Timecode rBeepSize = new Timecode();		
+		for (int i = 0; i < countSize; i++) {
+			rBeepSize = rBeepSize + (chunk[chunk.Count - 1].Start - chunk[chunk.Count - 2].Start);
+		}
+		rMargin = rBeep + rBeepSize;
+		
+		// rMarginEnd
+		Timecode rMarginSize = new Timecode();
+		for (int i = 0; i < marginSize; i++) {
+			rMarginSize = rMarginSize + (chunk[chunk.Count - 1].Start - chunk[chunk.Count - 2].Start);
+		}
+		rMarginEnd = QuantizedEvent.FromTimecode(rMargin + rMarginSize);
+				
+		start = lMargin;
+		end = rMarginEnd;
+		length = QuantizedEvent.FromTimecode(end.QuantizedStart - start.QuantizedStart);
 	}
 	
 }
