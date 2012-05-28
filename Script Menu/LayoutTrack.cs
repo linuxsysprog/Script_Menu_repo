@@ -181,23 +181,34 @@ public class EntryPoint : Form {
 			chunks[i].AddRange(sourceEvents.GetRange(index, chunkSize + 1));
 		}
 		
-		// dump array of chunks
-		// for (int i = 0; i < chunks.Length; i++) {
-			// string str = i + " [" + chunks[i].Count + "]: ";
-			// foreach (TrackEvent @event in chunks[i]) {
-				// string eventName = Common.getFullName(Common.getTakeNames(@event));
-				// str = str + @event.Index + (eventName == "" ? "" : " (" + eventName + ")") + "   ";
-			// }
-			// Common.vegas.DebugOut(str);
-		// }
-		// Common.vegas.DebugOut(chunks.Length + " chunks found.");
+		// dump the array of chunks
+		for (int i = 0; i < chunks.Length; i++) {
+			string str = i + ": ";
+			foreach (TrackEvent @event in chunks[i]) {
+				str += (@event.Start + " ");
+			}
+			Common.vegas.DebugOut(str);
+		}
+		Common.vegas.DebugOut(chunks.Length + " chunks found.");
 		
-		// 
+		// create an array of laidout chunks
 		int countSize = Convert.ToInt32(cbCount.Text);
 		int marginSize = Convert.ToInt32(cbMargins.Text);
-		LaidoutChunk laidoutChunk = new LaidoutChunk(chunkSize, countSize, marginSize, chunks[0]);
-		Common.vegas.DebugOut("" + laidoutChunk.ToString());
+		List<LaidoutChunk> laidoutChunks = new List<LaidoutChunk>();
+		for (int i = 0; i < chunks.Length; i++) {
+			laidoutChunks.Add(new LaidoutChunk(chunkSize, countSize, marginSize, chunks[i]));
+		}
 		
+		// dump the array of laidout chunks
+		foreach (LaidoutChunk laidoutChunk in laidoutChunks) {
+			Common.vegas.DebugOut("" + laidoutChunk.ToExtendedString());
+		}
+		Common.vegas.DebugOut(laidoutChunks.Count + " laidout chunks found.");
+		
+		// calculate the extra space needed
+		// Timecode extraSpaceStart = sourceEvents[sourceEvents.Count - 1].Start;
+		// Timecode extraSpaceEnd = laidoutChunks[laidoutChunks.Count - 1].End.QuantizedStart;
+		// Common.vegas.DebugOut("extraSpaceStart = " + extraSpaceStart + " extraSpaceEnd = " + extraSpaceEnd);
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -469,25 +480,25 @@ public class LaidoutChunk {
 	}
 	
 	private void init() {
-		// body
-		body = chunk[0].Start;
-	
-		// lBeep
-		Timecode lBeepSize = new Timecode();
-		for (int i = 0; i < countSize; i++) {
-			lBeepSize = lBeepSize + (chunk[1].Start - chunk[0].Start);
-		}
-		lBeep = body - lBeepSize;
-		
 		// lMargin
+		lMargin = QuantizedEvent.FromTimecode(chunk[0].Start);
+		
+		// lBeep
 		Timecode lMarginSize = new Timecode();
 		for (int i = 0; i < marginSize; i++) {
 			lMarginSize = lMarginSize + (chunk[1].Start - chunk[0].Start);
 		}
-		lMargin = QuantizedEvent.FromTimecode(lBeep - lMarginSize);
+		lBeep = lMargin.QuantizedStart + lMarginSize;
 		
+		// body
+		Timecode lBeepSize = new Timecode();
+		for (int i = 0; i < countSize; i++) {
+			lBeepSize = lBeepSize + (chunk[1].Start - chunk[0].Start);
+		}
+		body = lBeep + lBeepSize;
+	
 		// rBeep
-		rBeep = chunk[chunk.Count - 1].Start;
+		rBeep = body + (chunk[chunk.Count - 1].Start - chunk[0].Start);
 	
 		// rMargin
 		Timecode rBeepSize = new Timecode();		
