@@ -479,9 +479,11 @@ x add "events found" to DumpTrack.cs
 		x check the selection to be in increments of chunk size
 		x check that there's something to cut
 			x video needs quantization
-		-> implement "enough extra space" check
+		- implement "enough extra space" check
 			x calculatethe number of chunks x) iterate over chunks
 			x calculate the size of the laid out chunk
+			x calculate extra space
+			-> make sure there not a single event in the extra space
 		x implement selection
 	x write GUI (model after GenBeeps.cs)
 		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4)

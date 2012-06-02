@@ -196,7 +196,13 @@ public class EntryPoint : Form {
 		int marginSize = Convert.ToInt32(cbMargins.Text);
 		List<LaidoutChunk> laidoutChunks = new List<LaidoutChunk>();
 		for (int i = 0; i < chunks.Length; i++) {
-			laidoutChunks.Add(new LaidoutChunk(chunkSize, countSize, marginSize, chunks[i]));
+			QuantizedEvent start;
+			if (0 == i) {
+				start = QuantizedEvent.FromTimecode(chunks[i][0].Start);
+			} else {
+				start = laidoutChunks[i - 1].End;
+			}
+			laidoutChunks.Add(new LaidoutChunk(start, chunkSize, countSize, marginSize, chunks[i]));
 		}
 		
 		// dump the array of laidout chunks
@@ -206,9 +212,10 @@ public class EntryPoint : Form {
 		Common.vegas.DebugOut(laidoutChunks.Count + " laidout chunks found.");
 		
 		// calculate the extra space needed
-		// Timecode extraSpaceStart = sourceEvents[sourceEvents.Count - 1].Start;
-		// Timecode extraSpaceEnd = laidoutChunks[laidoutChunks.Count - 1].End.QuantizedStart;
-		// Common.vegas.DebugOut("extraSpaceStart = " + extraSpaceStart + " extraSpaceEnd = " + extraSpaceEnd);
+		List<TrackEvent> lastChunk = chunks[chunks.Length - 1];
+		Timecode extraSpaceStart = lastChunk[lastChunk.Count - 1].Start;
+		Timecode extraSpaceEnd = laidoutChunks[laidoutChunks.Count - 1].End.QuantizedStart;
+		Common.vegas.DebugOut("extraSpaceStart = " + extraSpaceStart + " extraSpaceEnd = " + extraSpaceEnd);
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -377,7 +384,8 @@ public class LaidoutChunk {
 	private QuantizedEvent end;
 	private QuantizedEvent length;
 	
-	public LaidoutChunk(int chunkSize, int countSize, int marginSize, List<TrackEvent> chunk) {
+	public LaidoutChunk(QuantizedEvent start, int chunkSize, int countSize, int marginSize, List<TrackEvent> chunk) {
+		this.start = start;
 		this.chunkSize = chunkSize;
 		this.countSize = countSize;
 		this.marginSize = marginSize;
@@ -481,7 +489,7 @@ public class LaidoutChunk {
 	
 	private void init() {
 		// lMargin
-		lMargin = QuantizedEvent.FromTimecode(chunk[0].Start);
+		lMargin = start;
 		
 		// lBeep
 		Timecode lMarginSize = new Timecode();
@@ -514,7 +522,6 @@ public class LaidoutChunk {
 		}
 		rMarginEnd = QuantizedEvent.FromTimecode(rMargin + rMarginSize);
 				
-		start = lMargin;
 		end = rMarginEnd;
 		length = QuantizedEvent.FromTimecode(end.QuantizedStart - start.QuantizedStart);
 	}
