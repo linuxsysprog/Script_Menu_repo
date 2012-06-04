@@ -182,14 +182,14 @@ public class EntryPoint : Form {
 		}
 		
 		// dump the array of chunks
-		for (int i = 0; i < chunks.Length; i++) {
-			string str = i + ": ";
-			foreach (TrackEvent @event in chunks[i]) {
-				str += (@event.Start + " ");
-			}
-			Common.vegas.DebugOut(str);
-		}
-		Common.vegas.DebugOut(chunks.Length + " chunks found.");
+		// for (int i = 0; i < chunks.Length; i++) {
+			// string str = i + ": ";
+			// foreach (TrackEvent @event in chunks[i]) {
+				// str += (@event.Start + " ");
+			// }
+			// Common.vegas.DebugOut(str);
+		// }
+		// Common.vegas.DebugOut(chunks.Length + " chunks found.");
 		
 		// create an array of laidout chunks
 		int countSize = Convert.ToInt32(cbCount.Text);
@@ -206,16 +206,27 @@ public class EntryPoint : Form {
 		}
 		
 		// dump the array of laidout chunks
-		foreach (LaidoutChunk laidoutChunk in laidoutChunks) {
-			Common.vegas.DebugOut("" + laidoutChunk.ToExtendedString());
-		}
-		Common.vegas.DebugOut(laidoutChunks.Count + " laidout chunks found.");
+		// foreach (LaidoutChunk laidoutChunk in laidoutChunks) {
+			// Common.vegas.DebugOut("" + laidoutChunk.ToExtendedString());
+		// }
+		// Common.vegas.DebugOut(laidoutChunks.Count + " laidout chunks found.");
 		
 		// calculate the extra space needed
 		List<TrackEvent> lastChunk = chunks[chunks.Length - 1];
 		Timecode extraSpaceStart = lastChunk[lastChunk.Count - 1].Start;
 		Timecode extraSpaceEnd = laidoutChunks[laidoutChunks.Count - 1].End.QuantizedStart;
-		Common.vegas.DebugOut("extraSpaceStart = " + extraSpaceStart + " extraSpaceEnd = " + extraSpaceEnd);
+		// Common.vegas.DebugOut("extraSpaceStart = " + extraSpaceStart + " extraSpaceEnd = " + extraSpaceEnd);
+		
+		// make sure there's no events within extra space
+		Selection extraSpace = new Selection(extraSpaceStart, extraSpaceEnd - extraSpaceStart);
+		extraSpace.Normalize();
+		List<TrackEvent> extraEvents = Common.FindEventsBySelection(targetTrack, extraSpace);
+		if (extraEvents.Count > 0) {
+			MessageBox.Show("Please make sure there is no events on target track from " +
+				extraSpaceStart + " to " + extraSpaceEnd,
+				Common.LAYOUT_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
