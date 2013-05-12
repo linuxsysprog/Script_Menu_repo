@@ -127,7 +127,7 @@ public class EntryPoint : Form {
 		}
 		
 		// get text media generator
-		plugIn = vegas.Generators.GetChildByName("Sony Text");
+		plugIn = vegas.Generators.GetChildByName("Sony Titles & Text");
 		if (plugIn == null) {
 			MessageBox.Show("Couldn't find Sony Text media generator",
 				Common.ADD_OBJECT, MessageBoxButtons.OK, MessageBoxIcon.Error);
