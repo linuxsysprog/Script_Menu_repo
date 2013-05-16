@@ -188,6 +188,7 @@ x write AddObject.cs
   ! move messages like "Please make sure you have exactly one video track selected" into Common.cs
   ? sort Measure Presets numerically
   x back up
+  - rewrite script for compatibility with Vegas 11
 x write CalcTempo.cs app extension
   x monitors current selection and calculates tempo
   x provide a "Double time" tickbox
@@ -541,6 +542,13 @@ x add "events found" to DumpTrack.cs
   - imlement 0 and 0.5 offsets
   - implement pre- and post- gaps
   - back up
+? write BuildTOC.cs
+	- go over all markers within the project and generate a nice plain text table of contents
+	- implement nesting with some sort of <head> tag
+	- field will include 'Item name' Start Length
+	- this script is intended for REH Video transcription subproject
+	- write *.cs part to dump the contents (HTML) of all marker together with marker's start time into a text file
+	- write a perl script to build a nice TOC from html
 x add copyright headers to all source files x) show copyright in all window headers
 x add $Id$ to source files, adjust headers
 x split source code and projects (My_Music) repositories
@@ -555,7 +563,19 @@ x learn how-to print debugging information
 x remove Hello World View from the Extensions submenu
 - fix the icon for Add Ruler View (for any app ext)
 x learn how-to test csc return value and conditionally start the program
-- 
+- document each script briefly in Subclip How-to.doc
+	x establish documentation format
+	x DumpTrack.cs
+	-> AddRuler.cs
+	- 
+- check Yadif Deinterlace for Sony Vegas
+- start "Yngwie Malmsteen - REH Video" transcription subproject
+	- build master Vegas project
+		- overview VOB characteristics
+			- video -) frame size -) par -) fps(i/p) -) color depth
+			- audio -) Hz -) bit -) mono/stereo
+			- general -) length -) size
+	- 
 
 Phone Enlightments
 
