@@ -543,12 +543,12 @@ x add "events found" to DumpTrack.cs
   - implement pre- and post- gaps
   - back up
 ? write BuildTOC.cs
-	- go over all markers within the project and generate a nice plain text table of contents
-	- implement nesting with some sort of <head> tag
-	- field will include 'Item name' Start Length
-	- this script is intended for REH Video transcription subproject
-	- write *.cs part to dump the contents (HTML) of all marker together with marker's start time into a text file
-	- write a perl script to build a nice TOC from html
+	- generate an html outline of a project
+		- implement nesting, absolute and relative time/length and numbering of each subsection
+	- same idea for the transcription subproject
+		- the source of information here will be the textual contents of all markers
+	- write a *.cs part to generate a an html file with project structure
+	- write a perl script to read the file, calculate times and numbers and build a nice TOC
 x add copyright headers to all source files x) show copyright in all window headers
 x add $Id$ to source files, adjust headers
 x split source code and projects (My_Music) repositories
@@ -564,18 +564,39 @@ x remove Hello World View from the Extensions submenu
 - fix the icon for Add Ruler View (for any app ext)
 x learn how-to test csc return value and conditionally start the program
 - document each script briefly in Subclip How-to.doc
+	- AddObject.cs
+	- Rulers2Objects.cs
+	- LayoutTrack.cs
 	x establish documentation format
 	x DumpTrack.cs
-	-> AddRuler.cs
-	- 
-- check Yadif Deinterlace for Sony Vegas
+	x AddRuler.cs
+	x AddBeep.cs
+	x GenBeeps.cs
+	x Beeps2Rulers.cs
+	x Rulers2Rulers.cs
+	x SpreadBeeps.cs
+	x FillRulers.cs
+	- TrackOutline.cs
+	- SliceTrack.cs
+	- MatchTrack.cs
+	- CalcTempo.cs
+	- Mute/Solo Au Tracks
+	- Mute/Solo Vid Tracks
+	- order items according to workflow
+- move the project to NTSC DV/Nokia phone frame sizes
+	- review -) rulers -) text objects -) port blinds -) rendering
+- fix AddObject.cs and Rulers2Objects.cs
+- build a big bad demo with the scripts that are ready to use
+	- document the process in "A typical workflow" section of Subclip How-to.doc
+? check Yadif Deinterlace for Sony Vegas
 - start "Yngwie Malmsteen - REH Video" transcription subproject
 	- build master Vegas project
 		- overview VOB characteristics
 			- video -) frame size -) par -) fps(i/p) -) color depth
 			- audio -) Hz -) bit -) mono/stereo
 			- general -) length -) size
-	- 
+	- see if there's an off the shelf solution to insert markers at scene breaks
+	- install vegas saurus scripts and check it out
 
 Phone Enlightments
 
