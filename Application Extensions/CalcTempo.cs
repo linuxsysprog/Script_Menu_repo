@@ -717,7 +717,7 @@ public class CalcTempoControl : UserControl {
 			findUnmutedTracks(Common.FindTracksByRegex(videoTracks, new Regex("^RVideo")));
 		
 		if (!(unmutedLVideoTracks.Count == 1 && unmutedRVideoTracks.Count == 1)) {
-			MessageBox.Show("Please make sure exactly one \"LVideo\" track and one \"RVideo\" track are unmuted",
+			MessageBox.Show("Please make sure that exactly one \"LVideo\" track and one \"RVideo\" track are unmuted",
 				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			chkSplitAudio.Checked = false;
 			return;
