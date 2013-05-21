@@ -563,7 +563,8 @@ x learn how-to print debugging information
 x remove Hello World View from the Extensions submenu
 - fix the icon for Add Ruler View (for any app ext)
 x learn how-to test csc return value and conditionally start the program
-- document each script briefly in Subclip How-to.doc
+/ document each script briefly in Subclip How-to.doc
+	- find old fullest demo
 	- AddObject.cs
 	- Rulers2Objects.cs
 	- LayoutTrack.cs
@@ -576,18 +577,20 @@ x learn how-to test csc return value and conditionally start the program
 	x Rulers2Rulers.cs
 	x SpreadBeeps.cs
 	x FillRulers.cs
-	- TrackOutline.cs
-	- SliceTrack.cs
-	- MatchTrack.cs
-	- CalcTempo.cs
-	- Mute/Solo Au Tracks
-	- Mute/Solo Vid Tracks
+	x TrackOutline.cs
+	x SliceTrack.cs
+	x MatchTrack.cs
+	x CalcTempo.cs
+	x Mute/Solo Au Tracks
+	x Mute/Solo Vid Tracks
 	- order items according to workflow
 - move the project to NTSC DV/Nokia phone frame sizes
 	- review -) rulers -) text objects -) port blinds -) rendering
-- fix AddObject.cs and Rulers2Objects.cs
+- fix and document AddObject.cs and Rulers2Objects.cs
 - build a big bad demo with the scripts that are ready to use
 	- document the process in "A typical workflow" section of Subclip How-to.doc
+- fix and document LayoutTrack.cs
+- add to the demo
 ? check Yadif Deinterlace for Sony Vegas
 - start "Yngwie Malmsteen - REH Video" transcription subproject
 	- build master Vegas project

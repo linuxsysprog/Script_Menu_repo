@@ -2,7 +2,7 @@
 // $Id$
 // Trim Start and End of each target event according to
 // its corresponding (measure start) source event.
-// Accomodate (compress/stretch) media to the new event's length.
+// Accommodate (compress/stretch) media to the new event's length.
 // The script is media-neutral
 
 using System;
@@ -67,7 +67,7 @@ public class EntryPoint {
 			if (targetEvents == null || targetEvents.Count != 1) {
 				MessageBox.Show("Source event " + sourceEvent.Index +
 				(sourceEventName == "" ? "" : " (" + sourceEventName + ")") +
-					" has none or more than one namesakes",
+					" has none or more than one namesake",
 					Common.MATCH_TRACK, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
