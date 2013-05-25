@@ -584,8 +584,25 @@ x learn how-to test csc return value and conditionally start the program
 	x Mute/Solo Au Tracks
 	x Mute/Solo Vid Tracks
 	- order items according to workflow
-- move the project to NTSC DV/Nokia phone frame sizes
-	- review -) rulers -) text objects -) port blinds -) rendering
+- move the project to NTSC DV/Nokia phone
+	- there's gonna be the following sources: NTSC DVD, PC with a webcam; and targets: NTSC DVD, PC, Nokia E71
+		x find them all and jot down their audio/video characteristics in a text file
+		x create a "10. Sources and targets" project under "Vegas - Vegas"
+		x change extension in toggle_vob.pl from avi to mpg
+		- record/playback some samples
+			- http://nokia-e71-phone.blogspot.ru/
+			- http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
+		- write a short rendering script
+		- buy a DVD-RW blank
+		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
+		- create a test still image (two sources with different frame size, one target)
+			- the images should include: -) border -) cross -) circle -) diagonal line
+		- create a test video fragment (two sources with different fps, one target)
+		- compare "good and bad" scaling
+			- dot for dot vs. not
+			- check Pan/Crop Position/Rotation
+			- check with multiple sources
+		- redesign HUD: -) rulers -) text objects -) port blinds 
 - fix and document AddObject.cs and Rulers2Objects.cs
 - build a big bad demo with the scripts that are ready to use
 	- document the process in "A typical workflow" section of Subclip How-to.doc
