@@ -589,8 +589,8 @@ x learn how-to test csc return value and conditionally start the program
 		x find them all and jot down their audio/video characteristics in a text file
 		x create a "10. Sources and targets" project under "Vegas - Vegas"
 		x change extension in toggle_vob.pl from avi to mpg
-		- record/playback some samples
-			- see if all devices can produce/consume 29.970 fps
+		x record/playback some samples
+			x see if all devices can produce/consume 29.970 fps (Yes, we can!!)
 			x for Nokia E71
 				* http://nokia-e71-phone.blogspot.ru/
 				* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html
@@ -600,15 +600,16 @@ x learn how-to test csc return value and conditionally start the program
 				x solve the problem with dropping frames (VirtualDub rules!!)
 		- write a short rendering script
 		/ buy a DVD-RW blank
-		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
 		- create a test still image (two sources with different frame size, one target)
 			- the images should include: -) border -) cross -) circle -) diagonal line
 			- try scaling the image in FastStone Photo Resizer
-		- create a test video fragment (two sources with different fps, one target)
 		- compare "good and bad" scaling
 			- dot for dot vs. not
 			- check Pan/Crop Position/Rotation
 			- check with multiple sources
+		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
+		- create a test video fragment (two sources with different fps, one target)
+		- burn a demo DVD with samples/test stills
 		- redesign HUD: -) rulers -) text objects -) port blinds 
 - fix and document AddObject.cs and Rulers2Objects.cs
 - build a big bad demo with the scripts that are ready to use
