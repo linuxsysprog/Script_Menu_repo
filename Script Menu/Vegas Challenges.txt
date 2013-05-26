@@ -598,7 +598,9 @@ x learn how-to test csc return value and conditionally start the program
 				? update firmware x) backup phone
 			x for webcam
 				x solve the problem with dropping frames (VirtualDub rules!!)
-		- write a short rendering script
+		x write a simple rendering script
+			x run "Render Audio Tracks.cs"
+			? run "Batch Render.cs"
 		/ buy a DVD-RW blank
 		- create a test still image (two sources with different frame size, one target)
 			- the images should include: -) border -) cross -) circle -) diagonal line
