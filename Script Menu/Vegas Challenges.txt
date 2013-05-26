@@ -590,13 +590,20 @@ x learn how-to test csc return value and conditionally start the program
 		x create a "10. Sources and targets" project under "Vegas - Vegas"
 		x change extension in toggle_vob.pl from avi to mpg
 		- record/playback some samples
-			- http://nokia-e71-phone.blogspot.ru/
-			- http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
+			- see if all devices can produce/consume 29.970 fps
+			x for Nokia E71
+				* http://nokia-e71-phone.blogspot.ru/
+				* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html
+				* http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
+				? update firmware x) backup phone
+			x for webcam
+				x solve the problem with dropping frames (VirtualDub rules!!)
 		- write a short rendering script
-		- buy a DVD-RW blank
+		/ buy a DVD-RW blank
 		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
 		- create a test still image (two sources with different frame size, one target)
 			- the images should include: -) border -) cross -) circle -) diagonal line
+			- try scaling the image in FastStone Photo Resizer
 		- create a test video fragment (two sources with different fps, one target)
 		- compare "good and bad" scaling
 			- dot for dot vs. not
