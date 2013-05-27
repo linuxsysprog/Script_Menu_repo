@@ -603,8 +603,19 @@ x learn how-to test csc return value and conditionally start the program
 			? run "Batch Render.cs"
 		/ buy a DVD-RW blank
 		- create a test still image (two sources with different frame size, one target)
+			- learn GIMP
+				x draw an x) ellipse x) line ?see(*)) text
+				- how-to move objects
+			x pick good bitmap fonts
+				x my personal fav is cmd's Raster Fonts (Terminal) 16x12 (saying hi to my old PC XT!!)
+		(*) a new paradigm "Sony Titles & Text idyot lesom.."
+			x find Sinclair ascii table
+			- create a test still with text in 320x240
 			- the images should include: -) border -) cross -) circle -) diagonal line
-			- try scaling the image in FastStone Photo Resizer
+			- try scaling the image in different ways
+			?see(*) study text generator and add some sample text to the test image
+			? find Power Puff Girls colors (let's use Sinclair colors)
+		- rip a frame from each video sample
 		- compare "good and bad" scaling
 			- dot for dot vs. not
 			- check Pan/Crop Position/Rotation
