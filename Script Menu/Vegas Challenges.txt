@@ -621,9 +621,10 @@ x learn how-to test csc return value and conditionally start the program
 5 PQRSTUVWXYZ[\]^_
 6 `abcdefghijklmno
 7 pqrstuvwxyz{|}~
-			- create a test still with text in 320x240
-			- the images should include: -) border -) cross -) circle -) diagonal line
-			- try scaling the image in different ways
+			x create a test still with text in 320x240
+				x the images should include: x) border x) cross x) circle x) diagonal line
+			x create a HUD sketch
+			- try scaling the image in different ways -) 640x480
 			?see(*) study text generator and add some sample text to the test image
 			? find Power Puff Girls colors (let's use Sinclair colors)
 		- rip a frame from each video sample
