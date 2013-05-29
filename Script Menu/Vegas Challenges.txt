@@ -603,13 +603,24 @@ x learn how-to test csc return value and conditionally start the program
 			? run "Batch Render.cs"
 		/ buy a DVD-RW blank
 		- create a test still image (two sources with different frame size, one target)
-			- learn GIMP
+			x GIMP, learn how-to
 				x draw an x) ellipse x) line ?see(*)) text
-				- how-to move objects
+				x move and copy objects
+				x create a ?) 1-bit image x) with transparent background
 			x pick good bitmap fonts
 				x my personal fav is cmd's Raster Fonts (Terminal) 16x12 (saying hi to my old PC XT!!)
 		(*) a new paradigm "Sony Titles & Text idyot lesom.."
 			x find Sinclair ascii table
+			x create ascii.bmp
+				* http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+				* ASCII printable characters: 20hex to 7Ehex (95 in total)
+  0123456789ABCDEF
+2  !"#$%&'()*+,-./
+3 0123456789:;<=>?
+4 @ABCDEFGHIJKLMNO
+5 PQRSTUVWXYZ[\]^_
+6 `abcdefghijklmno
+7 pqrstuvwxyz{|}~
 			- create a test still with text in 320x240
 			- the images should include: -) border -) cross -) circle -) diagonal line
 			- try scaling the image in different ways
