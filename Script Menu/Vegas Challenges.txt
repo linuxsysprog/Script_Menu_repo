@@ -596,13 +596,16 @@ x learn how-to test csc return value and conditionally start the program
 				* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html
 				* http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
 				? update firmware x) backup phone
+				x unpack MPEG4-SP
+					* http://eugenia.queru.com/2009/12/11/editing-kodak-digicam-video-files-on-a-pc/
+					* ffmpeg -i "Bychok 320x240 15.000.mp4" -f avi -vcodec rawvideo -acodec pcm_s16le "Bychok 320x240 15.000.avi"
 			x for webcam
 				x solve the problem with dropping frames (VirtualDub rules!!)
 		x write a simple rendering script
 			x run "Render Audio Tracks.cs"
 			? run "Batch Render.cs"
 		/ buy a DVD-RW blank
-		- create a test still image (two sources with different frame size, one target)
+		x create a test still image (two sources with different frame size, one target)
 			x GIMP, learn how-to
 				x draw an x) ellipse x) line ?see(*)) text
 				x move and copy objects
@@ -621,21 +624,20 @@ x learn how-to test csc return value and conditionally start the program
 5 PQRSTUVWXYZ[\]^_
 6 `abcdefghijklmno
 7 pqrstuvwxyz{|}~
-			x create a test still with text in 320x240
+			x create a still with a test pattern x) 320x240 x) 720x480
 				x the images should include: x) border x) cross x) circle x) diagonal line
-			x create a HUD sketch
-			- try scaling the image in different ways -) 640x480
+			x create a HUD sketch  x) 320x240 x) 720x480
 			?see(*) study text generator and add some sample text to the test image
-			? find Power Puff Girls colors (let's use Sinclair colors)
-		- rip a frame from each video sample
+			? find Power Puff Girls colors (let's use Sinclair colors, no let's use Norton colors)
+		- rip a frame from each video source
 		- compare "good and bad" scaling
 			- dot for dot vs. not
 			- check Pan/Crop Position/Rotation
 			- check with multiple sources
-		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
 		- create a test video fragment (two sources with different fps, one target)
 		- burn a demo DVD with samples/test stills
-		- redesign HUD: -) rulers -) text objects -) port blinds 
+		- redesign HUD: x) rulers x) text objects -) port blinds 
+		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
 - fix and document AddObject.cs and Rulers2Objects.cs
 - build a big bad demo with the scripts that are ready to use
 	- document the process in "A typical workflow" section of Subclip How-to.doc
