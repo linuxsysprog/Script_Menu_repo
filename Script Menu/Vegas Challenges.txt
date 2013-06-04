@@ -585,38 +585,37 @@ x learn how-to test csc return value and conditionally start the program
 	x Mute/Solo Vid Tracks
 	- order items according to workflow
 - move the project to NTSC DV/Nokia phone
-	- there's gonna be the following sources: NTSC DVD, PC with a webcam; and targets: NTSC DVD, PC, Nokia E71
+	* there's gonna be the following sources: NTSC DVD, PC with a webcam; and targets: NTSC DVD, PC, Nokia E71
 		x find them all and jot down their audio/video characteristics in a text file
-		x create a "10. Sources and targets" project under "Vegas - Vegas"
-		x change extension in toggle_vob.pl from avi to mpg
-		x record/playback some samples
-			x see if all devices can produce/consume 29.970 fps (Yes, we can!!)
-			x for Nokia E71
-				* http://nokia-e71-phone.blogspot.ru/
-				* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html
-				* http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
-				? update firmware x) backup phone
-				x unpack MPEG4-SP
-					* http://eugenia.queru.com/2009/12/11/editing-kodak-digicam-video-files-on-a-pc/
-					* ffmpeg -i "Bychok 320x240 15.000.mp4" -f avi -vcodec rawvideo -acodec pcm_s16le "Bychok 320x240 15.000.avi"
-			x for webcam
-				x solve the problem with dropping frames (VirtualDub rules!!)
-		x write a simple rendering script
-			x run "Render Audio Tracks.cs"
-			? run "Batch Render.cs"
-		/ buy a DVD-RW blank
-		x create a test still image (two sources with different frame size, one target)
-			x GIMP, learn how-to
-				x draw an x) ellipse x) line ?see(*)) text
-				x move and copy objects
-				x create a ?) 1-bit image x) with transparent background
-			x pick good bitmap fonts
-				x my personal fav is cmd's Raster Fonts (Terminal) 16x12 (saying hi to my old PC XT!!)
-		(*) a new paradigm "Sony Titles & Text idyot lesom.."
-			x find Sinclair ascii table
-			x create ascii.bmp
-				* http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
-				* ASCII printable characters: 20hex to 7Ehex (95 in total)
+	x create a "10. Sources and targets" project under "Vegas - Vegas"
+	x change extension in toggle_vob.pl from avi to mpg
+	x record/playback some samples
+		x see if all devices can produce/consume 29.970 fps (Yes, we can!!)
+		x for Nokia E71
+			* http://nokia-e71-phone.blogspot.ru/
+			* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html
+			* http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
+			? update firmware x) backup phone
+			x unpack MPEG4-SP
+				* http://eugenia.queru.com/2009/12/11/editing-kodak-digicam-video-files-on-a-pc/
+				* ffmpeg -i "Bychok 320x240 15.000.mp4" -f avi -vcodec rawvideo -acodec pcm_s16le "Bychok 320x240 15.000.avi"
+		x for webcam
+			x solve the problem with dropping frames (VirtualDub rules!!)
+	x write a simple rendering script
+		x run "Render Audio Tracks.cs"
+		? run "Batch Render.cs"
+	x create a test still image (two sources with different frame size, one target)
+		x GIMP, learn how-to
+			x draw an x) ellipse x) line ?see(*)) text
+			x move and copy objects
+			x create a ?) 1-bit image x) with transparent background
+		x pick good bitmap fonts
+			x my personal fav is cmd's Raster Fonts (Terminal) 16x12 (saying hi to my old PC XT!!)
+	(*) a new paradigm "Sony Titles & Text idyot lesom.."
+		x find Sinclair ascii table
+		x create ascii.bmp
+			* http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+			* ASCII printable characters: 20hex to 7Ehex (95 in total)
   0123456789ABCDEF
 2  !"#$%&'()*+,-./
 3 0123456789:;<=>?
@@ -624,21 +623,40 @@ x learn how-to test csc return value and conditionally start the program
 5 PQRSTUVWXYZ[\]^_
 6 `abcdefghijklmno
 7 pqrstuvwxyz{|}~
-			x create a still with a test pattern x) 320x240 x) 720x480
-				x the images should include: x) border x) cross x) circle x) diagonal line
-			x create a HUD sketch  x) 320x240 x) 720x480
-			?see(*) study text generator and add some sample text to the test image
-			? find Power Puff Girls colors (let's use Sinclair colors, no let's use Norton colors)
-		- rip a frame from each video source
-		- compare "good and bad" scaling
-			- dot for dot vs. not
-			- check Pan/Crop Position/Rotation
-			- check with multiple sources
-		- create a test video fragment (two sources with different fps, one target)
-		- burn a demo DVD with samples/test stills
-		- redesign HUD: x) rulers x) text objects -) port blinds 
-		- do a full record/playback test cycle including intermediate render into Uncompressed and processing through Transcribe!
+		x create a still with a test pattern x) 320x240 x) 720x480
+			x the images should include: x) border x) cross x) circle x) diagonal line
+		/ compare "good and bad" scaling
+			x dot for dot vs. not
+			- check scaling with -) Pan/Crop -) Position/Rotation (includes zooming)
+		x create a HUD sketch  x) 320x240 x) 720x480 x) 1440x480
+		?see(*) study text generator and add some sample text to the test image
+		? find Power Puff Girls colors (let's use Sinclair colors, no let's use Norton colors)
+		/ redesign HUD: x) rulers x) text objects -) port blinds 
+		x rip a frame from each video source
+	- "marry up" all sources and targets
+		x normalize video tracks
+			x intra-frame
+			x fps
+				? do a crash course in Twixtor, follow YouTube tutorial "twixtor vegas frame rates & deinterlacing"
+				x write an excel calculator to tie up together
+					/ ms, fps, bpm, note length (16th, 24th, 32nd) and pitch (Hz and semitones) and more..
+				? generate still image sequences with frame numbers at 29.97/30fps
+					x use Timecode FX
+				x do a "drop frame/duplicate frame" test
+		- normalize audio tracks
+	- create test compilations for all targets
+		- jot down a plan
+		- TV
+			x buy a DVD-RW blank
+			x do a crash course in DVD Architect
+			- author and prepare DVD
+			- burn DVD
+		- Nokia phone
+		- PC
+	- for one target, do a full record/playback test cycle including intermediate renders to Uncompressed and
+		processing through Transcribe!
 - fix and document AddObject.cs and Rulers2Objects.cs
+- update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
 - build a big bad demo with the scripts that are ready to use
 	- document the process in "A typical workflow" section of Subclip How-to.doc
 - fix and document LayoutTrack.cs
@@ -652,6 +670,7 @@ x learn how-to test csc return value and conditionally start the program
 			- general -) length -) size
 	- see if there's an off the shelf solution to insert markers at scene breaks
 	- install vegas saurus scripts and check it out
+x learn to do cross-references in Word
 
 Phone Enlightments
 
