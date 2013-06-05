@@ -644,6 +644,7 @@ x learn how-to test csc return value and conditionally start the program
 					x use Timecode FX
 				x do a "drop frame/duplicate frame" test
 		- normalize audio tracks
+	x create stills with the grid x) 320x240 x) 720x480 x) 1440x480
 	- create test compilations for all targets
 		- jot down a plan
 		- TV
