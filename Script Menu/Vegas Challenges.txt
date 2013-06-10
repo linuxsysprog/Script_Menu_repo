@@ -674,47 +674,49 @@ hud_sketch.720x480.png cropped at each side
 					x DVD Architect settings *) all equal
 				- burn plain AVIs onto a DVD-ROM
 				- burn a combination of VTS_01_1 5,289 1 2..56.476 0.033.720x480.avi and grid.720x480.avi
-				- check transparency
-		- burn a DVD with multiple titles, masks and animations
+				- check for transparency
+		- burn a DVD with multiple titles
 			x create stills with port boundaries and centers
-			- jot down a plan
-				x calc grid step
-				? estimate magnification in Yngwie close-ups
+			x jot down a plan
+				* Grid spacing
+					x fix grid calc
+					x create a 720x480 still with 18/12 (1/40) grid
+				/ estimate magnification in Yngwie close-ups
 					? add pan/zoom calc
-				- Yngwie -) Left hand -) Right hand
-				- Bychok -) Front legs -) Rear legs:)))
-				x split view
+				x Yngwie x) Left hand x) Right hand
+				x Bychok close-up
+				x split views
+					x YL/Y
+					x Y/YR
+					x YL/YR
+					x Y/BC
+			- burn DVD
 		- Nokia phone
+			x create a 320x240 still with 8/6 (1/40) grid
 			- normalize items -) create titles
 		- PC
-	- for one target, do a full record/playback test cycle including intermediate renders to Uncompressed and
+			x create a 1440x480 still with 36(18)/12 (1/40) grid
+	? compensate for different PAR
+	x demo Draft/Best quality for computer-generated graphics
+	x demo pan/zoom/rotate
+	! see how-to set !) project defaults x) render defaults
+	x study "Panning and Cropping Video Events"
+	/ study "Keyframe Animation"
+	- fix and document AddObject.cs and Rulers2Objects.cs
+	- update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
+	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
-? compensate for different PAR
-- demo Draft/Best quality for computer-generated graphics
-- demo time stretch methods -) Classic -) elastique -) Transcribe!
-- demo pan/zoom/rotate
-- demo MatchTrack
-- see how-to set project defaults
-x study "Panning and Cropping Video Events"
-/ study "Keyframe Animation"
-x add Up button to Explorer
-	* http://www.techrepublic.com/blog/window-on-windows/add-the-up-button-to-the-explorer-command-bar-in-windows-7/3877
-- fix and document AddObject.cs and Rulers2Objects.cs
-- update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
-- build a big bad demo with the scripts that are ready to use
-	- document the process in "A typical workflow" section of Subclip How-to.doc
-- fix and document LayoutTrack.cs
-- add to the demo
-? check Yadif Deinterlace for Sony Vegas
+	- demo time stretch methods -) Classic -) elastique -) Transcribe!
+	- build a big bad demo with the scripts that are ready to use
+		- document the process in "A typical workflow" section of Subclip How-to.doc
+- fix and document LayoutTrack.cs -) add to the demo
 - start "Yngwie Malmsteen - REH Video" transcription subproject
-	- build master Vegas project
-		- overview VOB characteristics
-			- video -) frame size -) par -) fps(i/p) -) color depth
-			- audio -) Hz -) bit -) mono/stereo
-			- general -) length -) size
 	- see if there's an off the shelf solution to insert markers at scene breaks
 	- install vegas saurus scripts and check it out
+? check Yadif Deinterlace for Sony Vegas
 x learn to do cross-references in Word
+x add Up button to Explorer
+	* http://www.techrepublic.com/blog/window-on-windows/add-the-up-button-to-the-explorer-command-bar-in-windows-7/3877
 
 Phone Enlightments
 
