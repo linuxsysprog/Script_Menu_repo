@@ -675,7 +675,7 @@ hud_sketch.720x480.png cropped at each side
 				- burn plain AVIs onto a DVD-ROM
 				- burn a combination of VTS_01_1 5,289 1 2..56.476 0.033.720x480.avi and grid.720x480.avi
 				- check for transparency
-		- burn a DVD with multiple titles
+		x burn a DVD with splits
 			x create stills with port boundaries and centers
 			x jot down a plan
 				* Grid spacing
@@ -690,7 +690,7 @@ hud_sketch.720x480.png cropped at each side
 					x Y/YR
 					x YL/YR
 					x Y/BC
-			- burn DVD
+			x burn DVD
 		- Nokia phone
 			x create a 320x240 still with 8/6 (1/40) grid
 			- normalize items -) create titles
