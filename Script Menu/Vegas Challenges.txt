@@ -711,28 +711,26 @@ hud_sketch.720x480.png cropped at each side
 		- PC
 			x create a 1440x480 still with 36(18)/12 (1/40) grid
 			x normalize bychok
-			- render titles 
-				- Teacher.LVideo
-				- Teacher.Left hand.LVideo
-				- Teacher.Left hand.50.LVideo
-				- Teacher.Right hand.LVideo
-				- Teacher.Right hand.50.LVideo
-				x Student.LVideo
-				x Student.Close-up.LVideo
-				x Student.Close-up.50.LVideo
-				- Teacher.RVideo
-				- Teacher.Left hand.RVideo
-				- Teacher.Left hand.50.RVideo
-				- Teacher.Right hand.RVideo
-				- Teacher.Right hand.50.RVideo
-				x Student.RVideo
-				x Student.Close-up.RVideo
-				x Student.Close-up.50.RVideo
-			- build sample project
-				- add HUD track
-			- solve the problem with rendering
+			x render titles 
+				x Teacher
+				x Teacher.Left hand
+				x Teacher.Left hand.50
+				x Teacher.Right hand
+				x Teacher.Right hand.50
+				x Student
+				x Student.Close-up
+				x Student.Close-up.50
+			? re-render to a less demanding bitrate
+			x build sample project
+				x add titles
+				x add HUD track
+				x add no signal track
+					x create "No Signal" still
+			? solve the problem with rendering
 				* vegas freezes after rendering is complete
 				* vegas stops in the middle of rendering
+			- solve the problem with Vegas freezing with lots of AVC tracks
+				- do trial renders
 	? compensate for different PAR
 	x demo Draft/Best quality for computer-generated graphics
 	x demo pan/zoom/rotate
