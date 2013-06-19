@@ -584,7 +584,7 @@ x learn how-to test csc return value and conditionally start the program
 	x Mute/Solo Au Tracks
 	x Mute/Solo Vid Tracks
 	- order items according to workflow
-- move the project to NTSC DV/Nokia phone
+/ move the project to NTSC DV/Nokia phone
 	* there's gonna be the following sources: NTSC DVD, PC with a webcam; and targets: NTSC DVD, PC, Nokia E71
 		x find them all and jot down their audio/video characteristics in a text file
 	x create a "10. Sources and targets" project under "Vegas - Vegas"
@@ -645,7 +645,7 @@ x learn how-to test csc return value and conditionally start the program
 				x do a "drop frame/duplicate frame" test
 		x normalize audio tracks
 	x create stills with the grid x) 320x240 x) 720x480 x) 1440x480
-	- create test compilations for all targets
+	/ create test compilations for all targets
 		x enumerate items
 ascii_chart.bmp
 VTS_01_1 5,289 1 2..56.476 0.033.720x480.png
@@ -708,7 +708,7 @@ hud_sketch.720x480.png cropped at each side
 				! YL/YR
 			$ investigate a few pixels horizontal discrepancy after copying event attributes
 				* has something to do with 720x480->640x480 normalization
-		- PC
+		/ PC
 			x create a 1440x480 still with 36(18)/12 (1/40) grid
 			x normalize bychok
 			x render titles 
@@ -737,7 +737,7 @@ hud_sketch.720x480.png cropped at each side
 	! see how-to set !) project defaults x) render defaults
 	x study "Panning and Cropping Video Events"
 	/ study "Keyframe Animation"
-	- update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
+	x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
 		x redo ruler PNGs in three resolutions
 	- fix and document AddObject.cs and Rulers2Objects.cs
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and

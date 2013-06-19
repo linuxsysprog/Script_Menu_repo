@@ -39,8 +39,7 @@ public class Video {
 		// Media media = new Media(Common.vegas.InstallationDirectory + "\\Application Extensions\\AddRuler.png\\" +
 			// Common.LocationNumber2Basename(top, number));
 		
-		string path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" +
-			Common.LocationNumber2Basename(top, number);
+		string path = GetPNGDirectory() + "\\" + Common.LocationNumber2Basename(top, number);
 
 		// Oh my, this crashes Vegas also. Ok, our ultimate weapon is gonna be the vegas.OpenFile()!!
 		// Media media;
@@ -82,6 +81,19 @@ public class Video {
 			" " + (top ? "T" : "B") + Common.SPACER;
 		
 		return videoEvent;
+	}
+	
+	// return absolute path to directory containing PNGs
+	public static string GetPNGDirectory() {
+		string size = "320x240";
+		
+		if (720 == Common.vegas.Project.Video.Width && 480 == Common.vegas.Project.Video.Height) {
+			size = "720x480";
+		} else if (1440 == Common.vegas.Project.Video.Width && 480 == Common.vegas.Project.Video.Height) {
+			size = "1440x480";
+		}
+	
+		return Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" + size;
 	}
 	
 }

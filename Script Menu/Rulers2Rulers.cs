@@ -129,7 +129,7 @@ public class EntryPoint {
 					rulerNumber = 10;
 				}
 				
-				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" +
+				path = Video.GetPNGDirectory() + "\\" +
 					Common.LocationNumber2Basename(true, rulerNumber);
 				media = new Media(path);
 				(videoEvent.AddTake(media.GetVideoStreamByIndex(0), true)).Name =

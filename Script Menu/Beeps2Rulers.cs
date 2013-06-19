@@ -156,7 +156,7 @@ public class EntryPoint {
 					beat = 13;
 				}
 				
-				path = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" +
+				path = Video.GetPNGDirectory() + "\\" +
 					Common.LocationNumber2Basename(false, beat);
 				media = new Media(path);
 				(videoEvent.AddTake(media.GetVideoStreamByIndex(0), true)).Name =
