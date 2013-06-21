@@ -740,6 +740,22 @@ hud_sketch.720x480.png cropped at each side
 	x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
 		x redo ruler PNGs in three resolutions
 	- fix and document AddObject.cs and Rulers2Objects.cs
+		x study Bitmap class
+			x load image
+			x traverse
+			x change
+			x write out
+			x study (Un)LockBits methods
+			? create image in memory
+			? how-to manipulate parts of image
+			x see how-to create a transparent image
+		- write TextGenerator class
+			- implement 320x240
+				x write getCharBitmap() method
+					! study IntPtr.Add() method x) find out how-to increment IntPtr
+				- see how-to copy between pointers
+				- write insertChar() method
+			- implement 720x480 and 1440x480
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!
