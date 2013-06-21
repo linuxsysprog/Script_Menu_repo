@@ -753,8 +753,14 @@ hud_sketch.720x480.png cropped at each side
 			- implement 320x240
 				x write getCharBitmap() method
 					! study IntPtr.Add() method x) find out how-to increment IntPtr
-				- see how-to copy between pointers
-				- write insertChar() method
+				! see how-to copy between pointers
+				x write insertChar() method
+				x write CopyCharBitmap() method
+				x write InsertString() method
+				x write methods to insert filename, notes, tempo, rate
+				- make rate right-aligned
+			x capitalize method names
+			- review access modifiers
 			- implement 720x480 and 1440x480
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!

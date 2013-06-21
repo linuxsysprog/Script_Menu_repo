@@ -103,19 +103,52 @@ public class Video {
 }
 
 public class TextGenerator {
-	private Bitmap asciiChartBitmap;
+	private const int CHAR_WIDTH = 8;
+	private const int CHAR_HEIGHT = 12;
+	private const int FRAME_WIDTH_CHARS = 40;
+	private const int FRAME_HEIGHT_CHARS = 20;
+	
 	private char[][] asciiChart = new char[6][];
+	private Bitmap asciiChartBitmap;
 
 	public TextGenerator(Bitmap asciiChartBitmap) {
 		if (null == asciiChartBitmap) {
-			throw new ArgumentException("invalid ascii chart");
+			throw new ArgumentException("ascii chart bitmap is null");
 		}
 		
 		this.asciiChartBitmap = asciiChartBitmap;
-		initAsciiChart();
+		InitAsciiChart();
 	}
 	
-	private void initAsciiChart() {
+	public void InsertFilename(string filename, Bitmap frame) {
+		InsertString(filename, frame, new Coords(0, 0));
+	}
+	
+	public void InsertNotes(string notes, Bitmap frame) {
+		if (notes.Length > 11) {
+			throw new ArgumentException("notes out of range");
+		}
+		
+		InsertString(notes, frame, new Coords(0, 1));
+	}
+	
+	public void InsertTempo(string tempo, Bitmap frame) {
+		if (tempo.Length > 14) {
+			throw new ArgumentException("tempo out of range");
+		}
+		
+		InsertString(tempo, frame, new Coords(12, 19));
+	}
+	
+	public void InsertRate(string rate, Bitmap frame) {
+		if (rate.Length > 14) {
+			throw new ArgumentException("rate out of range");
+		}
+		
+		InsertString(rate, frame, new Coords(26, 19));
+	}
+	
+	private void InitAsciiChart() {
 		asciiChart[0] = " !\"#$%&\'()*+,-./".ToCharArray();
 		asciiChart[1] = "0123456789:;<=>?".ToCharArray();
 		asciiChart[2] = "@ABCDEFGHIJKLMNO".ToCharArray();
@@ -124,7 +157,7 @@ public class TextGenerator {
 		asciiChart[5] = "pqrstuvwxyz{|}~ ".ToCharArray();
 	}
 	
-	private Coords getCharCoords(char c) {
+	private Coords GetCharCoords(char c) {
 		for (int x = 0; x < asciiChart[0].Length; x++) {
 			for (int y = 0; y < asciiChart.Length; y++) {
 				if (c == asciiChart[y][x]) {
@@ -136,83 +169,136 @@ public class TextGenerator {
 		throw new ArgumentException("invalid char");
 	}
 	
-	public Bitmap getCharBitmap(char c) {
-		Coords coords = getCharCoords(c);
+	private void InsertString(string str, Bitmap frame, Coords coords) {
+		if (null == frame) {
+			throw new ArgumentException("frame is null");
+		}
 		
-		// get dst pointer
-		Bitmap charBitmap = new Bitmap(8, 12, asciiChartBitmap.PixelFormat);
-		Rectangle charRect = new Rectangle(0, 0, charBitmap.Width, charBitmap.Height);
-		BitmapData charData = charBitmap.LockBits(charRect, ImageLockMode.WriteOnly, charBitmap.PixelFormat);
-		IntPtr dst = charData.Scan0;
+		if (str.Length > FRAME_WIDTH_CHARS - coords.x) {
+			throw new ArgumentException("str out of range");
+		}
+		
+		validateString(str);
+		
+		foreach (char c in str) {
+			InsertChar(c, frame, new Coords(coords.x++, coords.y));
+		}
+	}
+	
+	private void InsertChar(char c, Bitmap frame, Coords coords) {
+		CopyCharBitmap(asciiChartBitmap, GetCharCoords(c), frame, coords);
+	}
+	
+	// a somewhat convoluted way to validate str
+	private void validateString(string str) {
+		foreach (char c in str) {
+			try {
+				GetCharCoords(c);
+			} catch (ArgumentException ex) {
+				throw new ArgumentException(ex.Message + ": " + c);
+			}
+		}
+	}
+	
+	private void CopyCharBitmap(Bitmap src, Coords srcCharCoords, Bitmap dst, Coords dstCharCoords) {
+		if (null == src) {
+			throw new ArgumentException("src bitmap is null");
+		}
+		
+		if (null == dst) {
+			throw new ArgumentException("dst bitmap is null");
+		}
+		
+		if (src.PixelFormat != dst.PixelFormat) {
+			throw new ArgumentException("src and dst bitmaps are of different pixel format");
+		}
+		
+		if (src.Width < CHAR_WIDTH || src.Height < CHAR_HEIGHT) {
+			throw new ArgumentException("src bitmap width/height is less than " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		}
+		
+		if ((src.Width % CHAR_WIDTH) != 0 ||
+				(src.Height % CHAR_HEIGHT) != 0) {
+			throw new ArgumentException("src bitmap is not in increments of " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		}
+		
+		if (dst.Width < CHAR_WIDTH || dst.Height < CHAR_HEIGHT) {
+			throw new ArgumentException("dst bitmap width/height is less than " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		}
+		
+		if ((dst.Width % CHAR_WIDTH) != 0 ||
+				(dst.Height % CHAR_HEIGHT) != 0) {
+			throw new ArgumentException("dst bitmap is not in increments of " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		}
+		
+		if (srcCharCoords.x >= src.Width / CHAR_WIDTH ||
+				srcCharCoords.y >= src.Height / CHAR_HEIGHT) {
+			throw new ArgumentException("src coords out of range");
+		}
+		
+		if (dstCharCoords.x >= dst.Width / CHAR_WIDTH ||
+				dstCharCoords.y >= dst.Height / CHAR_HEIGHT) {
+			throw new ArgumentException("dst coords out of range");
+		}
 		
 		// get src pointer
-		Rectangle asciiChartRect = new Rectangle(0, 0, asciiChartBitmap.Width, asciiChartBitmap.Height);
-		BitmapData asciiChartData = asciiChartBitmap.LockBits(asciiChartRect, ImageLockMode.ReadOnly, asciiChartBitmap.PixelFormat);
-		IntPtr src = asciiChartData.Scan0;
-		
-		// copy data from ascii chart bitmap to array
-		int charStride = Math.Abs(asciiChartData.Stride) / asciiChart[0].Length;
-		byte[] ar = new byte[charStride * charBitmap.Height];
-		
-		long row = asciiChartData.Stride * charBitmap.Height * coords.y;
-		long column = charStride * coords.x;
-		long nextCharStride = row + column;
-		
-		for (int i = 0; i < charBitmap.Height; i++) {
-			Marshal.Copy(new IntPtr(src.ToInt64() + nextCharStride), ar, charStride * i, charStride);
-			nextCharStride += asciiChartData.Stride;
-		}
-		
-		// copy data from array to char bitmap
-		Marshal.Copy(ar, 0, dst, ar.Length);
-
-		// unlock and return
-		asciiChartBitmap.UnlockBits(asciiChartData);
-		charBitmap.UnlockBits(charData);
-		return charBitmap;
-	}
-	
-	/*
-	public void insertChar(char c , Bitmap frameBitmap, Coords coords) {
-		if (null == frameBitmap) {
-			throw new ArgumentException("invalid frame bitmap");
-		}
-		
-		if (coords.x < 0 || coords.x > 39 ||
-				coords.y < 0 || coords.y > 19) {
-			throw new ArgumentException("invalid coords");
-		}
-		
-		Bitmap charBitmap = getCharBitmap(c);
-		
-		// get src pointer
-		Bitmap charBitmap = new Bitmap(8, 12, asciiChartBitmap.PixelFormat);
-		Rectangle charRect = new Rectangle(0, 0, charBitmap.Width, charBitmap.Height);
-		BitmapData charData = charBitmap.LockBits(charRect, ImageLockMode.ReadOnly, charBitmap.PixelFormat);
-		IntPtr src = charData.Scan0;
+		Rectangle srcRect = new Rectangle(0, 0, src.Width, src.Height);
+		BitmapData srcData = src.LockBits(srcRect, ImageLockMode.ReadOnly, src.PixelFormat);
+		IntPtr srcPtr = srcData.Scan0;
 		
 		// get dst pointer
-		Rectangle frameBitmapRect = new Rectangle(0, 0, frameBitmap.Width, frameBitmap.Height);
-		BitmapData frameBitmapData = frameBitmap.LockBits(frameBitmapRect, ImageLockMode.WriteOnly, frameBitmap.PixelFormat);
-		IntPtr dst = frameBitmapData.Scan0;
+		Rectangle dstRect = new Rectangle(0, 0, dst.Width, dst.Height);
+		BitmapData dstData = dst.LockBits(dstRect, ImageLockMode.WriteOnly, dst.PixelFormat);
+		IntPtr dstPtr = dstData.Scan0;
 		
+		// allocate buffer to hold one char
+		int srcWidthChars = src.Width / CHAR_WIDTH;
+		int charStride = srcData.Stride / srcWidthChars;
+		byte[] buffer = new byte[charStride * CHAR_HEIGHT];
+		
+		// copy data from src bitmap to buffer
+		{
+			long row = srcData.Stride * CHAR_HEIGHT * srcCharCoords.y;
+			long column = charStride * srcCharCoords.x;
+			long nextCharStride = row + column;
+			
+			for (int i = 0; i < CHAR_HEIGHT; i++) {
+				Marshal.Copy(new IntPtr(srcPtr.ToInt64() + nextCharStride), buffer, charStride * i, charStride);
+				nextCharStride += srcData.Stride;
+			}
+		}
+		
+		// copy data from buffer to dst bitmap
+		{
+			long row = dstData.Stride * CHAR_HEIGHT * dstCharCoords.y;
+			long column = charStride * dstCharCoords.x;
+			long nextCharStride = row + column;
+			
+			for (int i = 0; i < CHAR_HEIGHT; i++) {
+				Marshal.Copy(buffer, charStride * i, new IntPtr(dstPtr.ToInt64() + nextCharStride), charStride);
+				nextCharStride += dstData.Stride;
+			}
+		}
+		
+		// unlock
+		dst.UnlockBits(dstData);
+		src.UnlockBits(srcData);
 	}
-	*/
 	
-}
+	private struct Coords {
+		public int x;
+		public int y;
+		
+		public Coords(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+		
+		public override string ToString() {
+			return "{x=" + x + ", y=" + y + "}";
+		}
+	}
 
-public struct Coords {
-	public int x;
-	public int y;
-	
-	public Coords(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	public override string ToString() {
-		return "{x=" + x + ", y=" + y + "}";
-	}
 }
 
 }
