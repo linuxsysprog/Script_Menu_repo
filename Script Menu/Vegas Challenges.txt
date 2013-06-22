@@ -758,7 +758,11 @@ hud_sketch.720x480.png cropped at each side
 				x write CopyCharBitmap() method
 				x write InsertString() method
 				x write methods to insert filename, notes, tempo, rate
-				- make rate right-aligned
+				x do the rest of ascii and digit charts
+				x make rate right-aligned
+				- load all resource in constructor
+				- write InsertMeasure() method
+				- rename InsertXXX methods to AddXXX, get rid of Bitmap argument
 			x capitalize method names
 			- review access modifiers
 			- implement 720x480 and 1440x480
@@ -767,6 +771,7 @@ hud_sketch.720x480.png cropped at each side
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!
 	- build a big bad demo with the scripts that are ready to use
 		- document the process in "A typical workflow" section of Subclip How-to.doc
+- check svn properties
 - fix and document LayoutTrack.cs -) add to the demo
 - start "Yngwie Malmsteen - REH Video" transcription subproject
 	- see if there's an off the shelf solution to insert markers at scene breaks

@@ -103,15 +103,116 @@ public class Video {
 }
 
 public class TextGenerator {
-	private const int CHAR_WIDTH = 8;
-	private const int CHAR_HEIGHT = 12;
-	private const int FRAME_WIDTH_CHARS = 40;
-	private const int FRAME_HEIGHT_CHARS = 20;
+	// frame in pixels
+	private const int FRAME_WIDTH_320X240 = 320;
+	private const int FRAME_HEIGHT_320X240 = 240;
+	
+	private const int FRAME_WIDTH_720X480 = 720;
+	private const int FRAME_HEIGHT_720X480 = 480;
+	
+	private const int FRAME_WIDTH_1440X480 = 1440;
+	private const int FRAME_HEIGHT_1440X480 = 480;
+	
+	// char/digit in pixels
+	private const int CHAR_WIDTH_320X240 = 8;
+	private const int CHAR_HEIGHT_320X240 = 12;
+	private const int DIGIT_WIDTH_320X240 = 32;
+	private const int DIGIT_HEIGHT_320X240 = 24;
+	
+	private const int CHAR_WIDTH_720X480 = 16;
+	private const int CHAR_HEIGHT_720X480 = 24;
+	private const int DIGIT_WIDTH_720X480 = 64;
+	private const int DIGIT_HEIGHT_720X480 = 48;
+	
+	private const int CHAR_WIDTH_1440X480 = 16;
+	private const int CHAR_HEIGHT_1440X480 = 24;
+	private const int DIGIT_WIDTH_1440X480 = 64;
+	private const int DIGIT_HEIGHT_1440X480 = 48;
+	
+	// frame in chars/digits
+	private const int FRAME_WIDTH_CHARS_320X240 = 40;
+	private const int FRAME_HEIGHT_CHARS_320X240 = 20;
+	private const int FRAME_WIDTH_DIGITS_320X240 = 10;
+	private const int FRAME_HEIGHT_DIGITS_320X240 = 10;
+	
+	private const int FRAME_WIDTH_CHARS_720X480 = 45;
+	private const int FRAME_HEIGHT_CHARS_720X480 = 20;
+	private const int FRAME_WIDTH_DIGITS_720X480 = 11; // 11.25
+	private const int FRAME_HEIGHT_DIGITS_720X480 = 10;
+	
+	private const int FRAME_WIDTH_CHARS_1440X480 = 90;
+	private const int FRAME_HEIGHT_CHARS_1440X480 = 20;
+	private const int FRAME_WIDTH_DIGITS_1440X480 = 22; // 22.5
+	private const int FRAME_HEIGHT_DIGITS_1440X480 = 10;
+	
+	private int frameWidth;
+	private int frameHeight;
+	
+	private int charWidth;
+	private int charHeight;
+	private int digitWidth;
+	private int digitHeight;
+	
+	private int frameWidthChars;
+	private int frameHeightChars;
+	private int frameWidthDigits;
+	private int frameHeightDigits;
+	
+	public override string ToString() {
+		return "{frameWidth=" + frameWidth + ", frameHeight=" + frameHeight + "}\n" +
+			"{charWidth=" + charWidth + ", charHeight=" + charHeight + "}\n" +
+			"{digitWidth=" + digitWidth + ", digitHeight=" + digitHeight + "}\n" +
+			"{frameWidthChars=" + frameWidthChars + ", frameHeightChars=" + frameHeightChars + "}\n" +
+			"{frameWidthDigits=" + frameWidthDigits + ", frameHeightDigits=" + frameHeightDigits + "}\n";
+	}
 	
 	private char[][] asciiChart = new char[6][];
 	private Bitmap asciiChartBitmap;
 
-	public TextGenerator(Bitmap asciiChartBitmap) {
+	public TextGenerator(Bitmap asciiChartBitmap, Bitmap frame) {
+		if (FRAME_WIDTH_320X240 == frame.Width && FRAME_HEIGHT_320X240 == frame.Height) {
+			frameWidth = FRAME_WIDTH_320X240;
+			frameHeight = FRAME_HEIGHT_320X240;
+
+			charWidth = CHAR_WIDTH_320X240;
+			charHeight = CHAR_HEIGHT_320X240;
+			digitWidth = DIGIT_WIDTH_320X240;
+			digitHeight = DIGIT_HEIGHT_320X240;
+
+			frameWidthChars = FRAME_WIDTH_CHARS_320X240;
+			frameHeightChars = FRAME_HEIGHT_CHARS_320X240;
+			frameWidthDigits = FRAME_WIDTH_DIGITS_320X240;
+			frameHeightDigits = FRAME_HEIGHT_DIGITS_320X240;
+		} else if (FRAME_WIDTH_720X480 == frame.Width && FRAME_HEIGHT_720X480 == frame.Height) {
+			frameWidth = FRAME_WIDTH_720X480;
+			frameHeight = FRAME_HEIGHT_720X480;
+
+			charWidth = CHAR_WIDTH_720X480;
+			charHeight = CHAR_HEIGHT_720X480;
+			digitWidth = DIGIT_WIDTH_720X480;
+			digitHeight = DIGIT_HEIGHT_720X480;
+
+			frameWidthChars = FRAME_WIDTH_CHARS_720X480;
+			frameHeightChars = FRAME_HEIGHT_CHARS_720X480;
+			frameWidthDigits = FRAME_WIDTH_DIGITS_720X480;
+			frameHeightDigits = FRAME_HEIGHT_DIGITS_720X480;
+		} else if (FRAME_WIDTH_1440X480 == frame.Width && FRAME_HEIGHT_1440X480 == frame.Height) {
+			frameWidth = FRAME_WIDTH_1440X480;
+			frameHeight = FRAME_HEIGHT_1440X480;
+
+			charWidth = CHAR_WIDTH_1440X480;
+			charHeight = CHAR_HEIGHT_1440X480;
+			digitWidth = DIGIT_WIDTH_1440X480;
+			digitHeight = DIGIT_HEIGHT_1440X480;
+
+			frameWidthChars = FRAME_WIDTH_CHARS_1440X480;
+			frameHeightChars = FRAME_HEIGHT_CHARS_1440X480;
+			frameWidthDigits = FRAME_WIDTH_DIGITS_1440X480;
+			frameHeightDigits = FRAME_HEIGHT_DIGITS_1440X480;
+		} else {
+			throw new ArgumentException("frame out of range");
+		}
+	
 		if (null == asciiChartBitmap) {
 			throw new ArgumentException("ascii chart bitmap is null");
 		}
@@ -145,7 +246,7 @@ public class TextGenerator {
 			throw new ArgumentException("rate out of range");
 		}
 		
-		InsertString(rate, frame, new Coords(26, 19));
+		InsertString(rate, frame, new Coords(26 + (14 - rate.Length), 19));
 	}
 	
 	private void InitAsciiChart() {
@@ -174,7 +275,7 @@ public class TextGenerator {
 			throw new ArgumentException("frame is null");
 		}
 		
-		if (str.Length > FRAME_WIDTH_CHARS - coords.x) {
+		if (str.Length > frameWidthChars - coords.x) {
 			throw new ArgumentException("str out of range");
 		}
 		
@@ -200,6 +301,18 @@ public class TextGenerator {
 		}
 	}
 	
+	// private void validateFrame(Bitmap frame) {
+		// if () {
+		// }
+		// foreach (char c in str) {
+			// try {
+				// GetCharCoords(c);
+			// } catch (ArgumentException ex) {
+				// throw new ArgumentException(ex.Message + ": " + c);
+			// }
+		// }
+	// }
+	
 	private void CopyCharBitmap(Bitmap src, Coords srcCharCoords, Bitmap dst, Coords dstCharCoords) {
 		if (null == src) {
 			throw new ArgumentException("src bitmap is null");
@@ -213,31 +326,31 @@ public class TextGenerator {
 			throw new ArgumentException("src and dst bitmaps are of different pixel format");
 		}
 		
-		if (src.Width < CHAR_WIDTH || src.Height < CHAR_HEIGHT) {
-			throw new ArgumentException("src bitmap width/height is less than " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		if (src.Width < charWidth || src.Height < charHeight) {
+			throw new ArgumentException("src bitmap width/height is less than " + charWidth + "x" + charHeight);
 		}
 		
-		if ((src.Width % CHAR_WIDTH) != 0 ||
-				(src.Height % CHAR_HEIGHT) != 0) {
-			throw new ArgumentException("src bitmap is not in increments of " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		if ((src.Width % charWidth) != 0 ||
+				(src.Height % charHeight) != 0) {
+			throw new ArgumentException("src bitmap is not in increments of " + charWidth + "x" + charHeight);
 		}
 		
-		if (dst.Width < CHAR_WIDTH || dst.Height < CHAR_HEIGHT) {
-			throw new ArgumentException("dst bitmap width/height is less than " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		if (dst.Width < charWidth || dst.Height < charHeight) {
+			throw new ArgumentException("dst bitmap width/height is less than " + charWidth + "x" + charHeight);
 		}
 		
-		if ((dst.Width % CHAR_WIDTH) != 0 ||
-				(dst.Height % CHAR_HEIGHT) != 0) {
-			throw new ArgumentException("dst bitmap is not in increments of " + CHAR_WIDTH + "x" + CHAR_HEIGHT);
+		if ((dst.Width % charWidth) != 0 ||
+				(dst.Height % charHeight) != 0) {
+			throw new ArgumentException("dst bitmap is not in increments of " + charWidth + "x" + charHeight);
 		}
 		
-		if (srcCharCoords.x >= src.Width / CHAR_WIDTH ||
-				srcCharCoords.y >= src.Height / CHAR_HEIGHT) {
+		if (srcCharCoords.x >= src.Width / charWidth ||
+				srcCharCoords.y >= src.Height / charHeight) {
 			throw new ArgumentException("src coords out of range");
 		}
 		
-		if (dstCharCoords.x >= dst.Width / CHAR_WIDTH ||
-				dstCharCoords.y >= dst.Height / CHAR_HEIGHT) {
+		if (dstCharCoords.x >= dst.Width / charWidth ||
+				dstCharCoords.y >= dst.Height / charHeight) {
 			throw new ArgumentException("dst coords out of range");
 		}
 		
@@ -252,17 +365,17 @@ public class TextGenerator {
 		IntPtr dstPtr = dstData.Scan0;
 		
 		// allocate buffer to hold one char
-		int srcWidthChars = src.Width / CHAR_WIDTH;
+		int srcWidthChars = src.Width / charWidth;
 		int charStride = srcData.Stride / srcWidthChars;
-		byte[] buffer = new byte[charStride * CHAR_HEIGHT];
+		byte[] buffer = new byte[charStride * charHeight];
 		
 		// copy data from src bitmap to buffer
 		{
-			long row = srcData.Stride * CHAR_HEIGHT * srcCharCoords.y;
+			long row = srcData.Stride * charHeight * srcCharCoords.y;
 			long column = charStride * srcCharCoords.x;
 			long nextCharStride = row + column;
 			
-			for (int i = 0; i < CHAR_HEIGHT; i++) {
+			for (int i = 0; i < charHeight; i++) {
 				Marshal.Copy(new IntPtr(srcPtr.ToInt64() + nextCharStride), buffer, charStride * i, charStride);
 				nextCharStride += srcData.Stride;
 			}
@@ -270,11 +383,11 @@ public class TextGenerator {
 		
 		// copy data from buffer to dst bitmap
 		{
-			long row = dstData.Stride * CHAR_HEIGHT * dstCharCoords.y;
+			long row = dstData.Stride * charHeight * dstCharCoords.y;
 			long column = charStride * dstCharCoords.x;
 			long nextCharStride = row + column;
 			
-			for (int i = 0; i < CHAR_HEIGHT; i++) {
+			for (int i = 0; i < charHeight; i++) {
 				Marshal.Copy(buffer, charStride * i, new IntPtr(dstPtr.ToInt64() + nextCharStride), charStride);
 				nextCharStride += dstData.Stride;
 			}
