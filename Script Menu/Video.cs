@@ -102,151 +102,131 @@ public class Video {
 	
 }
 
-public class TextGenerator {
-	// frame in pixels
-	private const int FRAME_WIDTH_320X240 = 320;
-	private const int FRAME_HEIGHT_320X240 = 240;
+abstract public class TextGenerator {
+	protected Bitmap frame;
 	
-	private const int FRAME_WIDTH_720X480 = 720;
-	private const int FRAME_HEIGHT_720X480 = 480;
+	protected int frameWidth;
+	protected int frameHeight;
 	
-	private const int FRAME_WIDTH_1440X480 = 1440;
-	private const int FRAME_HEIGHT_1440X480 = 480;
+	protected int charWidth;
+	protected int charHeight;
+	protected int digitWidth;
+	protected int digitHeight;
 	
-	// char/digit in pixels
-	private const int CHAR_WIDTH_320X240 = 8;
-	private const int CHAR_HEIGHT_320X240 = 12;
-	private const int DIGIT_WIDTH_320X240 = 32;
-	private const int DIGIT_HEIGHT_320X240 = 24;
+	protected int frameWidthChars;
+	protected int frameHeightChars;
+	protected int frameWidthDigits;
+	protected int frameHeightDigits;
 	
-	private const int CHAR_WIDTH_720X480 = 16;
-	private const int CHAR_HEIGHT_720X480 = 24;
-	private const int DIGIT_WIDTH_720X480 = 64;
-	private const int DIGIT_HEIGHT_720X480 = 48;
+	protected int filenameLengthMax;
+	protected Coords filenameCoords;
 	
-	private const int CHAR_WIDTH_1440X480 = 16;
-	private const int CHAR_HEIGHT_1440X480 = 24;
-	private const int DIGIT_WIDTH_1440X480 = 64;
-	private const int DIGIT_HEIGHT_1440X480 = 48;
+	protected int notesLengthMax;
+	protected Coords notesCoords;
 	
-	// frame in chars/digits
-	private const int FRAME_WIDTH_CHARS_320X240 = 40;
-	private const int FRAME_HEIGHT_CHARS_320X240 = 20;
-	private const int FRAME_WIDTH_DIGITS_320X240 = 10;
-	private const int FRAME_HEIGHT_DIGITS_320X240 = 10;
+	protected int tempoLengthMax;
+	protected Coords tempoCoords;
 	
-	private const int FRAME_WIDTH_CHARS_720X480 = 45;
-	private const int FRAME_HEIGHT_CHARS_720X480 = 20;
-	private const int FRAME_WIDTH_DIGITS_720X480 = 11; // 11.25
-	private const int FRAME_HEIGHT_DIGITS_720X480 = 10;
+	protected int rateLengthMax;
+	protected Coords rateCoords;
 	
-	private const int FRAME_WIDTH_CHARS_1440X480 = 90;
-	private const int FRAME_HEIGHT_CHARS_1440X480 = 20;
-	private const int FRAME_WIDTH_DIGITS_1440X480 = 22; // 22.5
-	private const int FRAME_HEIGHT_DIGITS_1440X480 = 10;
+	protected int measureLengthMax;
+	protected Coords measureCoords;
 	
-	private int frameWidth;
-	private int frameHeight;
+	public int FilenameLengthMax {
+		get {
+			return filenameLengthMax;
+		}
+	}
 	
-	private int charWidth;
-	private int charHeight;
-	private int digitWidth;
-	private int digitHeight;
+	public int NotesLengthMax {
+		get {
+			return notesLengthMax;
+		}
+	}
 	
-	private int frameWidthChars;
-	private int frameHeightChars;
-	private int frameWidthDigits;
-	private int frameHeightDigits;
+	public int TempoLengthMax {
+		get {
+			return tempoLengthMax;
+		}
+	}
+	
+	public int RateLengthMax {
+		get {
+			return rateLengthMax;
+		}
+	}
+	
+	public int MeasureLengthMax {
+		get {
+			return measureLengthMax;
+		}
+	}
 	
 	public override string ToString() {
 		return "{frameWidth=" + frameWidth + ", frameHeight=" + frameHeight + "}\n" +
 			"{charWidth=" + charWidth + ", charHeight=" + charHeight + "}\n" +
 			"{digitWidth=" + digitWidth + ", digitHeight=" + digitHeight + "}\n" +
 			"{frameWidthChars=" + frameWidthChars + ", frameHeightChars=" + frameHeightChars + "}\n" +
-			"{frameWidthDigits=" + frameWidthDigits + ", frameHeightDigits=" + frameHeightDigits + "}\n";
+			"{frameWidthDigits=" + frameWidthDigits + ", frameHeightDigits=" + frameHeightDigits + "}\n" +
+			"{filenameLengthMax=" + filenameLengthMax + ", filenameCoords=" + filenameCoords + "}\n" +
+			"{notesLengthMax=" + notesLengthMax + ", notesCoords=" + notesCoords + "}\n" +
+			"{tempoLengthMax=" + tempoLengthMax + ", tempoCoords=" + tempoCoords + "}\n" +
+			"{rateLengthMax=" + rateLengthMax + ", rateCoords=" + rateCoords + "}\n" +
+			"{measureLengthMax=" + measureLengthMax + ", measureCoords=" + measureCoords + "}\n";
 	}
 	
 	private char[][] asciiChart = new char[6][];
-	private Bitmap asciiChartBitmap;
+	protected Bitmap asciiChartBitmap;
+	protected Bitmap digitChartBitmap;
+	// protected string PNGFolder = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png";
+	protected string PNGFolder = "C:\\Program Files\\Sony\\Vegas Pro 11.0\\Script Menu\\AddRuler.png";
 
-	public TextGenerator(Bitmap asciiChartBitmap, Bitmap frame) {
-		if (FRAME_WIDTH_320X240 == frame.Width && FRAME_HEIGHT_320X240 == frame.Height) {
-			frameWidth = FRAME_WIDTH_320X240;
-			frameHeight = FRAME_HEIGHT_320X240;
-
-			charWidth = CHAR_WIDTH_320X240;
-			charHeight = CHAR_HEIGHT_320X240;
-			digitWidth = DIGIT_WIDTH_320X240;
-			digitHeight = DIGIT_HEIGHT_320X240;
-
-			frameWidthChars = FRAME_WIDTH_CHARS_320X240;
-			frameHeightChars = FRAME_HEIGHT_CHARS_320X240;
-			frameWidthDigits = FRAME_WIDTH_DIGITS_320X240;
-			frameHeightDigits = FRAME_HEIGHT_DIGITS_320X240;
-		} else if (FRAME_WIDTH_720X480 == frame.Width && FRAME_HEIGHT_720X480 == frame.Height) {
-			frameWidth = FRAME_WIDTH_720X480;
-			frameHeight = FRAME_HEIGHT_720X480;
-
-			charWidth = CHAR_WIDTH_720X480;
-			charHeight = CHAR_HEIGHT_720X480;
-			digitWidth = DIGIT_WIDTH_720X480;
-			digitHeight = DIGIT_HEIGHT_720X480;
-
-			frameWidthChars = FRAME_WIDTH_CHARS_720X480;
-			frameHeightChars = FRAME_HEIGHT_CHARS_720X480;
-			frameWidthDigits = FRAME_WIDTH_DIGITS_720X480;
-			frameHeightDigits = FRAME_HEIGHT_DIGITS_720X480;
-		} else if (FRAME_WIDTH_1440X480 == frame.Width && FRAME_HEIGHT_1440X480 == frame.Height) {
-			frameWidth = FRAME_WIDTH_1440X480;
-			frameHeight = FRAME_HEIGHT_1440X480;
-
-			charWidth = CHAR_WIDTH_1440X480;
-			charHeight = CHAR_HEIGHT_1440X480;
-			digitWidth = DIGIT_WIDTH_1440X480;
-			digitHeight = DIGIT_HEIGHT_1440X480;
-
-			frameWidthChars = FRAME_WIDTH_CHARS_1440X480;
-			frameHeightChars = FRAME_HEIGHT_CHARS_1440X480;
-			frameWidthDigits = FRAME_WIDTH_DIGITS_1440X480;
-			frameHeightDigits = FRAME_HEIGHT_DIGITS_1440X480;
-		} else {
-			throw new ArgumentException("frame out of range");
+	protected TextGenerator(Bitmap frame) {
+		if (null == frame) {
+			throw new ArgumentException("frame is null");
 		}
 	
-		if (null == asciiChartBitmap) {
-			throw new ArgumentException("ascii chart bitmap is null");
-		}
-		
-		this.asciiChartBitmap = asciiChartBitmap;
 		InitAsciiChart();
 	}
 	
-	public void InsertFilename(string filename, Bitmap frame) {
-		InsertString(filename, frame, new Coords(0, 0));
+	public void AddFilename(string filename) {
+		if (filename.Length > filenameLengthMax) {
+			throw new ArgumentException("filename out of range");
+		}
+		
+		InsertString(filename, filenameCoords);
 	}
 	
-	public void InsertNotes(string notes, Bitmap frame) {
-		if (notes.Length > 11) {
+	public void AddNotes(string notes) {
+		if (notes.Length > notesLengthMax) {
 			throw new ArgumentException("notes out of range");
 		}
 		
-		InsertString(notes, frame, new Coords(0, 1));
+		InsertString(notes, notesCoords);
 	}
 	
-	public void InsertTempo(string tempo, Bitmap frame) {
-		if (tempo.Length > 14) {
+	public void AddTempo(string tempo) {
+		if (tempo.Length > tempoLengthMax) {
 			throw new ArgumentException("tempo out of range");
 		}
 		
-		InsertString(tempo, frame, new Coords(12, 19));
+		InsertString(tempo, tempoCoords);
 	}
 	
-	public void InsertRate(string rate, Bitmap frame) {
-		if (rate.Length > 14) {
+	public void AddRate(string rate) {
+		if (rate.Length > rateLengthMax) {
 			throw new ArgumentException("rate out of range");
 		}
 		
-		InsertString(rate, frame, new Coords(26 + (14 - rate.Length), 19));
+		InsertString(rate, new Coords(rateCoords.x + (rateLengthMax - rate.Length), rateCoords.y));
+	}
+	
+	public void AddMeasure(string measure) {
+		if (measure.Length > measureLengthMax) {
+			throw new ArgumentException("measure out of range");
+		}
+		
 	}
 	
 	private void InitAsciiChart() {
@@ -270,28 +250,24 @@ public class TextGenerator {
 		throw new ArgumentException("invalid char");
 	}
 	
-	private void InsertString(string str, Bitmap frame, Coords coords) {
-		if (null == frame) {
-			throw new ArgumentException("frame is null");
-		}
-		
+	private void InsertString(string str, Coords coords) {
 		if (str.Length > frameWidthChars - coords.x) {
 			throw new ArgumentException("str out of range");
 		}
 		
-		validateString(str);
+		ValidateString(str);
 		
 		foreach (char c in str) {
-			InsertChar(c, frame, new Coords(coords.x++, coords.y));
+			InsertChar(c, new Coords(coords.x++, coords.y));
 		}
 	}
 	
-	private void InsertChar(char c, Bitmap frame, Coords coords) {
+	private void InsertChar(char c, Coords coords) {
 		CopyCharBitmap(asciiChartBitmap, GetCharCoords(c), frame, coords);
 	}
 	
 	// a somewhat convoluted way to validate str
-	private void validateString(string str) {
+	private void ValidateString(string str) {
 		foreach (char c in str) {
 			try {
 				GetCharCoords(c);
@@ -300,18 +276,6 @@ public class TextGenerator {
 			}
 		}
 	}
-	
-	// private void validateFrame(Bitmap frame) {
-		// if () {
-		// }
-		// foreach (char c in str) {
-			// try {
-				// GetCharCoords(c);
-			// } catch (ArgumentException ex) {
-				// throw new ArgumentException(ex.Message + ": " + c);
-			// }
-		// }
-	// }
 	
 	private void CopyCharBitmap(Bitmap src, Coords srcCharCoords, Bitmap dst, Coords dstCharCoords) {
 		if (null == src) {
@@ -325,6 +289,22 @@ public class TextGenerator {
 		if (src.PixelFormat != dst.PixelFormat) {
 			throw new ArgumentException("src and dst bitmaps are of different pixel format");
 		}
+		
+		
+		
+		
+		System.Console.WriteLine("src.Width = " + src.Width + " src.Height = " + src.Height);
+		System.Console.WriteLine("srcCharCoords = " + srcCharCoords);
+		System.Console.WriteLine("dst.Width = " + dst.Width + " dst.Height = " + dst.Height);
+		System.Console.WriteLine("dstCharCoords = " + dstCharCoords);
+		return;
+		
+		
+		
+		
+		
+		
+		
 		
 		if (src.Width < charWidth || src.Height < charHeight) {
 			throw new ArgumentException("src bitmap width/height is less than " + charWidth + "x" + charHeight);
@@ -398,7 +378,7 @@ public class TextGenerator {
 		src.UnlockBits(srcData);
 	}
 	
-	private struct Coords {
+	protected struct Coords {
 		public int x;
 		public int y;
 		
@@ -412,6 +392,144 @@ public class TextGenerator {
 		}
 	}
 
+}
+
+public class TextGenerator320x240 : TextGenerator {
+	public TextGenerator320x240(Bitmap frame) : base(frame) {
+		if (!(320 == frame.Width && 240 == frame.Height)) {
+			throw new ArgumentException("frame out of range");
+		}
+	
+		this.frame = frame;
+	
+		try {
+			asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.8x12.png");
+			digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.32x24.png");
+		} catch (Exception ex) {
+			throw new ArgumentException("failed to load charts: " + ex.Message);
+		}
+		
+		frameWidth = 320;
+		frameHeight = 240;
+
+		charWidth = 8;
+		charHeight = 12;
+		digitWidth = 32;
+		digitHeight = 24;
+
+		frameWidthChars = 40;
+		frameHeightChars = 20;
+		frameWidthDigits = 10;
+		frameHeightDigits = 10;
+		
+		filenameLengthMax = 40;
+		filenameCoords = new Coords(0, 0);
+
+		notesLengthMax = 11;
+		notesCoords = new Coords(0, 1);
+
+		tempoLengthMax = 14;
+		tempoCoords = new Coords(12, 19);
+
+		rateLengthMax = 14;
+		rateCoords = new Coords(26, 19);
+
+		measureLengthMax = 3;
+		measureCoords = new Coords(0, 9);
+	}
+	
+}
+
+public class TextGenerator720x480 : TextGenerator {
+	public TextGenerator720x480(Bitmap frame) : base(frame) {
+		if (!(720 == frame.Width && 480 == frame.Height)) {
+			throw new ArgumentException("frame out of range");
+		}
+	
+		this.frame = frame;
+	
+		try {
+			asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.16x24.png");
+			digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.64x48.png");
+		} catch (Exception ex) {
+			throw new ArgumentException("failed to load charts: " + ex.Message);
+		}
+		
+		frameWidth = 720;
+		frameHeight = 480;
+
+		charWidth = 16;
+		charHeight = 24;
+		digitWidth = 64;
+		digitHeight = 48;
+
+		frameWidthChars = 45;
+		frameHeightChars = 20;
+		frameWidthDigits = 11; // 11.25
+		frameHeightDigits = 10;
+		
+		filenameLengthMax = 45;
+		filenameCoords = new Coords(0, 0);
+
+		notesLengthMax = 16;
+		notesCoords = new Coords(0, 1);
+
+		tempoLengthMax = 14;
+		tempoCoords = new Coords(17, 19);
+
+		rateLengthMax = 14;
+		rateCoords = new Coords(31, 19);
+
+		measureLengthMax = 3;
+		measureCoords = new Coords(0, 9);
+	}
+	
+}
+
+public class TextGenerator1440x480 : TextGenerator {
+	public TextGenerator1440x480(Bitmap frame) : base(frame) {
+		if (!(1440 == frame.Width && 480 == frame.Height)) {
+			throw new ArgumentException("frame out of range");
+		}
+		
+		this.frame = frame;
+	
+		try {
+			asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.16x24.png");
+			digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.64x48.png");
+		} catch (Exception ex) {
+			throw new ArgumentException("failed to load charts: " + ex.Message);
+		}
+		
+		frameWidth = 1440;
+		frameHeight = 480;
+
+		charWidth = 16;
+		charHeight = 24;
+		digitWidth = 64;
+		digitHeight = 48;
+
+		frameWidthChars = 90;
+		frameHeightChars = 20;
+		frameWidthDigits = 22; // 22.5
+		frameHeightDigits = 10;
+		
+		filenameLengthMax = 90;
+		filenameCoords = new Coords(0, 0);
+
+		notesLengthMax = 61;
+		notesCoords = new Coords(0, 1);
+
+		tempoLengthMax = 14;
+		tempoCoords = new Coords(62, 19);
+
+		rateLengthMax = 14;
+		rateCoords = new Coords(76, 19);
+
+		measureLengthMax = 3;
+		measureCoords = new Coords(0, 9);
+	}
+	
 }
 
 }

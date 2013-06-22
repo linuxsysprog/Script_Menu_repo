@@ -750,29 +750,31 @@ hud_sketch.720x480.png cropped at each side
 			? how-to manipulate parts of image
 			x see how-to create a transparent image
 		- write TextGenerator class
-			- implement 320x240
-				x write getCharBitmap() method
-					! study IntPtr.Add() method x) find out how-to increment IntPtr
-				! see how-to copy between pointers
-				x write insertChar() method
-				x write CopyCharBitmap() method
-				x write InsertString() method
-				x write methods to insert filename, notes, tempo, rate
-				x do the rest of ascii and digit charts
-				x make rate right-aligned
-				- subclass TextGenerator
-				- load all resource in constructor
-				- write InsertMeasure() method
-				- rename InsertXXX methods to AddXXX, get rid of Bitmap argument
+			x write getCharBitmap() method
+				! study IntPtr.Add() method x) find out how-to increment IntPtr
+			! see how-to copy between pointers
+			x write insertChar() method
+			x write CopyCharBitmap() method
+			x write InsertString() method
+			x write methods to insert filename, notes, tempo, rate
+			x do the rest of ascii and digit charts
+			x make rate right-aligned
+			x create new grids for char and digit charts
+			x fill in init section in subconstructors
+			x add getters for length fields
+			x subclass TextGenerator
+			x load all resource in constructor
+			x rename InsertXXX methods to AddXXX, get rid of Bitmap argument
 			x capitalize method names
+			- extend CopyCharBitmap() to digits and other resolutions
+			- write InsertMeasure() method
 			- review access modifiers
-			- implement 720x480 and 1440x480
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!
 	- build a big bad demo with the scripts that are ready to use
 		- document the process in "A typical workflow" section of Subclip How-to.doc
-- !!!CHECK SVN PROPERTIES!!!
+x check svn properties
 - fix and document LayoutTrack.cs -) add to the demo
 - start "Yngwie Malmsteen - REH Video" transcription subproject
 	- see if there's an off the shelf solution to insert markers at scene breaks
