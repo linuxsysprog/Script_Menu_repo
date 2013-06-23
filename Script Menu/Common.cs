@@ -11,7 +11,7 @@ using Sony.Vegas;
 namespace AddRulerNamespace
 {
 public class Common {
-	public const string CP_RIGHT = " - Copyright (C) 2011 Andrey Chislenko";
+	public const string CP_RIGHT = " - Copyright (C) 2011-2013 Andrey Chislenko";
 	
 	public const string ADD_RULER = "Add Ruler" + CP_RIGHT;
 	public const string DUMP_TRACK = "Dump Track" + CP_RIGHT;

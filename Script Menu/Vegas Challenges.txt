@@ -774,7 +774,11 @@ hud_sketch.720x480.png cropped at each side
 			x review access modifiers
 			x test class
 		- write GUI
-			- 
+			x create a form with 5 fields
+				x strip down AddObject.cs
+			x do Clear All button
+			- do saving history to AddObject.cs.config
+			- write getNextFilename() function
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!
