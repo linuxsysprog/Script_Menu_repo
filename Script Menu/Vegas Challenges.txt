@@ -749,7 +749,7 @@ hud_sketch.720x480.png cropped at each side
 			? create image in memory
 			? how-to manipulate parts of image
 			x see how-to create a transparent image
-		- write TextGenerator class
+		x write TextGenerator class
 			x write getCharBitmap() method
 				! study IntPtr.Add() method x) find out how-to increment IntPtr
 			! see how-to copy between pointers
@@ -768,10 +768,13 @@ hud_sketch.720x480.png cropped at each side
 			x capitalize method names
 			x create factory method
 			x make sure subclasses cannot be instantiated
-			- write InsertMeasure() method
-				- pad with zeros
-			- extend CopyCharBitmap() to x) other resolutions -) digits
-			- review access modifiers
+			x write InsertMeasure() method
+				x pad with zeros
+			x extend CopyCharBitmap() to x) other resolutions x) digits
+			x review access modifiers
+			x test class
+		- write GUI
+			- 
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!

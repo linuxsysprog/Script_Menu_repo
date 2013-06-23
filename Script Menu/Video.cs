@@ -102,7 +102,7 @@ public class Video {
 	
 }
 
-abstract public class TextGenerator {
+public class TextGenerator {
 	protected Bitmap frame;
 	
 	protected int frameWidth;
@@ -222,6 +222,10 @@ abstract public class TextGenerator {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	public void AddFilename(string filename) {
+		if (null == filename || "" == filename) {
+			throw new ArgumentException("filename is null or empty");
+		}
+		
 		if (filename.Length > filenameLengthMax) {
 			throw new ArgumentException("filename out of range");
 		}
@@ -230,6 +234,10 @@ abstract public class TextGenerator {
 	}
 	
 	public void AddNotes(string notes) {
+		if (null == notes || "" == notes) {
+			throw new ArgumentException("notes is null or empty");
+		}
+		
 		if (notes.Length > notesLengthMax) {
 			throw new ArgumentException("notes out of range");
 		}
@@ -238,6 +246,10 @@ abstract public class TextGenerator {
 	}
 	
 	public void AddTempo(string tempo) {
+		if (null == tempo || "" == tempo) {
+			throw new ArgumentException("tempo is null or empty");
+		}
+		
 		if (tempo.Length > tempoLengthMax) {
 			throw new ArgumentException("tempo out of range");
 		}
@@ -246,6 +258,10 @@ abstract public class TextGenerator {
 	}
 	
 	public void AddRate(string rate) {
+		if (null == rate || "" == rate) {
+			throw new ArgumentException("rate is null or empty");
+		}
+		
 		if (rate.Length > rateLengthMax) {
 			throw new ArgumentException("rate out of range");
 		}
@@ -254,6 +270,10 @@ abstract public class TextGenerator {
 	}
 	
 	public void AddMeasure(string measure) {
+		if (null == measure || "" == measure) {
+			throw new ArgumentException("measure is null or empty");
+		}
+		
 		if (measure.Length > measureLengthMax) {
 			throw new ArgumentException("measure out of range");
 		}
@@ -316,16 +336,23 @@ abstract public class TextGenerator {
 			throw new ArgumentException("str out of range");
 		}
 		
+		string digits = "0123456789";
+		
 		// validate string
 		foreach (char c in str) {
-			if ("0123456789".IndexOf(c) == -1) {
+			if (digits.IndexOf(c) == -1) {
 				throw new ArgumentException("invalid digit: " + c);
 			}
 		}
 		
+		// pad with zeros
+		for (int i = 0; i < measureLengthMax - str.Length; i++) {
+			InsertDigit(new Coords(0, 0), new Coords(coords.x++, coords.y));
+		}
+		
 		// insert string
 		for (int i = 0; i < str.Length; i++) {
-			InsertDigit(new Coords(i, 0), new Coords(coords.x++, coords.y));
+			InsertDigit(new Coords(digits.IndexOf(str[i]), 0), new Coords(coords.x++, coords.y));
 		}
 	}
 	
@@ -365,10 +392,10 @@ abstract public class TextGenerator {
 			throw new ArgumentException("dst bitmap width/height is less than " + block.Width + "x" + block.Height);
 		}
 		
-		if ((dst.Width % block.Width) != 0 ||
-				(dst.Height % block.Height) != 0) {
-			throw new ArgumentException("dst bitmap is not in increments of " + block.Width + "x" + block.Height);
-		}
+		// if ((dst.Width % block.Width) != 0 ||
+				// (dst.Height % block.Height) != 0) {
+			// throw new ArgumentException("dst bitmap is not in increments of " + block.Width + "x" + block.Height);
+		// }
 		
 		if (srcCoords.x >= src.Width / block.Width ||
 				srcCoords.y >= src.Height / block.Height) {
@@ -380,11 +407,11 @@ abstract public class TextGenerator {
 			throw new ArgumentException("dst coords out of range");
 		}
 		
-		System.Console.WriteLine("src.Width = " + src.Width + " src.Height = " + src.Height);
-		System.Console.WriteLine("srcCoords = " + srcCoords);
-		System.Console.WriteLine("dst.Width = " + dst.Width + " dst.Height = " + dst.Height);
-		System.Console.WriteLine("dstCoords = " + dstCoords);
-		System.Console.WriteLine("block.Width = " + block.Width + " block.Height = " + block.Height);
+		// System.Console.WriteLine("src.Width = " + src.Width + " src.Height = " + src.Height);
+		// System.Console.WriteLine("srcCoords = " + srcCoords);
+		// System.Console.WriteLine("dst.Width = " + dst.Width + " dst.Height = " + dst.Height);
+		// System.Console.WriteLine("dstCoords = " + dstCoords);
+		// System.Console.WriteLine("block.Width = " + block.Width + " block.Height = " + block.Height);
 		
 		// get src pointer
 		Rectangle srcRect = new Rectangle(0, 0, src.Width, src.Height);
@@ -397,31 +424,31 @@ abstract public class TextGenerator {
 		IntPtr dstPtr = dstData.Scan0;
 		
 		// allocate buffer to hold one char
-		int srcWidthChars = src.Width / block.Width;
-		int charStride = srcData.Stride / srcWidthChars;
-		byte[] buffer = new byte[charStride * block.Height];
+		int srcWidthBlocks = src.Width / block.Width;
+		int blockStride = srcData.Stride / srcWidthBlocks;
+		byte[] buffer = new byte[blockStride * block.Height];
 		
 		// copy data from src bitmap to buffer
 		{
 			long row = srcData.Stride * block.Height * srcCoords.y;
-			long column = charStride * srcCoords.x;
-			long nextCharStride = row + column;
+			long column = blockStride * srcCoords.x;
+			long nextBlockStride = row + column;
 			
 			for (int i = 0; i < block.Height; i++) {
-				Marshal.Copy(new IntPtr(srcPtr.ToInt64() + nextCharStride), buffer, charStride * i, charStride);
-				nextCharStride += srcData.Stride;
+				Marshal.Copy(new IntPtr(srcPtr.ToInt64() + nextBlockStride), buffer, blockStride * i, blockStride);
+				nextBlockStride += srcData.Stride;
 			}
 		}
 		
 		// copy data from buffer to dst bitmap
 		{
 			long row = dstData.Stride * block.Height * dstCoords.y;
-			long column = charStride * dstCoords.x;
-			long nextCharStride = row + column;
+			long column = blockStride * dstCoords.x;
+			long nextBlockStride = row + column;
 			
 			for (int i = 0; i < block.Height; i++) {
-				Marshal.Copy(buffer, charStride * i, new IntPtr(dstPtr.ToInt64() + nextCharStride), charStride);
-				nextCharStride += dstData.Stride;
+				Marshal.Copy(buffer, blockStride * i, new IntPtr(dstPtr.ToInt64() + nextBlockStride), blockStride);
+				nextBlockStride += dstData.Stride;
 			}
 		}
 		
