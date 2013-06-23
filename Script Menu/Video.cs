@@ -183,11 +183,24 @@ abstract public class TextGenerator {
 	protected string PNGFolder = "C:\\Program Files\\Sony\\Vegas Pro 11.0\\Script Menu\\AddRuler.png";
 
 	protected TextGenerator(Bitmap frame) {
+		this.frame = frame;
+		InitAsciiChart();
+	}
+	
+	public static TextGenerator FromTextGeneratorFactory(Bitmap frame) {
 		if (null == frame) {
 			throw new ArgumentException("frame is null");
 		}
-	
-		InitAsciiChart();
+		
+		if (320 == frame.Width && 240 == frame.Height) {
+			return new TextGenerator320x240(frame);
+		} else if (720 == frame.Width && 480 == frame.Height) {
+			return new TextGenerator720x480(frame);
+		} else if (1440 == frame.Width && 480 == frame.Height) {
+			return new TextGenerator1440x480(frame);
+		} else {
+			throw new ArgumentException("frame out of range");
+		}
 	}
 	
 	public void AddFilename(string filename) {
@@ -392,144 +405,126 @@ abstract public class TextGenerator {
 		}
 	}
 
-}
+	private class TextGenerator320x240 : TextGenerator {
+		public TextGenerator320x240(Bitmap frame) : base(frame) {
+			try {
+				asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.8x12.png");
+				digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.32x24.png");
+			} catch (Exception ex) {
+				throw new ArgumentException("failed to load charts: " + ex.Message);
+			}
+			
+			frameWidth = 320;
+			frameHeight = 240;
 
-public class TextGenerator320x240 : TextGenerator {
-	public TextGenerator320x240(Bitmap frame) : base(frame) {
-		if (!(320 == frame.Width && 240 == frame.Height)) {
-			throw new ArgumentException("frame out of range");
-		}
-	
-		this.frame = frame;
-	
-		try {
-			asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.8x12.png");
-			digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.32x24.png");
-		} catch (Exception ex) {
-			throw new ArgumentException("failed to load charts: " + ex.Message);
+			charWidth = 8;
+			charHeight = 12;
+			digitWidth = 32;
+			digitHeight = 24;
+
+			frameWidthChars = 40;
+			frameHeightChars = 20;
+			frameWidthDigits = 10;
+			frameHeightDigits = 10;
+			
+			filenameLengthMax = 40;
+			filenameCoords = new Coords(0, 0);
+
+			notesLengthMax = 11;
+			notesCoords = new Coords(0, 1);
+
+			tempoLengthMax = 14;
+			tempoCoords = new Coords(12, 19);
+
+			rateLengthMax = 14;
+			rateCoords = new Coords(26, 19);
+
+			measureLengthMax = 3;
+			measureCoords = new Coords(0, 9);
 		}
 		
-		frameWidth = 320;
-		frameHeight = 240;
-
-		charWidth = 8;
-		charHeight = 12;
-		digitWidth = 32;
-		digitHeight = 24;
-
-		frameWidthChars = 40;
-		frameHeightChars = 20;
-		frameWidthDigits = 10;
-		frameHeightDigits = 10;
-		
-		filenameLengthMax = 40;
-		filenameCoords = new Coords(0, 0);
-
-		notesLengthMax = 11;
-		notesCoords = new Coords(0, 1);
-
-		tempoLengthMax = 14;
-		tempoCoords = new Coords(12, 19);
-
-		rateLengthMax = 14;
-		rateCoords = new Coords(26, 19);
-
-		measureLengthMax = 3;
-		measureCoords = new Coords(0, 9);
 	}
-	
-}
 
-public class TextGenerator720x480 : TextGenerator {
-	public TextGenerator720x480(Bitmap frame) : base(frame) {
-		if (!(720 == frame.Width && 480 == frame.Height)) {
-			throw new ArgumentException("frame out of range");
-		}
-	
-		this.frame = frame;
-	
-		try {
-			asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.16x24.png");
-			digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.64x48.png");
-		} catch (Exception ex) {
-			throw new ArgumentException("failed to load charts: " + ex.Message);
+	private class TextGenerator720x480 : TextGenerator {
+		public TextGenerator720x480(Bitmap frame) : base(frame) {
+			try {
+				asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.16x24.png");
+				digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.64x48.png");
+			} catch (Exception ex) {
+				throw new ArgumentException("failed to load charts: " + ex.Message);
+			}
+			
+			frameWidth = 720;
+			frameHeight = 480;
+
+			charWidth = 16;
+			charHeight = 24;
+			digitWidth = 64;
+			digitHeight = 48;
+
+			frameWidthChars = 45;
+			frameHeightChars = 20;
+			frameWidthDigits = 11; // 11.25
+			frameHeightDigits = 10;
+			
+			filenameLengthMax = 45;
+			filenameCoords = new Coords(0, 0);
+
+			notesLengthMax = 16;
+			notesCoords = new Coords(0, 1);
+
+			tempoLengthMax = 14;
+			tempoCoords = new Coords(17, 19);
+
+			rateLengthMax = 14;
+			rateCoords = new Coords(31, 19);
+
+			measureLengthMax = 3;
+			measureCoords = new Coords(0, 9);
 		}
 		
-		frameWidth = 720;
-		frameHeight = 480;
-
-		charWidth = 16;
-		charHeight = 24;
-		digitWidth = 64;
-		digitHeight = 48;
-
-		frameWidthChars = 45;
-		frameHeightChars = 20;
-		frameWidthDigits = 11; // 11.25
-		frameHeightDigits = 10;
-		
-		filenameLengthMax = 45;
-		filenameCoords = new Coords(0, 0);
-
-		notesLengthMax = 16;
-		notesCoords = new Coords(0, 1);
-
-		tempoLengthMax = 14;
-		tempoCoords = new Coords(17, 19);
-
-		rateLengthMax = 14;
-		rateCoords = new Coords(31, 19);
-
-		measureLengthMax = 3;
-		measureCoords = new Coords(0, 9);
 	}
-	
-}
 
-public class TextGenerator1440x480 : TextGenerator {
-	public TextGenerator1440x480(Bitmap frame) : base(frame) {
-		if (!(1440 == frame.Width && 480 == frame.Height)) {
-			throw new ArgumentException("frame out of range");
+	private class TextGenerator1440x480 : TextGenerator {
+		public TextGenerator1440x480(Bitmap frame) : base(frame) {
+			try {
+				asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.16x24.png");
+				digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.64x48.png");
+			} catch (Exception ex) {
+				throw new ArgumentException("failed to load charts: " + ex.Message);
+			}
+			
+			frameWidth = 1440;
+			frameHeight = 480;
+
+			charWidth = 16;
+			charHeight = 24;
+			digitWidth = 64;
+			digitHeight = 48;
+
+			frameWidthChars = 90;
+			frameHeightChars = 20;
+			frameWidthDigits = 22; // 22.5
+			frameHeightDigits = 10;
+			
+			filenameLengthMax = 90;
+			filenameCoords = new Coords(0, 0);
+
+			notesLengthMax = 61;
+			notesCoords = new Coords(0, 1);
+
+			tempoLengthMax = 14;
+			tempoCoords = new Coords(62, 19);
+
+			rateLengthMax = 14;
+			rateCoords = new Coords(76, 19);
+
+			measureLengthMax = 3;
+			measureCoords = new Coords(0, 9);
 		}
 		
-		this.frame = frame;
-	
-		try {
-			asciiChartBitmap = new Bitmap(PNGFolder + "\\ascii_chart.16x24.png");
-			digitChartBitmap = new Bitmap(PNGFolder + "\\digit_chart.64x48.png");
-		} catch (Exception ex) {
-			throw new ArgumentException("failed to load charts: " + ex.Message);
-		}
-		
-		frameWidth = 1440;
-		frameHeight = 480;
-
-		charWidth = 16;
-		charHeight = 24;
-		digitWidth = 64;
-		digitHeight = 48;
-
-		frameWidthChars = 90;
-		frameHeightChars = 20;
-		frameWidthDigits = 22; // 22.5
-		frameHeightDigits = 10;
-		
-		filenameLengthMax = 90;
-		filenameCoords = new Coords(0, 0);
-
-		notesLengthMax = 61;
-		notesCoords = new Coords(0, 1);
-
-		tempoLengthMax = 14;
-		tempoCoords = new Coords(62, 19);
-
-		rateLengthMax = 14;
-		rateCoords = new Coords(76, 19);
-
-		measureLengthMax = 3;
-		measureCoords = new Coords(0, 9);
 	}
-	
+
 }
 
 }

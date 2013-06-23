@@ -766,6 +766,8 @@ hud_sketch.720x480.png cropped at each side
 			x load all resource in constructor
 			x rename InsertXXX methods to AddXXX, get rid of Bitmap argument
 			x capitalize method names
+			x create factory method
+			x make sure subclasses cannot be instantiated
 			- extend CopyCharBitmap() to digits and other resolutions
 			- write InsertMeasure() method
 			- review access modifiers
