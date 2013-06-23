@@ -303,22 +303,6 @@ abstract public class TextGenerator {
 			throw new ArgumentException("src and dst bitmaps are of different pixel format");
 		}
 		
-		
-		
-		
-		System.Console.WriteLine("src.Width = " + src.Width + " src.Height = " + src.Height);
-		System.Console.WriteLine("srcCharCoords = " + srcCharCoords);
-		System.Console.WriteLine("dst.Width = " + dst.Width + " dst.Height = " + dst.Height);
-		System.Console.WriteLine("dstCharCoords = " + dstCharCoords);
-		return;
-		
-		
-		
-		
-		
-		
-		
-		
 		if (src.Width < charWidth || src.Height < charHeight) {
 			throw new ArgumentException("src bitmap width/height is less than " + charWidth + "x" + charHeight);
 		}
@@ -346,6 +330,11 @@ abstract public class TextGenerator {
 				dstCharCoords.y >= dst.Height / charHeight) {
 			throw new ArgumentException("dst coords out of range");
 		}
+		
+		System.Console.WriteLine("src.Width = " + src.Width + " src.Height = " + src.Height);
+		System.Console.WriteLine("srcCharCoords = " + srcCharCoords);
+		System.Console.WriteLine("dst.Width = " + dst.Width + " dst.Height = " + dst.Height);
+		System.Console.WriteLine("dstCharCoords = " + dstCharCoords);
 		
 		// get src pointer
 		Rectangle srcRect = new Rectangle(0, 0, src.Width, src.Height);

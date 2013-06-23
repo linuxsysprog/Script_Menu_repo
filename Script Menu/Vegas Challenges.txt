@@ -768,8 +768,8 @@ hud_sketch.720x480.png cropped at each side
 			x capitalize method names
 			x create factory method
 			x make sure subclasses cannot be instantiated
-			- extend CopyCharBitmap() to digits and other resolutions
 			- write InsertMeasure() method
+			- extend CopyCharBitmap() to x) other resolutions -) digits
 			- review access modifiers
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
