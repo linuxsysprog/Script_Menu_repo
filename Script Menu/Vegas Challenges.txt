@@ -776,8 +776,14 @@ hud_sketch.720x480.png cropped at each side
 		- write GUI
 			x create a form with 5 fields
 				x strip down AddObject.cs
+				- add Project Path field
 			x do Clear All button
-			- do saving history to AddObject.cs.config
+			x autoselect on Tab
+			x do saving history to AddObject.cs.config
+				x read in XML file
+					* http://msdn.microsoft.com/en-us/library/t058x2df.aspx
+				x traverse XML object
+				x write out XML file
 			- write getNextFilename() function
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
@@ -785,7 +791,9 @@ hud_sketch.720x480.png cropped at each side
 	- build a big bad demo with the scripts that are ready to use
 		- document the process in "A typical workflow" section of Subclip How-to.doc
 x check svn properties
-- fix and document LayoutTrack.cs -) add to the demo
+$ fix svn history
+$ fix svn source code timestamp
+- fix and document LayoutTrack.cs -) add to demo
 - start "Yngwie Malmsteen - REH Video" transcription subproject
 	- see if there's an off the shelf solution to insert markers at scene breaks
 	- install vegas saurus scripts and check it out
