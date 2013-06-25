@@ -773,10 +773,10 @@ hud_sketch.720x480.png cropped at each side
 			x extend CopyCharBitmap() to x) other resolutions x) digits
 			x review access modifiers
 			x test class
-		- write GUI
+		x write GUI
 			x create a form with 5 fields
 				x strip down AddObject.cs
-				- add Project Path field
+				x add Project Path field
 			x do Clear All button
 			x autoselect on Tab
 			x do saving history to AddObject.cs.config
@@ -786,6 +786,9 @@ hud_sketch.720x480.png cropped at each side
 				x write out XML file
 			x write getNextFilename() function
 				* http://www.dotnetperls.com/directory-getfiles
+		x put it all together into AddObject.cs
+			x write Video.AddObject() method
+		- fix "run AddRuler.cs first" bug
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!

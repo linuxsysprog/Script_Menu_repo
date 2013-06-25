@@ -87,6 +87,16 @@ public class Video {
 		return videoEvent;
 	}
 	
+	// add an object 1 frame long onto the track specified at the position specified.
+	public static VideoEvent AddObject(VideoTrack videoTrack, Timecode position, string mediaPath) {
+		Media media = new Media(mediaPath);
+		
+		VideoEvent videoEvent = videoTrack.AddVideoEvent(position, Timecode.FromFrames(1));
+		videoEvent.AddTake(media.GetVideoStreamByIndex(0));
+		
+		return videoEvent;
+	}
+	
 	// return absolute path to directory containing PNGs
 	public static string GetPNGDirectory() {
 		string size = "320x240";
@@ -191,11 +201,11 @@ public class TextGenerator {
 	private char[][] asciiChart = new char[6][];
 	protected Bitmap asciiChartBitmap;
 	protected Bitmap digitChartBitmap;
-	// protected string PNGFolder = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png";
-	protected string PNGFolder = "C:\\Program Files\\Sony\\Vegas Pro 11.0\\Script Menu\\AddRuler.png";
+	protected string PNGFolder;
 
 	protected TextGenerator(Bitmap frame) {
 		this.frame = frame;
+		PNGFolder = Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png";
 		InitAsciiChart();
 	}
 	
