@@ -77,6 +77,7 @@ public class Video {
 		Media media = new Media(path);
 		
 		VideoEvent videoEvent = videoTrack.AddVideoEvent(position, Timecode.FromFrames(1));
+		videoEvent.MaintainAspectRatio = false;
 		
 		if (notes != null) {
 			(videoEvent.AddTake(media.GetVideoStreamByIndex(0))).Name = notes + Common.SPACER;
@@ -92,6 +93,7 @@ public class Video {
 		Media media = new Media(mediaPath);
 		
 		VideoEvent videoEvent = videoTrack.AddVideoEvent(position, Timecode.FromFrames(1));
+		videoEvent.MaintainAspectRatio = false;
 		videoEvent.AddTake(media.GetVideoStreamByIndex(0));
 		
 		return videoEvent;
@@ -433,7 +435,7 @@ public class TextGenerator {
 		BitmapData dstData = dst.LockBits(dstRect, ImageLockMode.WriteOnly, dst.PixelFormat);
 		IntPtr dstPtr = dstData.Scan0;
 		
-		// allocate buffer to hold one char
+		// allocate buffer to hold one block
 		int srcWidthBlocks = src.Width / block.Width;
 		int blockStride = srcData.Stride / srcWidthBlocks;
 		byte[] buffer = new byte[blockStride * block.Height];

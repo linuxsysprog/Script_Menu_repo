@@ -138,6 +138,7 @@ public class EntryPoint {
 		// insert event at the nearest frame
 		VideoEvent videoEvent = tagretTrack.AddVideoEvent(quantizedEvent.QuantizedStart,
 			Timecode.FromFrames(1));
+		videoEvent.MaintainAspectRatio = false;
 		
 		foreach (Take take in sourceEvent.Takes) {
 			string path;

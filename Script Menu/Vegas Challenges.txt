@@ -788,7 +788,9 @@ hud_sketch.720x480.png cropped at each side
 				* http://www.dotnetperls.com/directory-getfiles
 		x put it all together into AddObject.cs
 			x write Video.AddObject() method
+				x unMaintain aspect ratio
 		- fix "run AddRuler.cs first" bug
+		- update Rulers2Objects.cs
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!

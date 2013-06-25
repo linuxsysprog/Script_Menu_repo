@@ -111,6 +111,7 @@ public class EntryPoint {
 		
 		// insert event
 		VideoEvent videoEvent = tagretTrack.AddVideoEvent(sourceEvent.Start, Timecode.FromFrames(1));
+		videoEvent.MaintainAspectRatio = false;
 		
 		// copy take names across
 		foreach (Take take in sourceEvent.Takes) {
