@@ -784,7 +784,8 @@ hud_sketch.720x480.png cropped at each side
 					* http://msdn.microsoft.com/en-us/library/t058x2df.aspx
 				x traverse XML object
 				x write out XML file
-			- write getNextFilename() function
+			x write getNextFilename() function
+				* http://www.dotnetperls.com/directory-getfiles
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!

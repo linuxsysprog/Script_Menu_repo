@@ -448,6 +448,19 @@ public class Common {
 		
 		return fullName;
 	}
+	
+	// filters string array by a regex
+	public static string[] filterByRegex(string[] ar, Regex regex) {
+		List<string> filtered = new List<string>();
+		
+		foreach (string s in ar) {
+			if (regex.Match(s).Success) {
+				filtered.Add(s);
+			}
+		}
+		
+		return filtered.ToArray();
+	}
 			
 }
 
