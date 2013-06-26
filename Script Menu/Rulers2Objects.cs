@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Sony.Vegas;
 using AddRulerNamespace;
 
@@ -20,52 +21,6 @@ public class EntryPoint {
 		VideoTrack targetTrack;
 		List<VideoEvent> sourceEvents;
 		List<VideoEvent> targetEvents;
-		
-		const string frameSize = "320x240";
-		const string @object = "Measure";
-		
-		// get text media generator
-		PlugInNode plugIn = vegas.Generators.GetChildByName("Sony Text");
-		if (plugIn == null) {
-			MessageBox.Show("Couldn't find Sony Text media generator",
-				Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		// get all presets
-		List<Preset> presets = new List<Preset>();
-		foreach (EffectPreset preset in plugIn.Presets) {
-			try {
-				presets.Add(new Preset(preset.Name));
-			} catch (Exception e) {
-				continue;
-			}
-		}
-
-		// figure out measure range
-		List<int> measures = new List<int>();
-		foreach (Preset preset in presets) {
-			if (preset.FrameSize == frameSize && preset.Object == @object) {
-				try {
-					int n = Convert.ToInt32(preset.Value);
-					if (n < 1) {
-						throw new Exception("value is less than one");
-					}
-					measures.Add(n);
-				} catch (Exception ex) {
-					MessageBox.Show("Invalid Preset (" + preset + "): " + ex.Message,
-						Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-			}
-		}
-		measures.Sort();
-		
-		// dump measures
-		// Common.vegas.DebugClear();
-		// foreach (int measure in measures) {
-			// Common.vegas.DebugOut("" + measure);
-		// }
 		
 		Selection selection = new Selection(vegas.Transport.SelectionStart, vegas.Transport.SelectionLength);
 		selection.Normalize();
@@ -129,23 +84,55 @@ public class EntryPoint {
 			return;
 		}
 		
-		// check if there's enough measure presets
-		if (measures.Count < filteredSourceEvents.Count) {
-			MessageBox.Show("Not enough Measure Presets (" + measures.Count + ")",
+		// load config
+		XmlNode projectPath = null;
+		try {
+			XmlDocument configXML = new XmlDocument();
+			configXML.Load(Common.vegas.InstallationDirectory + "\\Script Menu\\AddObject.cs.config");
+			
+			projectPath = configXML.SelectSingleNode("/ScriptSettings/ProjectPath");
+			if (null == projectPath) {
+				throw new Exception("ProjectPath element not found");
+			}
+		} catch (Exception ex) {
+			MessageBox.Show("Failed to load config file: " + ex.Message,
 				Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
 		// insert measure objects
-		// Common.vegas.DebugClear();
 		{
 			int i = 0;
 			foreach (VideoEvent sourceEvent in filteredSourceEvents) {
+				// init text generator
+				TextGenerator textGenerator = null;
+				Bitmap frame = null;
+				try {
+					frame = new Bitmap(Common.vegas.Project.Video.Width, Common.vegas.Project.Video.Height,
+						new Bitmap(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\ascii_chart.8x12.png").PixelFormat);
+					textGenerator = TextGenerator.FromTextGeneratorFactory(frame);;
+				} catch (Exception ex) {
+					MessageBox.Show("Failed to init text generator: " + ex.Message,
+						Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+				
+				// add text
+				textGenerator.AddMeasure("" + ++i);
+				
+				// save frame
+				string mediaPath = null;
+				try {
+					mediaPath = projectPath.InnerText + "\\" + Common.getNextFilename(projectPath.InnerText);
+					frame.Save(mediaPath);
+				} catch (Exception ex) {
+					MessageBox.Show("Failed to save frame: " + ex.Message,
+						Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+				
 				// create event
-				// Common.vegas.DebugOut(frameSize + " " + @object + " " + measures.ToArray()[i++]);
-				Common.AddTextEvent(Common.vegas, plugIn, targetTrack,
-					frameSize + " " + @object + " " + measures.ToArray()[i++],
-					sourceEvent.Start, Timecode.FromFrames(1));
+				Video.AddObject(targetTrack, sourceEvent.Start, mediaPath);
 			}
 		}
 		

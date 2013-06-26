@@ -4,7 +4,6 @@
 // Filename, Notes, Tempo, Rate, Measure
 
 using System;
-using System.IO;
 using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,7 +34,6 @@ public class EntryPoint : Form {
 	
 	private string configFilename = Common.vegas.InstallationDirectory + "\\Script Menu\\AddObject.cs.config";
 	private XmlDocument configXML = new XmlDocument();
-	private Regex filenameRegex = new Regex("^Object(\\d{4}).png$", RegexOptions.IgnoreCase);
 	private bool history = true;
 	
 	public EntryPoint() {
@@ -208,8 +206,9 @@ public class EntryPoint : Form {
 		}
 		
 		// save frame
-		string mediaPath = txtProjectPath.Text + "\\" + getNextFilename();
+		string mediaPath = null;
 		try {
+			mediaPath = txtProjectPath.Text + "\\" + Common.getNextFilename(txtProjectPath.Text);
 			frame.Save(mediaPath);
 		} catch (Exception ex) {
 			MessageBox.Show("Failed to save frame: " + ex.Message,
@@ -280,36 +279,6 @@ public class EntryPoint : Form {
 	//
 	//
 	////////////////////////////////////////////////////////////////////////////////
-	
-	private string getNextFilename() {
-		// list full paths
-		string[] paths = null;
-		try {
-			paths = Directory.GetFiles(txtProjectPath.Text, "Object????.png");
-		} catch (Exception ex) {
-			throw new Exception("Failed to get files in " + txtProjectPath.Text + ": " + ex.Message);
-		}
-		
-		// trim to basenames
-		List<string> files = new List<string>();
-		foreach (string path in paths) {
-			files.Add(Common.Basename(path));
-		}
-		
-		// filter by regex
-		string[] filesFiltered = Common.filterByRegex(files.ToArray(), filenameRegex);
-		Array.Sort(filesFiltered);
-		
-		// get current filename
-		string currentFilename = filesFiltered.Length > 0 ? filesFiltered[filesFiltered.Length - 1] : "Object0000.png";
-		
-		int n = Convert.ToInt32(filenameRegex.Match(currentFilename).Groups[1].Value);
-		if (n > 9998) {
-			throw new Exception(txtProjectPath + " is full");
-		}
-		
-		return "Object" + (++n).ToString("D4") + ".png";
-	}
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;

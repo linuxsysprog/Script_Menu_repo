@@ -739,7 +739,7 @@ hud_sketch.720x480.png cropped at each side
 	/ study "Keyframe Animation"
 	x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
 		x redo ruler PNGs in three resolutions
-	- fix and document AddObject.cs and Rulers2Objects.cs
+	- fix and document (document bug) AddObject.cs and Rulers2Objects.cs
 		x study Bitmap class
 			x load image
 			x traverse
@@ -789,8 +789,10 @@ hud_sketch.720x480.png cropped at each side
 		x put it all together into AddObject.cs
 			x write Video.AddObject() method
 				x unMaintain aspect ratio
-		- fix "run AddRuler.cs first" bug
-		- update Rulers2Objects.cs
+		$ fix "run AddRuler.cs first" bug
+		x update Rulers2Objects.cs
+			? extract load config to common
+			x extract getNextFilename() to common
 	- do a full record/playback test cycle including intermediate renders to Uncompressed and
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!

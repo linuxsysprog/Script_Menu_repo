@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.IO;
 using Sony.Vegas;
 
 namespace AddRulerNamespace
@@ -461,7 +462,40 @@ public class Common {
 		
 		return filtered.ToArray();
 	}
-			
+	
+	// returns next filename in project path
+	public static string getNextFilename(string projectPath) {
+		Regex filenameRegex = new Regex("^Object(\\d{4}).png$", RegexOptions.IgnoreCase);
+	
+		// list full paths
+		string[] paths = null;
+		try {
+			paths = Directory.GetFiles(projectPath, "Object????.png");
+		} catch (Exception ex) {
+			throw new Exception("Failed to get files in " + projectPath + ": " + ex.Message);
+		}
+		
+		// trim to basenames
+		List<string> files = new List<string>();
+		foreach (string path in paths) {
+			files.Add(Basename(path));
+		}
+		
+		// filter by regex
+		string[] filesFiltered = filterByRegex(files.ToArray(), filenameRegex);
+		Array.Sort(filesFiltered);
+		
+		// get current filename
+		string currentFilename = filesFiltered.Length > 0 ? filesFiltered[filesFiltered.Length - 1] : "Object0000.png";
+		
+		int n = Convert.ToInt32(filenameRegex.Match(currentFilename).Groups[1].Value);
+		if (n > 9998) {
+			throw new Exception(projectPath + " is full");
+		}
+		
+		return "Object" + (++n).ToString("D4") + ".png";
+	}
+	
 }
 
 public class Selection {
