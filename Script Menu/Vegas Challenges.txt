@@ -564,9 +564,8 @@ x remove Hello World View from the Extensions submenu
 - fix the icon for Add Ruler View (for any app ext)
 x learn how-to test csc return value and conditionally start the program
 / document each script briefly in Subclip How-to.doc
-	- find old fullest demo
-	- AddObject.cs
-	- Rulers2Objects.cs
+	x AddObject.cs
+	x Rulers2Objects.cs
 	- LayoutTrack.cs
 	x establish documentation format
 	x DumpTrack.cs
@@ -739,7 +738,7 @@ hud_sketch.720x480.png cropped at each side
 	/ study "Keyframe Animation"
 	x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
 		x redo ruler PNGs in three resolutions
-	- fix and document (document bug) AddObject.cs and Rulers2Objects.cs
+	x fix and document (x) document bug) AddObject.cs and Rulers2Objects.cs
 		x study Bitmap class
 			x load image
 			x traverse
@@ -797,6 +796,7 @@ hud_sketch.720x480.png cropped at each side
 		processing through Transcribe!
 	- demo time stretch methods -) Classic -) elastique -) Transcribe!
 	- build a big bad demo with the scripts that are ready to use
+		- find old fullest demo
 		- document the process in "A typical workflow" section of Subclip How-to.doc
 x check svn properties
 $ fix svn history

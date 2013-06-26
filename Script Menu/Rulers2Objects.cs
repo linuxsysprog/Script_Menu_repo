@@ -101,43 +101,47 @@ public class EntryPoint {
 		}
 		
 		// insert measure objects
-		{
-			int i = 0;
-			foreach (VideoEvent sourceEvent in filteredSourceEvents) {
-				// init text generator
-				TextGenerator textGenerator = null;
-				Bitmap frame = null;
-				try {
-					frame = new Bitmap(Common.vegas.Project.Video.Width, Common.vegas.Project.Video.Height,
-						new Bitmap(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\ascii_chart.8x12.png").PixelFormat);
-					textGenerator = TextGenerator.FromTextGeneratorFactory(frame);;
-				} catch (Exception ex) {
-					MessageBox.Show("Failed to init text generator: " + ex.Message,
-						Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				
-				// add text
-				textGenerator.AddMeasure("" + ++i);
-				
-				// save frame
-				string mediaPath = null;
-				try {
-					mediaPath = projectPath.InnerText + "\\" + Common.getNextFilename(projectPath.InnerText);
-					frame.Save(mediaPath);
-				} catch (Exception ex) {
-					MessageBox.Show("Failed to save frame: " + ex.Message,
-						Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				
-				// create event
-				Video.AddObject(targetTrack, sourceEvent.Start, mediaPath);
+		int count = 0;
+		foreach (VideoEvent sourceEvent in filteredSourceEvents) {
+			// do not insert into the same slot more than once
+			List<TrackEvent> existingEvents = Common.FindEventsByPosition(targetTrack, sourceEvent.Start);
+			if (existingEvents.Count > 0) {
+				continue;
 			}
+			
+			// init text generator
+			TextGenerator textGenerator = null;
+			Bitmap frame = null;
+			try {
+				frame = new Bitmap(Common.vegas.Project.Video.Width, Common.vegas.Project.Video.Height,
+					new Bitmap(Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\ascii_chart.8x12.png").PixelFormat);
+				textGenerator = TextGenerator.FromTextGeneratorFactory(frame);;
+			} catch (Exception ex) {
+				MessageBox.Show("Failed to init text generator: " + ex.Message,
+					Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			
+			// add text
+			textGenerator.AddMeasure("" + ++count);
+			
+			// save frame
+			string mediaPath = null;
+			try {
+				mediaPath = projectPath.InnerText + "\\" + Common.getNextFilename(projectPath.InnerText);
+				frame.Save(mediaPath);
+			} catch (Exception ex) {
+				MessageBox.Show("Failed to save frame: " + ex.Message,
+					Common.RULERS_OBJECTS, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			
+			// create event
+			Video.AddObject(targetTrack, sourceEvent.Start, mediaPath);
 		}
 		
 		// report
-		MessageBox.Show("Inserted " + filteredSourceEvents.Count + " events", Common.RULERS_OBJECTS);
+		MessageBox.Show("Inserted " + count + " events", Common.RULERS_OBJECTS);
 	}
 	
 }

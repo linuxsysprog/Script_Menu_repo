@@ -102,15 +102,15 @@ public class EntryPoint {
 	
 	// add a video event with a top ruler onto specified target video track.
 	// Copy position and take names from the source video event
-	private VideoEvent AddVideoEvent(VideoTrack tagretTrack, VideoEvent sourceEvent) {
+	private VideoEvent AddVideoEvent(VideoTrack targetTrack, VideoEvent sourceEvent) {
 		// do not insert into the same slot more than once
-		List<TrackEvent> events = Common.FindEventsByPosition(tagretTrack, sourceEvent.Start);
+		List<TrackEvent> events = Common.FindEventsByPosition(targetTrack, sourceEvent.Start);
 		if (events.Count > 0) {
 			return null;
 		}
 		
 		// insert event
-		VideoEvent videoEvent = tagretTrack.AddVideoEvent(sourceEvent.Start, Timecode.FromFrames(1));
+		VideoEvent videoEvent = targetTrack.AddVideoEvent(sourceEvent.Start, Timecode.FromFrames(1));
 		videoEvent.MaintainAspectRatio = false;
 		
 		// copy take names across
