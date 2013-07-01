@@ -736,68 +736,82 @@ hud_sketch.720x480.png cropped at each side
 	! see how-to set !) project defaults x) render defaults
 	x study "Panning and Cropping Video Events"
 	/ study "Keyframe Animation"
-	x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
-		x redo ruler PNGs in three resolutions
-	x fix and document (x) document bug) AddObject.cs and Rulers2Objects.cs
-		x study Bitmap class
-			x load image
-			x traverse
-			x change
-			x write out
-			x study (Un)LockBits methods
-			? create image in memory
-			? how-to manipulate parts of image
-			x see how-to create a transparent image
-		x write TextGenerator class
-			x write getCharBitmap() method
-				! study IntPtr.Add() method x) find out how-to increment IntPtr
-			! see how-to copy between pointers
-			x write insertChar() method
-			x write CopyCharBitmap() method
-			x write InsertString() method
-			x write methods to insert filename, notes, tempo, rate
-			x do the rest of ascii and digit charts
-			x make rate right-aligned
-			x create new grids for char and digit charts
-			x fill in init section in subconstructors
-			x add getters for length fields
-			x subclass TextGenerator
-			x load all resource in constructor
-			x rename InsertXXX methods to AddXXX, get rid of Bitmap argument
-			x capitalize method names
-			x create factory method
-			x make sure subclasses cannot be instantiated
-			x write InsertMeasure() method
-				x pad with zeros
-			x extend CopyCharBitmap() to x) other resolutions x) digits
-			x review access modifiers
-			x test class
-		x write GUI
-			x create a form with 5 fields
-				x strip down AddObject.cs
-				x add Project Path field
-			x do Clear All button
-			x autoselect on Tab
-			x do saving history to AddObject.cs.config
-				x read in XML file
-					* http://msdn.microsoft.com/en-us/library/t058x2df.aspx
-				x traverse XML object
-				x write out XML file
-			x write getNextFilename() function
-				* http://www.dotnetperls.com/directory-getfiles
-		x put it all together into AddObject.cs
-			x write Video.AddObject() method
-				x unMaintain aspect ratio
-		$ fix "run AddRuler.cs first" bug
-		x update Rulers2Objects.cs
-			? extract load config to common
-			x extract getNextFilename() to common
-	- do a full record/playback test cycle including intermediate renders to Uncompressed and
-		processing through Transcribe!
-	- demo time stretch methods -) Classic -) elastique -) Transcribe!
-	- build a big bad demo with the scripts that are ready to use
-		- find old fullest demo
-		- document the process in "A typical workflow" section of Subclip How-to.doc
+x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
+	x redo ruler PNGs in three resolutions
+x fix and document (x) document bug) AddObject.cs and Rulers2Objects.cs
+	x study Bitmap class
+		x load image
+		x traverse
+		x change
+		x write out
+		x study (Un)LockBits methods
+		? create image in memory
+		? how-to manipulate parts of image
+		x see how-to create a transparent image
+	x write TextGenerator class
+		x write getCharBitmap() method
+			! study IntPtr.Add() method x) find out how-to increment IntPtr
+		! see how-to copy between pointers
+		x write insertChar() method
+		x write CopyCharBitmap() method
+		x write InsertString() method
+		x write methods to insert filename, notes, tempo, rate
+		x do the rest of ascii and digit charts
+		x make rate right-aligned
+		x create new grids for char and digit charts
+		x fill in init section in subconstructors
+		x add getters for length fields
+		x subclass TextGenerator
+		x load all resource in constructor
+		x rename InsertXXX methods to AddXXX, get rid of Bitmap argument
+		x capitalize method names
+		x create factory method
+		x make sure subclasses cannot be instantiated
+		x write InsertMeasure() method
+			x pad with zeros
+		x extend CopyCharBitmap() to x) other resolutions x) digits
+		x review access modifiers
+		x test class
+	x write GUI
+		x create a form with 5 fields
+			x strip down AddObject.cs
+			x add Project Path field
+		x do Clear All button
+		x autoselect on Tab
+		x do saving history to AddObject.cs.config
+			x read in XML file
+				* http://msdn.microsoft.com/en-us/library/t058x2df.aspx
+			x traverse XML object
+			x write out XML file
+		x write getNextFilename() function
+			* http://www.dotnetperls.com/directory-getfiles
+	x put it all together into AddObject.cs
+		x write Video.AddObject() method
+			x unMaintain aspect ratio
+	$ fix "run AddRuler.cs first" bug
+	x update Rulers2Objects.cs
+		? extract load config to common
+		x extract getNextFilename() to common
+x demo time stretch methods, build matrix:
+	x compare New length vs. % vs. Audio: 00:00:00.000
+	x beep/Yngwie
+	x ėlastique Pro
+	x Classic Music 3
+	x Transcribe! 8.31.0
+	x 105% 90% 75% 50% 25% BPM
+	x build and render demo project
+		x insert section markers
+	x render for Nokia
+- build a big bad demo with the scripts that are ready to use
+	x find old fullest demo
+	- document the process in "A typical workflow" section of Subclip How-to.doc
+	 x fix dependancy on D:\Temp\New folder (5) and commit project
+	- compare two tracks frame-by-frame:
+		- stretch, then hud
+		- hud, then stretch
+	- see why FillRulers.cs reports things like these:
+148.000 148.000 0.000 F          11 B        9 B .
+192.000 192.000 0.000 S          5 T        4 T .
 x check svn properties
 $ fix svn history
 $ fix svn source code timestamp
