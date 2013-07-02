@@ -803,12 +803,22 @@ x demo time stretch methods, build matrix:
 		x insert section markers
 	x render for Nokia
 - build a big bad demo with the scripts that are ready to use
+	- plan project, decide on naming conventions. Project "dimensions" will include:
+		- original takes: Take1
+		- takes with embedded HUD track: Take1.HUD
+		- left/right hand, split: Take1.L
+		- synced up (matched) takes: Take2.Matched
+		- slowed down (speeded up) original and matched takes: Take1.75
+		- laid out takes (original and matched): Take1.75.2M (2-beat chunk, cut at the middle)
+		- resolutions: 320x240, 720x480, 1440x480
 	x find old fullest demo
 	- document the process in "A typical workflow" section of Subclip How-to.doc
 	 x fix dependancy on D:\Temp\New folder (5) and commit project
-	- compare two tracks frame-by-frame:
-		- stretch, then hud
-		- hud, then stretch
+	x compare results frame-by-frame:
+		x keep hud, stretch video, transcribe audio, spread beeps
+		x stretch video, transcribe audio, spread beeps, create hud
+		* audio ok, video not ok: see "Frame-by-frame comparison.jpg" and "Frame-by-frame comparison 2.jpg"
+		* conclusion: always reHUD
 	- see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
 192.000 192.000 0.000 S          5 T        4 T .
