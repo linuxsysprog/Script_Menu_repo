@@ -822,9 +822,10 @@ x demo time stretch methods, build matrix:
 		* audio ok, video not ok: see "Frame-by-frame comparison.jpg" and "Frame-by-frame comparison 2.jpg"
 		* conclusion: always reHUD
 	x compare results frame-by-frame:
-		- match track, slow down track
-		x slow down track, match track
-		- conclusion: 
+		x match track, slow down track
+		! slow down track, match track
+			* broken
+		! conclusion: always match first, slow down second
 		x why SliceTrack sometimes creates fade offsets?
 			* Options->unQuickfade Audio Edits
 		x why event turns pink with a number in a red box?
@@ -832,11 +833,11 @@ x demo time stretch methods, build matrix:
 		x see how-to set default stretch method
 	x record Take4
 		x find tuning segment x) determine pitch *) wrong
-	- see why FillRulers.cs reports things like these:
+- is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
+- see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
 192.000 192.000 0.000 S          5 T        4 T .
 x check out internal preferences
-- is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
 x check svn properties
 $ fix svn history
 $ fix svn source code timestamp
