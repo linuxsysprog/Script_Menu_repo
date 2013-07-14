@@ -803,16 +803,20 @@ x demo time stretch methods, build matrix:
 		x insert section markers
 	x render for Nokia
 - build a big bad demo with the scripts that are ready to use
-	- plan project, decide on naming conventions. Project "dimensions" will include:
-		- original takes: Take1
-		- takes with embedded HUD track: Take1.HUD
-		- left/right hand, split: Take1.L
-		- synced up (matched) takes: Take2.Matched
-		- slowed down (speeded up) original and matched takes: Take1.75
-		- laid out takes (original and matched): Take1.75.2M (2-beat chunk, cut at the middle)
+	- plan project
+	- decide on naming conventions
+		- originals: Take1
+		- temps: Take1~
+		- hands: Take1L
+		- matched: Take1LM
+		- splits: Split1, Split.L12
+		- slowed downs: Take1L.75, Split.L12.75
+		- laid outs: Split.L12.75.2Mid (2-beat chunk, cut at the middle)
+		- hudded: Tuke1LM, Splut.L12
+		- beeped: Bake1LM, Splib.L12
+		- hudded&beeped: Buke1LM, Splub.L12
 		- resolutions: 320x240, 720x480, 1440x480
-	- think of uniform track levels/normalized events across project and renders
-	- start with close-ups/splits
+	x think of uniform track levels/normalized events across project and renders
 	x find old fullest demo
 	- document the process in "A typical workflow" section of Subclip How-to.doc
 	 x fix dependancy on D:\Temp\New folder (5) and commit project
@@ -833,6 +837,10 @@ x demo time stretch methods, build matrix:
 		x see how-to set default stretch method
 	x record Take4
 		x find tuning segment x) determine pitch *) wrong
+- write SlowDown script
+	- see if T! supports:
+		- export to AVI
+		- batch mode
 - is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
 - see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
