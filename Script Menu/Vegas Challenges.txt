@@ -837,10 +837,21 @@ x demo time stretch methods, build matrix:
 		x see how-to set default stretch method
 	x record Take4
 		x find tuning segment x) determine pitch *) wrong
-- write SlowDown script
-	- see if T! supports:
-		- export to AVI
-		- batch mode
+x write batch slow down scripts
+	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
+	x write a reusable find() function
+	x extract_wav.pl
+		x install script
+		x check retval from ffmpeg
+	x extract_avi.pl
+	x transcribe_wav.pl
+	x assume_avi.pl
+	x audio_dub.pl
+		x normalize to 29.97
+	x check logs
+	x test all
+	x document
+	$ wait for saving dialog to go away
 - is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
 - see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
