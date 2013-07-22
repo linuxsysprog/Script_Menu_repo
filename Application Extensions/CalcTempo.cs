@@ -322,7 +322,7 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-			muteAllTracks(tracks, chkMuteAll.Checked);
+			Common.MuteAllTracks(tracks, chkMuteAll.Checked);
 			lblPlayingTrackIndex.Text = "";
 		}
 	}
@@ -337,7 +337,7 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-			muteAllTracks(tracks, chkVMuteAll.Checked);
+			Common.MuteAllTracks(tracks, chkVMuteAll.Checked);
 			lblVLPlayingTrack.Text = "";
 			lblVRPlayingTrack.Text = "";
 		}
@@ -353,7 +353,7 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-			soloAllTracks(tracks, chkSoloAll.Checked);
+			Common.SoloAllTracks(tracks, chkSoloAll.Checked);
 			lblPlayingTrackIndex.Text = "";
 		}
 	}
@@ -368,7 +368,7 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-			soloAllTracks(tracks, chkVSoloAll.Checked);
+			Common.SoloAllTracks(tracks, chkVSoloAll.Checked);
 			lblVLPlayingTrack.Text = "";
 			lblVRPlayingTrack.Text = "";
 		}
@@ -393,7 +393,7 @@ public class CalcTempoControl : UserControl {
 			}
 		
 			// unsolo soloed tracks if there are any
-			soloAllTracks(tracks, false);
+			Common.SoloAllTracks(tracks, false);
 			if (chkSoloAll.Checked) {
 				chkSoloAll.Checked = false;
 			}
@@ -402,7 +402,7 @@ public class CalcTempoControl : UserControl {
 			
 			// zero or more than one unmuted tracks
 			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
-				muteAllTracks(tracks, true);
+				Common.MuteAllTracks(tracks, true);
 				tracks[0].Mute = false;
 				if (chkMuteAll.Checked) {
 					chkMuteAll.Checked = false;
@@ -422,7 +422,7 @@ public class CalcTempoControl : UserControl {
 			
 			for (int i = 0; i < tracks.Count; i++) {
 				if (!tracks[i].Mute) {
-					muteAllTracks(tracks, true);
+					Common.MuteAllTracks(tracks, true);
 					
 					if (sender == btnPlayPrev) {
 						if (i > 0) {
@@ -491,12 +491,12 @@ public class CalcTempoControl : UserControl {
 			}
 		
 			// unsolo soloed tracks if there are any
-			soloAllTracks(tracks, false);
+			Common.SoloAllTracks(tracks, false);
 			if (chkLockLeftRight.Checked) {
-				soloAllTracks(peerTracks, false);
+				Common.SoloAllTracks(peerTracks, false);
 			}
 			if (chkLockWithVideo.Checked) {
-				soloAllTracks(peerAudioTracks, false);
+				Common.SoloAllTracks(peerAudioTracks, false);
 				if (chkSoloAll.Checked) {
 					chkSoloAll.Checked = false;
 				}
@@ -509,12 +509,12 @@ public class CalcTempoControl : UserControl {
 			
 			// zero or more than one unmuted tracks
 			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
-				muteAllTracks(tracks, true);
+				Common.MuteAllTracks(tracks, true);
 				if (chkLockLeftRight.Checked) {
-					muteAllTracks(peerTracks, true);
+					Common.MuteAllTracks(peerTracks, true);
 				}
 				if (chkLockWithVideo.Checked) {
-					muteAllTracks(peerAudioTracks, true);
+					Common.MuteAllTracks(peerAudioTracks, true);
 					if (chkMuteAll.Checked) {
 						chkMuteAll.Checked = false;
 					}
@@ -558,12 +558,12 @@ public class CalcTempoControl : UserControl {
 			
 			for (int i = 0; i < tracks.Count; i++) {
 				if (!tracks[i].Mute) {
-					muteAllTracks(tracks, true);
+					Common.MuteAllTracks(tracks, true);
 					if (chkLockLeftRight.Checked) {
-						muteAllTracks(peerTracks, true);
+						Common.MuteAllTracks(peerTracks, true);
 					}
 					if (chkLockWithVideo.Checked) {
-						muteAllTracks(peerAudioTracks, true);
+						Common.MuteAllTracks(peerAudioTracks, true);
 					}
 					
 					if (sender == btnLPlayPrev || sender == btnRPlayPrev) {
@@ -698,7 +698,7 @@ public class CalcTempoControl : UserControl {
 			lblPlayingTrackIndex.Text = "";
 			
 			using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-				muteAllTracks(audioTracks, true);
+				Common.MuteAllTracks(audioTracks, true);
 				foreach (Track audioTrack in audioTracks) {
 					audioTrack.Mute = true;
 					((AudioTrack)audioTrack).PanX = 0;
@@ -731,7 +731,7 @@ public class CalcTempoControl : UserControl {
 		}
 		
 		using (UndoBlock undo = new UndoBlock(UNDO_STRING)) {
-			muteAllTracks(audioTracks, true);
+			Common.MuteAllTracks(audioTracks, true);
 			
 			Track lPeerAudioTrack = findPeerAudioTrack(unmutedLVideoTracks[0], btnLPlayPrev);
 			if (lPeerAudioTrack != null) {
@@ -803,26 +803,6 @@ public class CalcTempoControl : UserControl {
 			calcTempo(tempoRegion.Length).ToString("F4");
 	}
 
-	private void muteAllTracks(List<Track> tracks, bool mute) {
-		foreach (Track track in tracks) {
-			if (mute && !track.Mute) {
-				track.Mute = true;
-			} else if (!mute && track.Mute) {
-				track.Mute = false;
-			}
-		}
-	}
-	
-	private void soloAllTracks(List<Track> tracks, bool solo) {
-		foreach (Track track in tracks) {
-			if (solo && !track.Solo) {
-				track.Solo = true;
-			} else if (!solo && track.Solo) {
-				track.Solo = false;
-			}
-		}
-	}
-	
 	private List<Track> findUnmutedTracks(List<Track> tracks) {
 		List<Track> unmutedTracks = new List<Track>();
 		foreach (Track track in tracks) {
