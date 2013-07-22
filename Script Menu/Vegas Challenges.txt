@@ -535,13 +535,6 @@ x add "events found" to DumpTrack.cs
 	- think how to get same piece at two different times in Left and Right screen
 	- find out how-to move cursor back and forth in history or write a script
 	- back up
-- write RenderAll.cs
-  - make this one an app extension with an option to interrupt rendering
-  - ask the user for the output folder
-  - cut into 0.5, 1 and 2 measure chunks
-  - imlement 0 and 0.5 offsets
-  - implement pre- and post- gaps
-  - back up
 ? write BuildTOC.cs
 	- generate an html outline of a project
 		- implement nesting, absolute and relative time/length and numbering of each subsection
@@ -725,9 +718,13 @@ hud_sketch.720x480.png cropped at each side
 				x add HUD track
 				x add no signal track
 					x create "No Signal" still
-			? solve the problem with rendering
+			/ solve the problem with rendering
 				* vegas freezes after rendering is complete
 				* vegas stops in the middle of rendering
+				x lower bitrate from 20M to 2K
+					* still hangs
+				x render into MPEG-2 NTSC program stream
+					* still hangs
 			- solve the problem with Vegas freezing with lots of AVC tracks
 				- do trial renders
 	? compensate for different PAR
@@ -805,16 +802,16 @@ x demo time stretch methods, build matrix:
 - build a big bad demo with the scripts that are ready to use
 	- plan project
 	- decide on naming conventions
-		- originals: Take1
-		- temps: Take1~
-		- hands: Take1L
-		- matched: Take1LM
-		- splits: Split1, Split.L12
-		- slowed downs: Take1L.75, Split.L12.75
+		x originals: Take1
+		x temps: Take1~
+		x hands: Take1L
+		x matched: Take1LM
+		x splits: Split1, Split.L12
+		x slowed downs: Take1L.75, Split.L12.75
 		- laid outs: Split.L12.75.2Mid (2-beat chunk, cut at the middle)
 		- hudded: Tuke1LM, Splut.L12
 		- beeped: Bake1LM, Splib.L12
-		- hudded&beeped: Buke1LM, Splub.L12
+		x hudded&beeped: Buke1LM, Splub.L12
 		- resolutions: 320x240, 720x480, 1440x480
 	x think of uniform track levels/normalized events across project and renders
 	x find old fullest demo
@@ -825,6 +822,7 @@ x demo time stretch methods, build matrix:
 		x stretch video, transcribe audio, spread beeps, create hud
 		* audio ok, video not ok: see "Frame-by-frame comparison.jpg" and "Frame-by-frame comparison 2.jpg"
 		* conclusion: always reHUD
+			* well, although stretching first and rehudding second will produce better results, it is much more work..
 	x compare results frame-by-frame:
 		x match track, slow down track
 		! slow down track, match track
@@ -837,6 +835,28 @@ x demo time stretch methods, build matrix:
 		x see how-to set default stretch method
 	x record Take4
 		x find tuning segment x) determine pitch *) wrong
+- write RenderAll.cs
+	x leave this to LayoutTrack.cs
+		x cut into 0.5, 1 and 2 measure chunks
+		x imlement 0 and 0.5 offsets
+		x implement pre- and post- gaps
+	$ make this one an app extension with an option to interrupt rendering
+		* i.e. background rendering
+	x have a look at
+		x SimpleRender.cs
+		x Render Audio Tracks.cs
+		x Batch Render.cs
+    - create all files and icons etc.., define svn Id property
+		- create documentation stub
+	- figure out how-to:
+		- render collections tracks
+		- render multiple regions
+		- extract filenames from event labels
+		- unFX all audio tracks before rendering
+	- have two options -) render continuous tracks -) render "regions"
+	- produce log
+	- show the user a quick render summary before proceeding
+	- ask the user for the output folder
 x write batch slow down scripts
 	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
 	x write a reusable find() function
@@ -852,6 +872,7 @@ x write batch slow down scripts
 	x test all
 	x document
 	$ wait for saving dialog to go away
+	- fix aspect ratio (PAR?)
 - is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
 - see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
