@@ -496,6 +496,26 @@ public class Common {
 		return "Object" + (++n).ToString("D4") + ".png";
 	}
 	
+	public static void MuteAllTracks(List<Track> tracks, bool mute) {
+		foreach (Track track in tracks) {
+			if (mute && !track.Mute) {
+				track.Mute = true;
+			} else if (!mute && track.Mute) {
+				track.Mute = false;
+			}
+		}
+	}
+	
+	public static void SoloAllTracks(List<Track> tracks, bool solo) {
+		foreach (Track track in tracks) {
+			if (solo && !track.Solo) {
+				track.Solo = true;
+			} else if (!solo && track.Solo) {
+				track.Solo = false;
+			}
+		}
+	}
+	
 }
 
 public class Selection {
