@@ -846,10 +846,14 @@ x demo time stretch methods, build matrix:
 		x SimpleRender.cs
 		x Render Audio Tracks.cs
 		x Batch Render.cs
-    - create all files and icons etc.., define svn Id property
-		- create documentation stub
+    x create all files and icons etc.., define svn Id property
+		x create documentation stub
 	- figure out how-to:
 		- render collections tracks
+			- list video tracks which have at least one native event whose name starts from Split or Take
+			x create cluster class
+			x extract muteAllTracks() and soloAllTracks() to common
+				x capitalize method names
 		- render multiple regions
 		- extract filenames from event labels
 		- unFX all audio tracks before rendering

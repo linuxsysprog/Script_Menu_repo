@@ -211,6 +211,18 @@ public class Common {
 		return (VideoTrack)track;
 	}
 	
+	// the 5th horseman
+	// converts Tracks to List<Track>
+	public static List<Track> TracksToTracks(Tracks sourceTracks) {
+		List<Track> tracks = new List<Track>();
+		
+		foreach (Track sourceTrack in sourceTracks) {
+			tracks.Add(sourceTrack);
+		}
+		
+		return tracks;
+	}
+	
 	//
 	// The "Four Horsemen" functions for events
 	//
