@@ -28,6 +28,7 @@ public class EntryPoint : Form {
 	private XmlDocument configXML = new XmlDocument();
 	private bool history = true;	
 	
+	private List<Cluster> clusters = new List<Cluster>();
 	private Regex regex = new Regex("^(Split|Take)");
 		
 	public EntryPoint() {
@@ -93,7 +94,8 @@ public class EntryPoint : Form {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	void rbRegions_CheckedChanged(object sender, EventArgs e) {
-		Common.vegas.DebugOut("rbRegions_CheckedChanged() Entry.");
+		txtRenderPlan.Text = "";
+		rescanProject();
 	}
 	
 	void btnContinue_Click(object sender, EventArgs e) {
@@ -168,14 +170,18 @@ public class EntryPoint : Form {
 			history = false;
 		}
 		
-		List<Track> tracks = Common.TracksToTracks(vegas.Project.Tracks);
-		List<Cluster> clusters = new List<Cluster>();
+		rescanProject();
+		
+		// show dialog
+		ShowDialog();
+	}
+	
+	private void rescanProject() {
+		clusters.Clear();
+	
+		List<Track> tracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		foreach (Track track in tracks) {
 			if (!track.IsVideo()) {
-				continue;
-			}
-		
-			if (track.DisplayIndex > 33) {
 				continue;
 			}
 		
@@ -183,26 +189,6 @@ public class EntryPoint : Form {
 			if (trackEvents.Count < 1) {
 				continue;
 			}
-			
-			// Timecode clusterStart = trackEvents[0].Start;
-			// Timecode clusterEnd = null;
-			// for (int i = 1; i < trackEvents.Count; i++) {
-				// TrackEvent prevTrackEvent = trackEvents[i - 1];
-				// TrackEvent nextTrackEvent = trackEvents[i];
-				// string prevTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(prevTrackEvent));
-				// string nextTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(nextTrackEvent));
-				
-				// if (prevTrackEventName != nextTrackEventName || i == trackEvents.Count - 1) {
-					// if (i == trackEvents.Count - 1) {
-						// clusterEnd = nextTrackEvent.End;
-					// } else {
-						// clusterEnd = prevTrackEvent.End;
-					// }
-					
-					// vegas.DebugOut("cluster ready (" + clusterStart + "," + clusterEnd + ")");
-					// clusterStart = nextTrackEvent.Start;
-				// }
-			// }
 			
 			int bottomRulerTrackIndex = getTrackIndex(TrackType.BottomRuler, track.Index);
 			
@@ -237,6 +223,7 @@ public class EntryPoint : Form {
 		}
 		
 		Timecode count = new Timecode();
+		string spacer = "    " + "    ";
 		foreach (Cluster cluster in clusters) {
 			txtRenderPlan.Text += ((cluster.textTrackIndex + 1) + "," +
 				(cluster.measureTrackIndex + 1) + "," +
@@ -244,16 +231,13 @@ public class EntryPoint : Form {
 				(cluster.bottomRulerTrackIndex + 1) + "," +
 				(cluster.videoTrackIndex + 1) + "," +
 				(cluster.audioTrackIndex + 1) + "," +
-				(cluster.beepTrackIndex + 1) + " ");
-			txtRenderPlan.Text += (cluster.Name + " " + cluster.Start + "-" + cluster.End + " (" + cluster.Length + ")\r\n");
+				(cluster.beepTrackIndex + 1) + spacer);
+			txtRenderPlan.Text += (cluster.Name + spacer + cluster.Start + "-" + cluster.End + " (" + cluster.Length + ")\r\n");
 			count += cluster.Length;
 		}
 		txtRenderPlan.Text += ("Total files: " + clusters.Count + " Total length: " + count + " (" + count.ToString(RulerFormat.Time) + ")\r\n");
-
-		// show dialog
-		ShowDialog();
 	}
-	
+
 	private int getTrackIndex(TrackType trackType, int index) {
 		Regex regex = new Regex("BPM$");
 	
