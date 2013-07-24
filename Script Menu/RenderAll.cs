@@ -6,18 +6,170 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Sony.Vegas;
 using AddRulerNamespace;
 
-public class EntryPoint {
+public class EntryPoint : Form {
+	private Label lblRenderTemplate = new Label();
+	private MyTextBox txtRenderTemplate = new MyTextBox();
+	private Label lblOutputPath = new Label();
+	private MyTextBox txtOutputPath = new MyTextBox();
+	private Label lblRenderPlan = new Label();
+	private MyTextBox txtRenderPlan = new MyTextBox();
+	private RadioButton rbRegions = new RadioButton();
+	private RadioButton rbTracks = new RadioButton();
+	private Button btnContinue = new Button();
+	private Button btnCancel = new Button();
+	
+	private string configFilename = Common.vegas.InstallationDirectory + "\\Script Menu\\RenderAll.cs.config";
+	private XmlDocument configXML = new XmlDocument();
+	private bool history = true;	
+	
+	private Regex regex = new Regex("^(Split|Take)");
+		
+	public EntryPoint() {
+		lblRenderTemplate.Size = new Size(70, 35);
+		lblRenderTemplate.Location = new Point(10, 10);
+		lblRenderTemplate.Text = "Render &template:";
+		
+		txtRenderTemplate.Size = new Size(400, 50);
+		txtRenderTemplate.Location = new Point(80, 10);
+		
+		lblOutputPath.Size = new Size(70, 20);
+		lblOutputPath.Location = new Point(10, 50);
+		lblOutputPath.Text = "&Output path:";
+		
+		txtOutputPath.Size = new Size(400, 50);
+		txtOutputPath.Location = new Point(80, 50);
+		
+		lblRenderPlan.Size = new Size(70, 20);
+		lblRenderPlan.Location = new Point(10, 90);
+		lblRenderPlan.Text = "Render &plan:";
+		
+		txtRenderPlan.Size = new Size(400, 300);
+		txtRenderPlan.Location = new Point(80, 90);
+		txtRenderPlan.Multiline = true;
+		txtRenderPlan.ScrollBars = ScrollBars.Vertical;
+		txtRenderPlan.ReadOnly = true;
+		
+		rbRegions.Size = new Size(70, 20);
+		rbRegions.Location = new Point(80, 400);
+		rbRegions.Text = "&Regions";
+		rbRegions.Checked = true;
+		rbRegions.CheckedChanged += new EventHandler(rbRegions_CheckedChanged);
+		
+		rbTracks.Size = new Size(200, 20);
+		rbTracks.Location = new Point(155, 400);
+		rbTracks.Text = "Continuous &tracks";
+		
+		btnContinue.Location = new Point(170, 440);
+		btnContinue.Text = "&Continue";
+		btnContinue.Click += new EventHandler(btnContinue_Click);
+
+		btnCancel.Location = new Point(260, 440);
+		btnCancel.Text = "Cancel";
+		btnCancel.Click += new EventHandler(btnCancel_Click);
+
+		Controls.AddRange(new Control[] {
+			lblRenderTemplate,
+			txtRenderTemplate,
+			lblOutputPath,
+			txtOutputPath,
+			lblRenderPlan,
+			txtRenderPlan,
+			rbRegions,
+			rbTracks,
+			btnContinue,
+			btnCancel});
+	}
+	
+	//
+	// Event handlers BEGIN
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
+	void rbRegions_CheckedChanged(object sender, EventArgs e) {
+		Common.vegas.DebugOut("rbRegions_CheckedChanged() Entry.");
+	}
+	
+	void btnContinue_Click(object sender, EventArgs e) {
+		// check fields
+		if ("" == txtRenderTemplate.Text) {
+			MessageBox.Show("Render template is empty", Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		if ("" == txtOutputPath.Text) {
+			MessageBox.Show("Output path is empty", Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		// save to history file
+		if (history) {
+			try {
+				configXML.SelectSingleNode("/ScriptSettings/RenderTemplate").InnerText = txtRenderTemplate.Text;
+				configXML.SelectSingleNode("/ScriptSettings/OutputPath").InnerText = txtOutputPath.Text;
+				configXML.Save(configFilename);
+			} catch (Exception ex) {
+				MessageBox.Show("Failed to save config file: " + ex.Message,
+					Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+		
+		Close();
+	}
+	
+	void btnCancel_Click(object sender, EventArgs e) {
+		Close();
+	}
+	
+	//
+	// Event handlers END
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
 		vegas.DebugClear();
 		
-		Regex regex = new Regex("^(Split|Take)");
+		// setup form
+		Text = Common.RENDER_ALL;
+		FormBorderStyle = FormBorderStyle.FixedDialog;
+		MaximizeBox = false;
+		MinimizeBox = false;
+		AcceptButton = btnContinue;
+		CancelButton = btnCancel;
+		StartPosition = FormStartPosition.CenterParent;
+		Size = new Size(500, 500);
+
+		// load config
+		try {
+			configXML.Load(configFilename);
+			
+			XmlNode renderTemplate = configXML.SelectSingleNode("/ScriptSettings/RenderTemplate");
+			if (null == renderTemplate) {
+				throw new Exception("RenderTemplate element not found");
+			}
+			txtRenderTemplate.Text = renderTemplate.InnerText;
+			
+			XmlNode outputPath = configXML.SelectSingleNode("/ScriptSettings/OutputPath");
+			if (null == outputPath) {
+				throw new Exception("OutputPath element not found");
+			}
+			txtOutputPath.Text = outputPath.InnerText;
+		} catch (Exception ex) {
+			MessageBox.Show("Failed to load config file. History will be disabled: " + ex.Message,
+				Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			history = false;
+		}
 		
 		List<Track> tracks = Common.TracksToTracks(vegas.Project.Tracks);
+		List<Cluster> clusters = new List<Cluster>();
 		foreach (Track track in tracks) {
 			if (!track.IsVideo()) {
 				continue;
@@ -31,8 +183,6 @@ public class EntryPoint {
 			if (trackEvents.Count < 1) {
 				continue;
 			}
-			
-			List<Cluster> clusters = new List<Cluster>();
 			
 			// Timecode clusterStart = trackEvents[0].Start;
 			// Timecode clusterEnd = null;
@@ -84,11 +234,24 @@ public class EntryPoint {
 				clusterStart, trackEvents[trackEvents.Count - 1].End,
 				Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1]))));
 			
-			foreach (Cluster cluster in clusters) {
-				cluster.Solo();
-				vegas.DebugOut("" + cluster + "\n");
-			}
 		}
+		
+		Timecode count = new Timecode();
+		foreach (Cluster cluster in clusters) {
+			txtRenderPlan.Text += ((cluster.textTrackIndex + 1) + "," +
+				(cluster.measureTrackIndex + 1) + "," +
+				(cluster.topRulerTrackIndex + 1) + "," +
+				(cluster.bottomRulerTrackIndex + 1) + "," +
+				(cluster.videoTrackIndex + 1) + "," +
+				(cluster.audioTrackIndex + 1) + "," +
+				(cluster.beepTrackIndex + 1) + " ");
+			txtRenderPlan.Text += (cluster.Name + " " + cluster.Start + "-" + cluster.End + " (" + cluster.Length + ")\r\n");
+			count += cluster.Length;
+		}
+		txtRenderPlan.Text += ("Total files: " + clusters.Count + " Total length: " + count + " (" + count.ToString(RulerFormat.Time) + ")\r\n");
+
+		// show dialog
+		ShowDialog();
 	}
 	
 	private int getTrackIndex(TrackType trackType, int index) {
@@ -136,13 +299,13 @@ public class EntryPoint {
 }
 
 public class Cluster {
-	private int textTrackIndex;
-	private int measureTrackIndex;
-	private int topRulerTrackIndex;
-	private int bottomRulerTrackIndex;
-	private int videoTrackIndex;
-	private int audioTrackIndex;
-	private int beepTrackIndex;
+	public int textTrackIndex;
+	public int measureTrackIndex;
+	public int topRulerTrackIndex;
+	public int bottomRulerTrackIndex;
+	public int videoTrackIndex;
+	public int audioTrackIndex;
+	public int beepTrackIndex;
 	
 	private QuantizedEvent start;
 	private QuantizedEvent end;
@@ -209,7 +372,29 @@ public class Cluster {
 		}
 	}
 	
-	public void Solo() {
+	public void Render() {
+		UnFXAudio();
+		Solo();
+		return;
+	}
+	
+	public override string ToString() {
+		return "{textTrackIndex=" + textTrackIndex + ", measureTrackIndex=" + measureTrackIndex + "}\n" +
+			"{topRulerTrackIndex=" + topRulerTrackIndex + ", bottomRulerTrackIndex=" + bottomRulerTrackIndex + "}\n" +
+			"{videoTrackIndex=" + videoTrackIndex + ", audioTrackIndex=" + audioTrackIndex + "}\n" +
+			"{beepTrackIndex=" + beepTrackIndex + "}\n" +
+			"{start=" + start + ", end=" + end + ", length=" + Length + "}\n" +
+			"{name=" + name + "}\n";
+	}
+	
+	private void UnFXAudio() {
+		List<Track> tracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
+		
+		tracks[audioTrackIndex].Effects.Clear();
+		tracks[beepTrackIndex].Effects.Clear();
+	}
+	
+	private void Solo() {
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 	
 		Common.SoloAllTracks(projectTracks, false);
@@ -226,19 +411,6 @@ public class Cluster {
 		tracks.Add(projectTracks[beepTrackIndex]);
 		
 		Common.MuteAllTracks(tracks, false);
-	}
-	
-	public void Render() {
-		return;
-	}
-	
-	public override string ToString() {
-		return "{textTrackIndex=" + textTrackIndex + ", measureTrackIndex=" + measureTrackIndex + "}\n" +
-			"{topRulerTrackIndex=" + topRulerTrackIndex + ", bottomRulerTrackIndex=" + bottomRulerTrackIndex + "}\n" +
-			"{videoTrackIndex=" + videoTrackIndex + ", audioTrackIndex=" + audioTrackIndex + "}\n" +
-			"{beepTrackIndex=" + beepTrackIndex + "}\n" +
-			"{start=" + start + ", end=" + end + ", length=" + Length + "}\n" +
-			"{name=" + name + "}\n";
 	}
 	
 }

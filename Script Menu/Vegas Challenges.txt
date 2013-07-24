@@ -849,17 +849,19 @@ x demo time stretch methods, build matrix:
     x create all files and icons etc.., define svn Id property
 		x create documentation stub
 	x create cluster class
-	- list all clusters
-		- list video tracks which have at least one native event whose name starts from Split or Take
-		- extract filenames from event labels
+	x list all clusters
+		x list video tracks which have at least one native event whose name starts from Split or Take
+		x extract filenames from event labels
 	x extract muteAllTracks() and soloAllTracks() to common
 		x capitalize method names
-	- unFX all audio tracks before rendering
+	x unFX all audio tracks before rendering
+	x move MyTextBox to common
+	x create form
 	- have two options -) render continuous tracks -) render "regions"
 	- produce log
-	- show the user a quick render summary before proceeding
-	- ask the user for the output folder
-	- show total length estimation
+	x show the user a quick render summary before proceeding
+	x ask the user for the output folder
+	x show total files/length estimation
 x write batch slow down scripts
 	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
 	x write a reusable find() function

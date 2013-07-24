@@ -355,36 +355,3 @@ public class EntryPoint : Form {
 	
 }
 
-// Courtesy of http://stackoverflow.com/questions/97459/automatically-select-all-text-on-focus-in-winforms-textbox
-public class MyTextBox : System.Windows.Forms.TextBox
-{
-    private bool _focused;
-
-    protected override void OnEnter(EventArgs e)
-    {
-        base.OnEnter(e);
-        if (MouseButtons == MouseButtons.None)
-        {
-            SelectAll();
-            _focused = true;
-        }
-    }
-
-    protected override void OnLeave(EventArgs e)
-    {
-        base.OnLeave(e);
-        _focused = false;
-    }
-
-    protected override void OnMouseUp(MouseEventArgs mevent)
-    {
-        base.OnMouseUp(mevent);
-        if (!_focused)
-        {
-            if (SelectionLength == 0)
-                SelectAll();
-            _focused = true;
-        }
-    }
-}
-

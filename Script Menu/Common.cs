@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Windows.Forms;
 using Sony.Vegas;
 
 namespace AddRulerNamespace
@@ -31,6 +32,7 @@ public class Common {
 	public const string MATCH_TRACK = "Match Track" + CP_RIGHT;
 	public const string SPREAD_BEEPS = "Spread Beeps" + CP_RIGHT;
 	public const string LAYOUT_TRACK = "Layout Track" + CP_RIGHT;
+	public const string RENDER_ALL = "Render All" + CP_RIGHT;
 	
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
@@ -736,6 +738,39 @@ public class Preset : IComparable {
            throw new ArgumentException("Object is not a Preset");
     }
 
+}
+
+// Courtesy of http://stackoverflow.com/questions/97459/automatically-select-all-text-on-focus-in-winforms-textbox
+public class MyTextBox : System.Windows.Forms.TextBox
+{
+    private bool _focused;
+
+    protected override void OnEnter(EventArgs e)
+    {
+        base.OnEnter(e);
+        if (MouseButtons == MouseButtons.None)
+        {
+            SelectAll();
+            _focused = true;
+        }
+    }
+
+    protected override void OnLeave(EventArgs e)
+    {
+        base.OnLeave(e);
+        _focused = false;
+    }
+
+    protected override void OnMouseUp(MouseEventArgs mevent)
+    {
+        base.OnMouseUp(mevent);
+        if (!_focused)
+        {
+            if (SelectionLength == 0)
+                SelectAll();
+            _focused = true;
+        }
+    }
 }
 
 }
