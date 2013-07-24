@@ -169,6 +169,21 @@ public class Common {
 		return tracks;
 	}
 	
+	// finds events that have at least one take whose name matches regex
+	public static List<TrackEvent> FindEventsByRegex(List<TrackEvent> sourceEvents, Regex regex) {
+		List<TrackEvent> events = new List<TrackEvent>();
+		
+		foreach (TrackEvent sourceEvent in sourceEvents) {
+			string sourceEventName = getFullName(getTakeNamesNonNative(sourceEvent));
+			
+			if (regex.Match(sourceEventName).Success) {
+				events.Add(sourceEvent);
+			}
+		}
+		
+		return events;
+	}
+	
 	//
 	// The "Four Horsemen" functions for tracks
 	//
@@ -426,6 +441,17 @@ public class Common {
 		if (leadingString != null) {
 			strings.Insert(0, leadingString);
 		}
+		return strings;
+	}
+	
+	// same as previous, but not restricted to native events
+	public static List<string> getTakeNamesNonNative(TrackEvent @event) {
+		List<string> strings = new List<string>();
+		
+		foreach (Take take in @event.Takes) {
+			strings.Add(take.Name);
+		}
+		
 		return strings;
 	}
 	

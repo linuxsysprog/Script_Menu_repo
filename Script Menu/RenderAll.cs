@@ -15,23 +15,127 @@ public class EntryPoint {
 		Common.vegas = vegas;
 		vegas.DebugClear();
 		
-		Cluster cluster = new Cluster(0, 1,
-			2, 3,
-			4, 5,
-			6,
-			new Timecode(0.0), new Timecode(17));
+		Regex regex = new Regex("^(Split|Take)");
 		
-		vegas.DebugOut("" + cluster);
+		List<Track> tracks = Common.TracksToTracks(vegas.Project.Tracks);
+		foreach (Track track in tracks) {
+			if (!track.IsVideo()) {
+				continue;
+			}
 		
-		cluster.Solo();
+			if (track.DisplayIndex > 33) {
+				continue;
+			}
+		
+			List<TrackEvent> trackEvents = Common.FindEventsByRegex(Common.TrackEventsToTrackEvents(track.Events), regex);
+			if (trackEvents.Count < 1) {
+				continue;
+			}
+			
+			List<Cluster> clusters = new List<Cluster>();
+			
+			// Timecode clusterStart = trackEvents[0].Start;
+			// Timecode clusterEnd = null;
+			// for (int i = 1; i < trackEvents.Count; i++) {
+				// TrackEvent prevTrackEvent = trackEvents[i - 1];
+				// TrackEvent nextTrackEvent = trackEvents[i];
+				// string prevTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(prevTrackEvent));
+				// string nextTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(nextTrackEvent));
+				
+				// if (prevTrackEventName != nextTrackEventName || i == trackEvents.Count - 1) {
+					// if (i == trackEvents.Count - 1) {
+						// clusterEnd = nextTrackEvent.End;
+					// } else {
+						// clusterEnd = prevTrackEvent.End;
+					// }
+					
+					// vegas.DebugOut("cluster ready (" + clusterStart + "," + clusterEnd + ")");
+					// clusterStart = nextTrackEvent.Start;
+				// }
+			// }
+			
+			int bottomRulerTrackIndex = getTrackIndex(TrackType.BottomRuler, track.Index);
+			
+			Timecode clusterStart = trackEvents[0].Start;
+			Timecode clusterEnd = null;
+			for (int i = 1; i < trackEvents.Count; i++) {
+				TrackEvent prevTrackEvent = trackEvents[i - 1];
+				TrackEvent nextTrackEvent = trackEvents[i];
+				string prevTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(prevTrackEvent));
+				string nextTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(nextTrackEvent));
+				
+				if (prevTrackEventName != nextTrackEventName) {
+					clusterEnd = prevTrackEvent.End;
+					
+					clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
+						bottomRulerTrackIndex, track.Index - 1,
+						track.Index, track.Index + 1,
+						getTrackIndex(TrackType.Beep, track.Index),
+						clusterStart, clusterEnd,
+						prevTrackEventName));
+					
+					clusterStart = nextTrackEvent.Start;
+				}
+			}
+			clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
+				bottomRulerTrackIndex, track.Index - 1,
+				track.Index, track.Index + 1,
+				getTrackIndex(TrackType.Beep, track.Index),
+				clusterStart, trackEvents[trackEvents.Count - 1].End,
+				Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1]))));
+			
+			foreach (Cluster cluster in clusters) {
+				cluster.Solo();
+				vegas.DebugOut("" + cluster + "\n");
+			}
+		}
+	}
+	
+	private int getTrackIndex(TrackType trackType, int index) {
+		Regex regex = new Regex("BPM$");
+	
+		List<Track> tracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
+		if (index > tracks.Count - 1) {
+			throw new ArgumentException("index out of range");
+		}
+		
+		if (trackType == TrackType.Beep) {
+			for (int i = index; i < tracks.Count; i++) {
+				List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(tracks[i].Events);
+				if (!tracks[i].IsAudio() || trackEvents.Count < 1) {
+					continue;
+				}
+			
+				string currentTrackEventName = Common.getFullName(Common.getTakeNames(trackEvents[0]));
+				if (regex.Match(currentTrackEventName).Success) {
+					return tracks[i].Index;
+				}
+			}
+		} else {
+			for (int i = index; i >= 0 ; i--) {
+				List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(tracks[i].Events);
+				if (!tracks[i].IsVideo() || trackEvents.Count < 1) {
+					continue;
+				}
+			
+				string currentTrackEventName = Common.getFullName(Common.getTakeNames(trackEvents[0]));
+				if (regex.Match(currentTrackEventName).Success) {
+					return tracks[i].Index;
+				}
+			}
+		}
+		
+		throw new Exception("beep track not found");
+	}
+	
+	private enum TrackType {
+		Beep,
+		BottomRuler
 	}
 	
 }
 
 public class Cluster {
-	private QuantizedEvent start;
-	private QuantizedEvent end;
-	
 	private int textTrackIndex;
 	private int measureTrackIndex;
 	private int topRulerTrackIndex;
@@ -39,6 +143,11 @@ public class Cluster {
 	private int videoTrackIndex;
 	private int audioTrackIndex;
 	private int beepTrackIndex;
+	
+	private QuantizedEvent start;
+	private QuantizedEvent end;
+	
+	private string name;
 	
 	public Cluster(int textTrackIndex,
 		int measureTrackIndex,
@@ -48,7 +157,8 @@ public class Cluster {
 		int audioTrackIndex,
 		int beepTrackIndex,
 		Timecode start,
-		Timecode end) {
+		Timecode end,
+		string name) {
 			int count = Common.TracksToTracks(Common.vegas.Project.Tracks).Count;
 		
 			if (textTrackIndex >= count ||
@@ -71,6 +181,8 @@ public class Cluster {
 			
 			this.start = new QuantizedEvent(start);
 			this.end = new QuantizedEvent(end);
+			
+			this.name = name;
 	}
 	
 	public Timecode Start {
@@ -88,6 +200,12 @@ public class Cluster {
 	public Timecode Length {
 		get {
 			return end.QuantizedStart - start.QuantizedStart;
+		}
+	}
+	
+	public string Name {
+		get {
+			return name;
 		}
 	}
 	
@@ -110,12 +228,17 @@ public class Cluster {
 		Common.MuteAllTracks(tracks, false);
 	}
 	
+	public void Render() {
+		return;
+	}
+	
 	public override string ToString() {
 		return "{textTrackIndex=" + textTrackIndex + ", measureTrackIndex=" + measureTrackIndex + "}\n" +
 			"{topRulerTrackIndex=" + topRulerTrackIndex + ", bottomRulerTrackIndex=" + bottomRulerTrackIndex + "}\n" +
 			"{videoTrackIndex=" + videoTrackIndex + ", audioTrackIndex=" + audioTrackIndex + "}\n" +
 			"{beepTrackIndex=" + beepTrackIndex + "}\n" +
-			"{start=" + start + ", end=" + end + ", length=" + Length + "}\n";
+			"{start=" + start + ", end=" + end + ", length=" + Length + "}\n" +
+			"{name=" + name + "}\n";
 	}
 	
 }
