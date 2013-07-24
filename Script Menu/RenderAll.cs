@@ -13,6 +13,8 @@ using Sony.Vegas;
 using AddRulerNamespace;
 
 public class EntryPoint : Form {
+	private Label lblRenderer = new Label();
+	private MyTextBox txtRenderer = new MyTextBox();
 	private Label lblRenderTemplate = new Label();
 	private MyTextBox txtRenderTemplate = new MyTextBox();
 	private Label lblOutputPath = new Label();
@@ -32,26 +34,33 @@ public class EntryPoint : Form {
 	private Regex regex = new Regex("^(Split|Take)");
 		
 	public EntryPoint() {
+		lblRenderer.Size = new Size(70, 35);
+		lblRenderer.Location = new Point(10, 10);
+		lblRenderer.Text = "R&enderer:";
+		
+		txtRenderer.Size = new Size(400, 50);
+		txtRenderer.Location = new Point(80, 10);
+		
 		lblRenderTemplate.Size = new Size(70, 35);
-		lblRenderTemplate.Location = new Point(10, 10);
-		lblRenderTemplate.Text = "Render &template:";
+		lblRenderTemplate.Location = new Point(10, 50);
+		lblRenderTemplate.Text = "Render te&mplate:";
 		
 		txtRenderTemplate.Size = new Size(400, 50);
-		txtRenderTemplate.Location = new Point(80, 10);
+		txtRenderTemplate.Location = new Point(80, 50);
 		
 		lblOutputPath.Size = new Size(70, 20);
-		lblOutputPath.Location = new Point(10, 50);
+		lblOutputPath.Location = new Point(10, 90);
 		lblOutputPath.Text = "&Output path:";
 		
 		txtOutputPath.Size = new Size(400, 50);
-		txtOutputPath.Location = new Point(80, 50);
+		txtOutputPath.Location = new Point(80, 90);
 		
 		lblRenderPlan.Size = new Size(70, 20);
-		lblRenderPlan.Location = new Point(10, 90);
+		lblRenderPlan.Location = new Point(10, 130);
 		lblRenderPlan.Text = "Render &plan:";
 		
-		txtRenderPlan.Size = new Size(400, 300);
-		txtRenderPlan.Location = new Point(80, 90);
+		txtRenderPlan.Size = new Size(400, 260);
+		txtRenderPlan.Location = new Point(80, 130);
 		txtRenderPlan.Multiline = true;
 		txtRenderPlan.ScrollBars = ScrollBars.Vertical;
 		txtRenderPlan.ReadOnly = true;
@@ -75,6 +84,8 @@ public class EntryPoint : Form {
 		btnCancel.Click += new EventHandler(btnCancel_Click);
 
 		Controls.AddRange(new Control[] {
+			lblRenderer,
+			txtRenderer,
 			lblRenderTemplate,
 			txtRenderTemplate,
 			lblOutputPath,
@@ -100,6 +111,11 @@ public class EntryPoint : Form {
 	
 	void btnContinue_Click(object sender, EventArgs e) {
 		// check fields
+		if ("" == txtRenderer.Text) {
+			MessageBox.Show("Renderer is empty", Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
 		if ("" == txtRenderTemplate.Text) {
 			MessageBox.Show("Render template is empty", Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
@@ -110,9 +126,21 @@ public class EntryPoint : Form {
 			return;
 		}
 		
+		Common.vegas.DebugClear();
+		foreach (Cluster cluster in clusters) {
+			try {
+				cluster.Render(txtRenderer.Text, txtRenderTemplate.Text, txtOutputPath.Text);
+			} catch (Exception ex) {
+				MessageBox.Show("Failed to render: " + ex.Message,
+					Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+		}
+		
 		// save to history file
 		if (history) {
 			try {
+				configXML.SelectSingleNode("/ScriptSettings/Renderer").InnerText = txtRenderer.Text;
 				configXML.SelectSingleNode("/ScriptSettings/RenderTemplate").InnerText = txtRenderTemplate.Text;
 				configXML.SelectSingleNode("/ScriptSettings/OutputPath").InnerText = txtOutputPath.Text;
 				configXML.Save(configFilename);
@@ -137,7 +165,6 @@ public class EntryPoint : Form {
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
-		vegas.DebugClear();
 		
 		// setup form
 		Text = Common.RENDER_ALL;
@@ -152,6 +179,12 @@ public class EntryPoint : Form {
 		// load config
 		try {
 			configXML.Load(configFilename);
+			
+			XmlNode renderer = configXML.SelectSingleNode("/ScriptSettings/Renderer");
+			if (null == renderer) {
+				throw new Exception("Renderer element not found");
+			}
+			txtRenderer.Text = renderer.InnerText;
 			
 			XmlNode renderTemplate = configXML.SelectSingleNode("/ScriptSettings/RenderTemplate");
 			if (null == renderTemplate) {
@@ -180,6 +213,25 @@ public class EntryPoint : Form {
 		clusters.Clear();
 	
 		List<Track> tracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
+		
+		Timecode rightmostBoundary = new Timecode();
+		if (rbTracks.Checked) {
+			foreach (Track track in tracks) {
+				if (!track.IsVideo()) {
+					continue;
+				}
+			
+				List<TrackEvent> trackEvents = Common.FindEventsByRegex(Common.TrackEventsToTrackEvents(track.Events), regex);
+				if (trackEvents.Count < 1) {
+					continue;
+				}
+				
+				if (trackEvents[trackEvents.Count - 1].End > rightmostBoundary) {
+					rightmostBoundary = trackEvents[trackEvents.Count - 1].End;
+				}
+			}
+		}
+
 		foreach (Track track in tracks) {
 			if (!track.IsVideo()) {
 				continue;
@@ -192,47 +244,47 @@ public class EntryPoint : Form {
 			
 			int bottomRulerTrackIndex = getTrackIndex(TrackType.BottomRuler, track.Index);
 			
-			Timecode clusterStart = trackEvents[0].Start;
-			Timecode clusterEnd = null;
-			for (int i = 1; i < trackEvents.Count; i++) {
-				TrackEvent prevTrackEvent = trackEvents[i - 1];
-				TrackEvent nextTrackEvent = trackEvents[i];
-				string prevTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(prevTrackEvent));
-				string nextTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(nextTrackEvent));
-				
-				if (prevTrackEventName != nextTrackEventName) {
-					clusterEnd = prevTrackEvent.End;
+			if (rbRegions.Checked) {
+				Timecode clusterStart = trackEvents[0].Start;
+				Timecode clusterEnd = null;
+				for (int i = 1; i < trackEvents.Count; i++) {
+					TrackEvent prevTrackEvent = trackEvents[i - 1];
+					TrackEvent nextTrackEvent = trackEvents[i];
+					string prevTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(prevTrackEvent));
+					string nextTrackEventName = Common.getFullName(Common.getTakeNamesNonNative(nextTrackEvent));
 					
-					clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
-						bottomRulerTrackIndex, track.Index - 1,
-						track.Index, track.Index + 1,
-						getTrackIndex(TrackType.Beep, track.Index),
-						clusterStart, clusterEnd,
-						prevTrackEventName));
-					
-					clusterStart = nextTrackEvent.Start;
+					if (prevTrackEventName != nextTrackEventName) {
+						clusterEnd = prevTrackEvent.End;
+						
+						clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
+							bottomRulerTrackIndex, track.Index - 1,
+							track.Index, track.Index + 1,
+							getTrackIndex(TrackType.Beep, track.Index),
+							clusterStart, clusterEnd,
+							prevTrackEventName));
+						
+						clusterStart = nextTrackEvent.Start;
+					}
 				}
+				clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
+					bottomRulerTrackIndex, track.Index - 1,
+					track.Index, track.Index + 1,
+					getTrackIndex(TrackType.Beep, track.Index),
+					clusterStart, trackEvents[trackEvents.Count - 1].End,
+					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1]))));
+			} else {
+				clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
+					bottomRulerTrackIndex, track.Index - 1,
+					track.Index, track.Index + 1,
+					getTrackIndex(TrackType.Beep, track.Index),
+					new Timecode(), rightmostBoundary,
+					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[0]))));
 			}
-			clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
-				bottomRulerTrackIndex, track.Index - 1,
-				track.Index, track.Index + 1,
-				getTrackIndex(TrackType.Beep, track.Index),
-				clusterStart, trackEvents[trackEvents.Count - 1].End,
-				Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1]))));
-			
 		}
 		
 		Timecode count = new Timecode();
-		string spacer = "    " + "    ";
 		foreach (Cluster cluster in clusters) {
-			txtRenderPlan.Text += ((cluster.textTrackIndex + 1) + "," +
-				(cluster.measureTrackIndex + 1) + "," +
-				(cluster.topRulerTrackIndex + 1) + "," +
-				(cluster.bottomRulerTrackIndex + 1) + "," +
-				(cluster.videoTrackIndex + 1) + "," +
-				(cluster.audioTrackIndex + 1) + "," +
-				(cluster.beepTrackIndex + 1) + spacer);
-			txtRenderPlan.Text += (cluster.Name + spacer + cluster.Start + "-" + cluster.End + " (" + cluster.Length + ")\r\n");
+			txtRenderPlan.Text += (cluster.GetLabel() + "\r\n");
 			count += cluster.Length;
 		}
 		txtRenderPlan.Text += ("Total files: " + clusters.Count + " Total length: " + count + " (" + count.ToString(RulerFormat.Time) + ")\r\n");
@@ -283,13 +335,13 @@ public class EntryPoint : Form {
 }
 
 public class Cluster {
-	public int textTrackIndex;
-	public int measureTrackIndex;
-	public int topRulerTrackIndex;
-	public int bottomRulerTrackIndex;
-	public int videoTrackIndex;
-	public int audioTrackIndex;
-	public int beepTrackIndex;
+	private int textTrackIndex;
+	private int measureTrackIndex;
+	private int topRulerTrackIndex;
+	private int bottomRulerTrackIndex;
+	private int videoTrackIndex;
+	private int audioTrackIndex;
+	private int beepTrackIndex;
 	
 	private QuantizedEvent start;
 	private QuantizedEvent end;
@@ -356,10 +408,40 @@ public class Cluster {
 		}
 	}
 	
-	public void Render() {
+	public void Render(string rendererStr, string templateStr, string outputPath) {
+		Renderer renderer = Common.vegas.Renderers.FindByName(rendererStr);
+		if (null == renderer) {
+			throw new Exception("renderer not found");
+		}
+		
+		renderer.Templates.Refresh();
+		
+		RenderTemplate template = renderer.Templates.FindByName(templateStr);
+		if (null == template) {
+			throw new Exception("template not found");
+		}
+		
+		string ext = ".avi";
+		if (template.FileExtensions.Length > 0) {
+			ext = template.FileExtensions[0].Substring(1);
+		}
+		
 		UnFXAudio();
 		Solo();
-		return;
+		
+		RenderArgs args = new RenderArgs();
+		
+		args.RenderTemplate = template;
+		args.OutputFile = outputPath + "\\" + Name + ext;
+		args.Start = Start;
+		args.Length = Length;
+		
+		RenderStatus ret = Common.vegas.Render(args);
+		if (RenderStatus.Complete != ret) {
+			throw new Exception("RenderStatus is " + ret);
+		}
+		
+		Common.vegas.DebugOut(GetLabel() + " -> " + args.OutputFile);
 	}
 	
 	public override string ToString() {
@@ -369,6 +451,18 @@ public class Cluster {
 			"{beepTrackIndex=" + beepTrackIndex + "}\n" +
 			"{start=" + start + ", end=" + end + ", length=" + Length + "}\n" +
 			"{name=" + name + "}\n";
+	}
+	
+	public string GetLabel() {
+		string spacer = "    " + "    ";
+		
+		return (textTrackIndex + 1) + "," +
+			(measureTrackIndex + 1) + "," +
+			(topRulerTrackIndex + 1) + "," +
+			(bottomRulerTrackIndex + 1) + "," +
+			(videoTrackIndex + 1) + "," +
+			(audioTrackIndex + 1) + "," +
+			(beepTrackIndex + 1) + spacer + Name + spacer + Start + "-" + End + " (" + Length + ")";
 	}
 	
 	private void UnFXAudio() {

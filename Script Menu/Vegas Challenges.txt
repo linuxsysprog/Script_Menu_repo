@@ -857,11 +857,16 @@ x demo time stretch methods, build matrix:
 	x unFX all audio tracks before rendering
 	x move MyTextBox to common
 	x create form
-	- have two options -) render continuous tracks -) render "regions"
-	- produce log
+	x have two options x) render continuous tracks x) render "regions"
+	x add Renderer textbox
+	x write Render() method
+		x produce log
 	x show the user a quick render summary before proceeding
 	x ask the user for the output folder
 	x show total files/length estimation
+	- block GUI during rendering
+	- document
+	- test
 x write batch slow down scripts
 	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
 	x write a reusable find() function
