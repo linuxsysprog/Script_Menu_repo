@@ -20,7 +20,7 @@ public class EntryPoint : Form {
 	private Label lblOutputPath = new Label();
 	private MyTextBox txtOutputPath = new MyTextBox();
 	private Label lblRenderPlan = new Label();
-	private MyTextBox txtRenderPlan = new MyTextBox();
+	private TextBox txtRenderPlan = new TextBox();
 	private RadioButton rbRegions = new RadioButton();
 	private RadioButton rbTracks = new RadioButton();
 	private Button btnContinue = new Button();
@@ -126,13 +126,32 @@ public class EntryPoint : Form {
 			return;
 		}
 		
+		int firstLineIndex = 0;
+		int lastLineIndex = clusters.Count - 1;
+		
+		if (txtRenderPlan.SelectionLength > 0) {
+			int selectionEnd = txtRenderPlan.SelectionStart + txtRenderPlan.SelectionLength - 1;
+			firstLineIndex = txtRenderPlan.GetLineFromCharIndex(txtRenderPlan.SelectionStart);
+			
+			int lineCount = Regex.Split(txtRenderPlan.Text.Trim(), "\r\n").Length;
+			int lastLineMax = lineCount - 2;
+			lastLineIndex = txtRenderPlan.GetLineFromCharIndex(selectionEnd);
+			if (lastLineIndex > lastLineMax) {
+				lastLineIndex = lastLineMax;
+			}
+		}
+		
+		EnableControls(false);
 		Common.vegas.DebugClear();
-		foreach (Cluster cluster in clusters) {
+		
+		for (int i = firstLineIndex; i < lastLineIndex + 1; i++) {
 			try {
-				cluster.Render(txtRenderer.Text, txtRenderTemplate.Text, txtOutputPath.Text);
+				clusters[i].Render(txtRenderer.Text, txtRenderTemplate.Text, txtOutputPath.Text);
 			} catch (Exception ex) {
 				MessageBox.Show("Failed to render: " + ex.Message,
 					Common.RENDER_ALL, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				EnableControls(true);
+				txtRenderPlan.Focus();
 				return;
 			}
 		}
@@ -150,7 +169,8 @@ public class EntryPoint : Form {
 			}
 		}
 		
-		Close();
+		EnableControls(true);
+		txtRenderPlan.Focus();
 	}
 	
 	void btnCancel_Click(object sender, EventArgs e) {
@@ -162,6 +182,12 @@ public class EntryPoint : Form {
 	//
 	//
 	////////////////////////////////////////////////////////////////////////////////
+	
+	private void EnableControls(bool enabled) {
+		foreach (Control control in Controls) {
+			control.Enabled = enabled;
+		}
+	}
 	
     public void FromVegas(Vegas vegas) {
 		Common.vegas = vegas;
