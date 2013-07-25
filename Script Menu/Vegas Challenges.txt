@@ -864,7 +864,9 @@ x demo time stretch methods, build matrix:
 	x show the user a quick render summary before proceeding
 	x ask the user for the output folder
 	x show total files/length estimation
-	- block GUI during rendering
+	? align output with DumpTrack
+	- do not include beep track with full tracks render
+	$ block GUI during rendering
 	- document
 	- test
 x write batch slow down scripts

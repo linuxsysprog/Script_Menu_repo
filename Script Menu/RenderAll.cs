@@ -261,7 +261,8 @@ public class EntryPoint : Form {
 							track.Index, track.Index + 1,
 							getTrackIndex(TrackType.Beep, track.Index),
 							clusterStart, clusterEnd,
-							prevTrackEventName));
+							prevTrackEventName,
+							RenderType.Regions));
 						
 						clusterStart = nextTrackEvent.Start;
 					}
@@ -271,14 +272,16 @@ public class EntryPoint : Form {
 					track.Index, track.Index + 1,
 					getTrackIndex(TrackType.Beep, track.Index),
 					clusterStart, trackEvents[trackEvents.Count - 1].End,
-					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1]))));
+					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1])),
+					RenderType.Regions));
 			} else {
 				clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
 					bottomRulerTrackIndex, track.Index - 1,
 					track.Index, track.Index + 1,
 					getTrackIndex(TrackType.Beep, track.Index),
 					new Timecode(), rightmostBoundary,
-					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[0]))));
+					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[0])),
+					RenderType.Tracks));
 			}
 		}
 		
@@ -334,6 +337,11 @@ public class EntryPoint : Form {
 	
 }
 
+public enum RenderType {
+	Regions,
+	Tracks
+}
+
 public class Cluster {
 	private int textTrackIndex;
 	private int measureTrackIndex;
@@ -347,6 +355,7 @@ public class Cluster {
 	private QuantizedEvent end;
 	
 	private string name;
+	private RenderType renderType;
 	
 	public Cluster(int textTrackIndex,
 		int measureTrackIndex,
@@ -357,7 +366,8 @@ public class Cluster {
 		int beepTrackIndex,
 		Timecode start,
 		Timecode end,
-		string name) {
+		string name,
+		RenderType renderType) {
 			int count = Common.TracksToTracks(Common.vegas.Project.Tracks).Count;
 		
 			if (textTrackIndex >= count ||
@@ -382,6 +392,7 @@ public class Cluster {
 			this.end = new QuantizedEvent(end);
 			
 			this.name = name;
+			this.renderType = renderType;
 	}
 	
 	public Timecode Start {
@@ -461,8 +472,9 @@ public class Cluster {
 			(topRulerTrackIndex + 1) + "," +
 			(bottomRulerTrackIndex + 1) + "," +
 			(videoTrackIndex + 1) + "," +
-			(audioTrackIndex + 1) + "," +
-			(beepTrackIndex + 1) + spacer + Name + spacer + Start + "-" + End + " (" + Length + ")";
+			(audioTrackIndex + 1) + 
+			((RenderType.Regions == renderType) ? "," + (beepTrackIndex + 1) : "") + 
+			spacer + Name + spacer + Start + "-" + End + " (" + Length + ")";
 	}
 	
 	private void UnFXAudio() {
@@ -486,7 +498,9 @@ public class Cluster {
 		tracks.Add(projectTracks[bottomRulerTrackIndex]);
 		tracks.Add(projectTracks[videoTrackIndex]);
 		tracks.Add(projectTracks[audioTrackIndex]);
-		tracks.Add(projectTracks[beepTrackIndex]);
+		if (RenderType.Regions == renderType) {
+			tracks.Add(projectTracks[beepTrackIndex]);
+		}
 		
 		Common.MuteAllTracks(tracks, false);
 	}
