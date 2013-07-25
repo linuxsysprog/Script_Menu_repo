@@ -865,9 +865,9 @@ x demo time stretch methods, build matrix:
 	x ask the user for the output folder
 	x show total files/length estimation
 	? align output with DumpTrack
-	- do not include beep track with full tracks render
+	x do not include beep track with full tracks render
 	$ block GUI during rendering
-	- document
+	x document
 	- test
 x write batch slow down scripts
 	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
