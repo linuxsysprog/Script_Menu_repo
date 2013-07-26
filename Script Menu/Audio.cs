@@ -47,6 +47,20 @@ public class Audio {
 		return audioEvent;
 	}
 	
+	public static int UnFXAudio(Project project) {
+		int count = 0;
+		
+		List<AudioTrack> audioTracks = FindAudioTracks(project);
+		foreach (AudioTrack audioTrack in audioTracks) {
+			if (audioTrack.Effects.Count > 0) {
+				audioTrack.Effects.Clear();
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
 }
 }
 

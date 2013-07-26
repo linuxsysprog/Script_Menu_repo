@@ -839,6 +839,11 @@ x write a quick unFX audio script
     x create all files and icons etc.., define svn Id property
 		x create documentation stub
 	x wrap it all up
+	x expand script to a "tidy up" script
+		* unLoop, unMaintain, Disable; unLoop, Normalize, unFX
+		x VideoEvent.MaintainAspectRatio
+		x VideoEvent.VideoResampleMode
+	x call it from RenderAll.cs before rendering
 x write RenderAll.cs
 	x leave this to LayoutTrack.cs
 		x cut into 0.5, 1 and 2 measure chunks

@@ -112,6 +112,40 @@ public class Video {
 		return Common.vegas.InstallationDirectory + "\\Script Menu\\AddRuler.png\\" + size;
 	}
 	
+	public static int MaintainAspectRatio(Project project, bool maintainAspectRatio) {
+		int count = 0;
+		
+		List<VideoTrack> videoTracks = FindVideoTracks(project);
+		foreach (VideoTrack videoTrack in videoTracks) {
+			List<VideoEvent> videoEvents = Common.EventsToVideoEvents(Common.TrackEventsToTrackEvents(videoTrack.Events));
+			foreach (VideoEvent videoEvent in videoEvents) {
+				if (videoEvent.MaintainAspectRatio != maintainAspectRatio) {
+					videoEvent.MaintainAspectRatio = maintainAspectRatio;
+					count++;
+				}
+			}
+		}
+		
+		return count;
+	}
+	
+	public static int VideoResampleMode(Project project, VideoResampleMode videoResampleMode) {
+		int count = 0;
+		
+		List<VideoTrack> videoTracks = FindVideoTracks(project);
+		foreach (VideoTrack videoTrack in videoTracks) {
+			List<VideoEvent> videoEvents = Common.EventsToVideoEvents(Common.TrackEventsToTrackEvents(videoTrack.Events));
+			foreach (VideoEvent videoEvent in videoEvents) {
+				if (videoEvent.ResampleMode != videoResampleMode) {
+					videoEvent.ResampleMode = videoResampleMode;
+					count++;
+				}
+			}
+		}
+		
+		return count;
+	}
+	
 }
 
 public class TextGenerator {

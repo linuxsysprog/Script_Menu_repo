@@ -11,23 +11,13 @@ using AddRulerNamespace;
 
 public class EntryPoint {
     public void FromVegas(Vegas vegas) {
-		List<AudioTrack> audioTracks = Audio.FindAudioTracks(vegas.Project);
-		
-		if (audioTracks.Count < 1) {
-			MessageBox.Show("No audio tracks found",
-				Common.UNFX_AUDIO, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		int count = 0;
-		foreach (AudioTrack audioTrack in audioTracks) {
-			if (audioTrack.Effects.Count > 0) {
-				audioTrack.Effects.Clear();
-				count++;
-			}
-		}
-		
-		MessageBox.Show(count + " " + (1 == count ? "track" : "tracks") + " unFXed",
+		int unFXed = Audio.UnFXAudio(vegas.Project);
+		int unmaintained = Video.MaintainAspectRatio(vegas.Project, false);
+		int disabled = Video.VideoResampleMode(vegas.Project, VideoResampleMode.Disable);
+	
+		MessageBox.Show(unFXed + " " + (1 == unFXed ? "track" : "tracks") + " unFXed\n" +
+			unmaintained + " " + (1 == unmaintained ? "event" : "events") + " unmaintained\n" +
+			disabled + " " + (1 == disabled ? "event" : "events") + " disabled",
 			Common.UNFX_AUDIO, MessageBoxButtons.OK, MessageBoxIcon.Information);
 	}
 }

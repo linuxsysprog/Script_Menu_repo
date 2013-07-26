@@ -463,7 +463,9 @@ public class Cluster {
 			ext = template.FileExtensions[0].Substring(1);
 		}
 		
-		UnFXAudio();
+		Audio.UnFXAudio(Common.vegas.Project);
+		Video.MaintainAspectRatio(Common.vegas.Project, false);
+		Video.VideoResampleMode(Common.vegas.Project, VideoResampleMode.Disable);
 		Solo();
 		
 		RenderArgs args = new RenderArgs();
@@ -501,13 +503,6 @@ public class Cluster {
 			(audioTrackIndex + 1) + 
 			((RenderType.Regions == renderType) ? "," + (beepTrackIndex + 1) : "") + 
 			spacer + Name + spacer + Start + "-" + End + " (" + Length + ")";
-	}
-	
-	private void UnFXAudio() {
-		List<Track> tracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
-		
-		tracks[audioTrackIndex].Effects.Clear();
-		tracks[beepTrackIndex].Effects.Clear();
 	}
 	
 	private void Solo() {
