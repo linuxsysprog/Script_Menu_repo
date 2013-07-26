@@ -835,7 +835,11 @@ x demo time stretch methods, build matrix:
 		x see how-to set default stretch method
 	x record Take4
 		x find tuning segment x) determine pitch *) wrong
-- write RenderAll.cs
+x write a quick unFX audio script
+    x create all files and icons etc.., define svn Id property
+		x create documentation stub
+	x wrap it all up
+x write RenderAll.cs
 	x leave this to LayoutTrack.cs
 		x cut into 0.5, 1 and 2 measure chunks
 		x imlement 0 and 0.5 offsets
@@ -869,7 +873,7 @@ x demo time stretch methods, build matrix:
 	x block GUI during rendering
 	x document
 	x implement selective rendering
-	- test
+	x test
 x write batch slow down scripts
 	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
 	x write a reusable find() function
