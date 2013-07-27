@@ -211,21 +211,25 @@ public class CalcTempoControl : UserControl {
 		btnLPlayPrev.Location = new Point(30, 105);
 		btnLPlayPrev.Text = "Prev";
 		btnLPlayPrev.Click += new EventHandler(btnVPlayNext_Click);
+		btnLPlayPrev.Enabled = false;
 		
 		btnLPlayNext.Size = new Size(35, 23);
 		btnLPlayNext.Location = new Point(30, 135);
 		btnLPlayNext.Text = "Next";
 		btnLPlayNext.Click += new EventHandler(btnVPlayNext_Click);
+		btnLPlayNext.Enabled = false;
 		
 		btnRPlayPrev.Size = new Size(35, 23);
 		btnRPlayPrev.Location = new Point(70, 105);
 		btnRPlayPrev.Text = "Prev";
 		btnRPlayPrev.Click += new EventHandler(btnVPlayNext_Click);
+		btnRPlayPrev.Enabled = false;
 		
 		btnRPlayNext.Size = new Size(35, 23);
 		btnRPlayNext.Location = new Point(70, 135);
 		btnRPlayNext.Text = "Next";
 		btnRPlayNext.Click += new EventHandler(btnVPlayNext_Click);
+		btnRPlayNext.Enabled = false;
 		
 		chkLockLeftRight.Size = new Size(100, 20);
 		chkLockLeftRight.Location = new Point(10, 165);
@@ -257,7 +261,9 @@ public class CalcTempoControl : UserControl {
 		lblPlayingTrack.Text = PLAYING_TRACK;
 		lblPlayingTrackIndex.Text = "";
 		chkLockWithVideo.Checked = false;
+		chkLockWithVideo.Enabled = false;
 		chkSplitAudio.Checked = false;
+		chkSplitAudio.Enabled = false;
 	}
 	
 	private void InitializeVMuteTracksForm() {
@@ -267,6 +273,7 @@ public class CalcTempoControl : UserControl {
 		lblVLPlayingTrack.Text = "";
 		lblVRPlayingTrack.Text = "";
 		chkLockLeftRight.Checked = false;
+		chkLockLeftRight.Enabled = false;
 	}
 	
 	//
@@ -375,10 +382,26 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnPlayNext_Click(object sender, EventArgs e) {
+		Regex regex = new Regex("BPM$");
+		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		List<Track> unfilteredTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
 		
 		// only keep tracks matching ^Audio
-		List<Track> tracks = Common.FindTracksByRegex(unfilteredTracks, new Regex("^Audio"));
+		// List<Track> tracks = Common.FindTracksByRegex(unfilteredTracks, new Regex("^Audio"));
+		List<Track> tracks = new List<Track>();
+		foreach (Track unfilteredTrack in unfilteredTracks) {
+			List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(unfilteredTrack.Events);
+			if (trackEvents.Count < 1) {
+				continue;
+			}
+			
+			string trackEventFullName = Common.getFullName(Common.getTakeNames(trackEvents[0]));
+			if (regex.Match(trackEventFullName).Success) {
+				continue;
+			}
+			
+			tracks.Add(unfilteredTrack);
+		}
 		if (tracks.Count < 1) {
 			MessageBox.Show("No audio tracks starting with \"Audio\" found",
 				Common.MUTE_TRACKS, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -402,8 +425,10 @@ public class CalcTempoControl : UserControl {
 			
 			// zero or more than one unmuted tracks
 			if (unmutedTracks.Count == 0 || unmutedTracks.Count > 1) {
-				Common.MuteAllTracks(tracks, true);
+				Common.MuteAllTracks(projectTracks, true);
 				tracks[0].Mute = false;
+				projectTracks[Common.getTrackIndex(TrackType.Beep, tracks[0].Index)].Mute = false;
+				projectTracks[tracks[0].Index - 1].Mute = false;
 				if (chkMuteAll.Checked) {
 					chkMuteAll.Checked = false;
 				}
@@ -417,27 +442,39 @@ public class CalcTempoControl : UserControl {
 			// nothing needs to be done
 			if (tracks.Count == 1) {
 				lblPlayingTrackIndex.Text = "" + tracks[0].DisplayIndex;
+				Common.MuteAllTracks(projectTracks, true);
+				tracks[0].Mute = false;
+				projectTracks[Common.getTrackIndex(TrackType.Beep, tracks[0].Index)].Mute = false;
+				projectTracks[tracks[0].Index - 1].Mute = false;
 				return;
 			}
 			
 			for (int i = 0; i < tracks.Count; i++) {
 				if (!tracks[i].Mute) {
-					Common.MuteAllTracks(tracks, true);
+					Common.MuteAllTracks(projectTracks, true);
 					
 					if (sender == btnPlayPrev) {
 						if (i > 0) {
 							tracks[i - 1].Mute = false;
+							projectTracks[Common.getTrackIndex(TrackType.Beep, tracks[i - 1].Index)].Mute = false;
+							projectTracks[tracks[i - 1].Index - 1].Mute = false;
 							lblPlayingTrackIndex.Text = "" + tracks[i - 1].DisplayIndex;
 						} else {
 							tracks[tracks.Count - 1].Mute = false;
+							projectTracks[Common.getTrackIndex(TrackType.Beep, tracks[tracks.Count - 1].Index)].Mute = false;
+							projectTracks[tracks[tracks.Count - 1].Index - 1].Mute = false;
 							lblPlayingTrackIndex.Text = "" + tracks[tracks.Count - 1].DisplayIndex;
 						}
 					} else { // btnPlayNext
 						if (i < tracks.Count - 1) {
 							tracks[i + 1].Mute = false;
+							projectTracks[Common.getTrackIndex(TrackType.Beep, tracks[i + 1].Index)].Mute = false;
+							projectTracks[tracks[i + 1].Index - 1].Mute = false;
 							lblPlayingTrackIndex.Text = "" + tracks[i + 1].DisplayIndex;
 						} else {
 							tracks[0].Mute = false;
+							projectTracks[Common.getTrackIndex(TrackType.Beep, tracks[0].Index)].Mute = false;
+							projectTracks[tracks[0].Index - 1].Mute = false;
 							lblPlayingTrackIndex.Text = "" + tracks[0].DisplayIndex;
 						}
 					}
@@ -452,6 +489,7 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnVPlayNext_Click(object sender, EventArgs e) {
+		return;
 		string label;
 		string peerTracklabel;
 		Label lbl;
@@ -690,6 +728,7 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void chkSplitAudio_Click(object sender, EventArgs e) {
+		return;
 		List<Track> unfilteredAudioTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
 		List<Track> audioTracks = Common.FindTracksByRegex(unfilteredAudioTracks, new Regex("^Audio"));
 
