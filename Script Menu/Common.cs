@@ -557,6 +557,48 @@ public class Common {
 		}
 	}
 	
+	public static int getTrackIndex(TrackType trackType, int index) {
+		Regex regex = new Regex("BPM$");
+	
+		List<Track> tracks = TracksToTracks(vegas.Project.Tracks);
+		if (index > tracks.Count - 1) {
+			throw new ArgumentException("index out of range");
+		}
+		
+		if (trackType == TrackType.Beep) {
+			for (int i = index; i < tracks.Count; i++) {
+				List<TrackEvent> trackEvents = TrackEventsToTrackEvents(tracks[i].Events);
+				if (!tracks[i].IsAudio() || trackEvents.Count < 1) {
+					continue;
+				}
+			
+				string currentTrackEventName = getFullName(getTakeNames(trackEvents[0]));
+				if (regex.Match(currentTrackEventName).Success) {
+					return tracks[i].Index;
+				}
+			}
+		} else {
+			for (int i = index; i >= 0 ; i--) {
+				List<TrackEvent> trackEvents = TrackEventsToTrackEvents(tracks[i].Events);
+				if (!tracks[i].IsVideo() || trackEvents.Count < 1) {
+					continue;
+				}
+			
+				string currentTrackEventName = getFullName(getTakeNames(trackEvents[0]));
+				if (regex.Match(currentTrackEventName).Success) {
+					return tracks[i].Index;
+				}
+			}
+		}
+		
+		throw new Exception("beep track not found");
+	}
+	
+}
+
+public enum TrackType {
+	Beep,
+	BottomRuler
 }
 
 public class Selection {

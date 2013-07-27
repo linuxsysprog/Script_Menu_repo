@@ -268,7 +268,7 @@ public class EntryPoint : Form {
 				continue;
 			}
 			
-			int bottomRulerTrackIndex = getTrackIndex(TrackType.BottomRuler, track.Index);
+			int bottomRulerTrackIndex = Common.getTrackIndex(TrackType.BottomRuler, track.Index);
 			
 			if (rbRegions.Checked) {
 				Timecode clusterStart = trackEvents[0].Start;
@@ -285,7 +285,7 @@ public class EntryPoint : Form {
 						clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
 							bottomRulerTrackIndex, track.Index - 1,
 							track.Index, track.Index + 1,
-							getTrackIndex(TrackType.Beep, track.Index),
+							Common.getTrackIndex(TrackType.Beep, track.Index),
 							clusterStart, clusterEnd,
 							prevTrackEventName,
 							RenderType.Regions));
@@ -296,7 +296,7 @@ public class EntryPoint : Form {
 				clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
 					bottomRulerTrackIndex, track.Index - 1,
 					track.Index, track.Index + 1,
-					getTrackIndex(TrackType.Beep, track.Index),
+					Common.getTrackIndex(TrackType.Beep, track.Index),
 					clusterStart, trackEvents[trackEvents.Count - 1].End,
 					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[trackEvents.Count - 1])),
 					RenderType.Regions));
@@ -304,7 +304,7 @@ public class EntryPoint : Form {
 				clusters.Add(new Cluster(bottomRulerTrackIndex - 2, bottomRulerTrackIndex - 1,
 					bottomRulerTrackIndex, track.Index - 1,
 					track.Index, track.Index + 1,
-					getTrackIndex(TrackType.Beep, track.Index),
+					Common.getTrackIndex(TrackType.Beep, track.Index),
 					new Timecode(), rightmostBoundary,
 					Common.getFullName(Common.getTakeNamesNonNative(trackEvents[0])),
 					RenderType.Tracks));
@@ -319,48 +319,6 @@ public class EntryPoint : Form {
 		txtRenderPlan.Text += ("Total files: " + clusters.Count + " Total length: " + count + " (" + count.ToString(RulerFormat.Time) + ")\r\n");
 	}
 
-	private int getTrackIndex(TrackType trackType, int index) {
-		Regex regex = new Regex("BPM$");
-	
-		List<Track> tracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
-		if (index > tracks.Count - 1) {
-			throw new ArgumentException("index out of range");
-		}
-		
-		if (trackType == TrackType.Beep) {
-			for (int i = index; i < tracks.Count; i++) {
-				List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(tracks[i].Events);
-				if (!tracks[i].IsAudio() || trackEvents.Count < 1) {
-					continue;
-				}
-			
-				string currentTrackEventName = Common.getFullName(Common.getTakeNames(trackEvents[0]));
-				if (regex.Match(currentTrackEventName).Success) {
-					return tracks[i].Index;
-				}
-			}
-		} else {
-			for (int i = index; i >= 0 ; i--) {
-				List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(tracks[i].Events);
-				if (!tracks[i].IsVideo() || trackEvents.Count < 1) {
-					continue;
-				}
-			
-				string currentTrackEventName = Common.getFullName(Common.getTakeNames(trackEvents[0]));
-				if (regex.Match(currentTrackEventName).Success) {
-					return tracks[i].Index;
-				}
-			}
-		}
-		
-		throw new Exception("beep track not found");
-	}
-	
-	private enum TrackType {
-		Beep,
-		BottomRuler
-	}
-	
 }
 
 public enum RenderType {

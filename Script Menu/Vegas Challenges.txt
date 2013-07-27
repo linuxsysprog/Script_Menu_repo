@@ -877,6 +877,7 @@ x write RenderAll.cs
 	x do not include beep track with full tracks render
 	x block GUI during rendering
 	x document
+		- add a clause about BPM
 	x implement selective rendering
 	x test
 x write batch slow down scripts
