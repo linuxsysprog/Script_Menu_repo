@@ -470,71 +470,7 @@ x write SpreadBeeps.cs
 	x back up (Japanese Phantom scripts as well)
 x add "events found" to DumpTrack.cs
 - add partial tracks (selection) to Fill Gaps
-- troubleshoot manifold
-- write LayoutTrack.cs
-	x think which script to use as a model (SpreadBeeps.cs)
-	x create files and icons
-	- input
-		x two tracks, one audio and the other audio/video
-		x check the selection to have enough events
-		x check the selection to be in increments of chunk size
-		x check that there's something to cut
-			x video needs quantization
-		x implement "enough extra space" check
-			x calculatethe number of chunks x) iterate over chunks
-			x calculate the size of the laid out chunk
-			x calculate extra space
-			x make sure there not a single event in the extra space
-		x implement selection
-	x write GUI (model after GenBeeps.cs)
-		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4)
-		x cut at the middle (for chunk size > 1)
-			x update checkbox
-		x Include Head x) Include Tail
-	- for in/out count generate real rulers
-	- remove debug prints
-  x establish one project directory, one version of ffmpeg, keep only source FLV files,
-    under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
-	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"
-      x compare x) slow down / ?) speed up quality with Transcribe!/Cool Edit
-	x see how we can use Transcribe!'s superior stretch algorithm
-  x see how we can the following:
-	x manually
-		x audio
-		  x slow down Right-click, Properties, Time stretch, double New length
-		  x speed up Right-click, Properties, Time stretch, half New length
-		x video
-		  x slow down Right-click, Properties, half Playback rate; double event's length (with the mouse)
-		  x speed up Right-click, Properties, double Playback rate; half event's length (with the mouse)
-	x programatically
-		x audio
-		  x slow down audioEvent.Length = audioEvent.Length + audioEvent.Length; audioEvent.AdjustPlaybackRate(0.5, true);
-		  x speed up audioEvent.Length = Timecode.FromNanos((int)Math.Round(audioEvent.Length.Nanos / 2.0)); audioEvent.AdjustPlaybackRate(2.0, true);
-		x video
-		  x slow down See audio
-		  x speed up See audio
-    x see what happens to the event positions
-	x mind alternative media and playback rates
-	x learn to make copies of bunches of (partials) audio and video tracks ?) vertically and x) horizontally
-		x see how "Insert Time" works
-	x draft a layout
-		x LMargin LBeep Body RBeep RMargin
-		x see how-to make a "still frame" (event copy/paste or manipulate event's media)
-		x manually layout tracks 
-			x build a layout with x) full measure x) 1/2 measure x) full measure with offset x) 1/2 measure with offset
-		x lay out one full measure given 124 ruler/video/audio/beep tracks
-			/ think how-to properly split audio and video tracks
-			x move Quantization demo project into a separate folder
-			/ render down ruler track, compare with pre-rendered track
-				$ find out why the rendered track is lagging 2 frames behind
-					x move ruler track 2 frames left for now
-	- back up
-	! "Funky Su - Guitar Jam": move beep.1.wav etc under project folder
-- write horizontal navigation plus my own play controls
-	- see how we can switch over (move cursor) between copies
-	- think how to get same piece at two different times in Left and Right screen
-	- find out how-to move cursor back and forth in history or write a script
-	- back up
+! troubleshoot manifold
 ? write BuildTOC.cs
 	- generate an html outline of a project
 		- implement nesting, absolute and relative time/length and numbering of each subsection
@@ -799,23 +735,23 @@ x demo time stretch methods, build matrix:
 	x build and render demo project
 		x insert section markers
 	x render for Nokia
-- build a big bad demo with the scripts that are ready to use
-	- plan project
-	- decide on naming conventions
+x build a big bad demo with the scripts that are ready to use
+	x plan project
+	x decide on naming conventions
 		x originals: Take1
 		x temps: Take1~
 		x hands: Take1L
 		x matched: Take1LM
 		x splits: Split1, Split.L12
 		x slowed downs: Take1L.75, Split.L12.75
-		- laid outs: Split.L12.75.2Mid (2-beat chunk, cut at the middle)
-		- hudded: Tuke1LM, Splut.L12
-		- beeped: Bake1LM, Splib.L12
-		x hudded&beeped: Buke1LM, Splub.L12
-		- resolutions: 320x240, 720x480, 1440x480
+		? laid outs: Split.L12.75.2Mid (2-beat chunk, cut at the middle)
+		? hudded: Tuke1LM, Splut.L12
+		? beeped: Bake1LM, Splib.L12
+		? hudded&beeped: Buke1LM, Splub.L12
+		? resolutions: 320x240, 720x480, 1440x480
 	x think of uniform track levels/normalized events across project and renders
 	x find old fullest demo
-	- document the process in "A typical workflow" section of Subclip How-to.doc
+	x document the process in "A typical workflow" section of Subclip How-to.doc
 	 x fix dependancy on D:\Temp\New folder (5) and commit project
 	x compare results frame-by-frame:
 		x keep hud, stretch video, transcribe audio, spread beeps
@@ -896,6 +832,93 @@ x write batch slow down scripts
 	x document
 	$ wait for saving dialog to go away
 	- fix aspect ratio (PAR?)
+- write horizontal navigation plus my own play controls
+	x research
+		x cursor
+			x move
+		x scrolling
+		x zoom
+		x selection
+		x play controls
+		x how to not jump back after playing back selection
+	x write GUI
+		* Transport Controls
+		x design play controls
+			x chunk length in beats
+			x selection start end frame trim
+			x rate
+			x next/prev beat
+			x play/pause/stop
+	- play button resets selection when pressed for the second time
+	- zoom to fav scale
+	- center cursor
+	- count-in
+		- play beep first, audio second
+		- checkout Project.InsertTime(), Undo
+	x see how we can switch over (move cursor) between copies
+	! think how to get same piece at two different times in Left and Right screen
+	$ find out how-to move cursor back and forth in history or write a script
+	$ write an app ext to monitor cursor position and display the event under it
+	- see how an app ext can process key presses
+- write LayoutTrack.cs
+	x think which script to use as a model (SpreadBeeps.cs)
+	x create files and icons
+	- input
+		x two tracks, one audio and the other audio/video
+		x check the selection to have enough events
+		x check the selection to be in increments of chunk size
+		x check that there's something to cut
+			x video needs quantization
+		x implement "enough extra space" check
+			x calculatethe number of chunks x) iterate over chunks
+			x calculate the size of the laid out chunk
+			x calculate extra space
+			x make sure there not a single event in the extra space
+		x implement selection
+	x write GUI (model after GenBeeps.cs)
+		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4)
+		x cut at the middle (for chunk size > 1)
+			x update checkbox
+		x Include Head x) Include Tail
+	- for in/out count generate real rulers
+	- remove debug prints
+  x establish one project directory, one version of ffmpeg, keep only source FLV files,
+    under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
+	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"
+      x compare x) slow down / ?) speed up quality with Transcribe!/Cool Edit
+	x see how we can use Transcribe!'s superior stretch algorithm
+  x see how we can the following:
+	x manually
+		x audio
+		  x slow down Right-click, Properties, Time stretch, double New length
+		  x speed up Right-click, Properties, Time stretch, half New length
+		x video
+		  x slow down Right-click, Properties, half Playback rate; double event's length (with the mouse)
+		  x speed up Right-click, Properties, double Playback rate; half event's length (with the mouse)
+	x programatically
+		x audio
+		  x slow down audioEvent.Length = audioEvent.Length + audioEvent.Length; audioEvent.AdjustPlaybackRate(0.5, true);
+		  x speed up audioEvent.Length = Timecode.FromNanos((int)Math.Round(audioEvent.Length.Nanos / 2.0)); audioEvent.AdjustPlaybackRate(2.0, true);
+		x video
+		  x slow down See audio
+		  x speed up See audio
+    x see what happens to the event positions
+	x mind alternative media and playback rates
+	x learn to make copies of bunches of (partials) audio and video tracks ?) vertically and x) horizontally
+		x see how "Insert Time" works
+	x draft a layout
+		x LMargin LBeep Body RBeep RMargin
+		x see how-to make a "still frame" (event copy/paste or manipulate event's media)
+		x manually layout tracks 
+			x build a layout with x) full measure x) 1/2 measure x) full measure with offset x) 1/2 measure with offset
+		x lay out one full measure given 124 ruler/video/audio/beep tracks
+			/ think how-to properly split audio and video tracks
+			x move Quantization demo project into a separate folder
+			/ render down ruler track, compare with pre-rendered track
+				$ find out why the rendered track is lagging 2 frames behind
+					x move ruler track 2 frames left for now
+	- add to demo
+	! "Funky Su - Guitar Jam": move beep.1.wav etc under project folder
 - is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
 - see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
@@ -904,7 +927,6 @@ x check out internal preferences
 x check svn properties
 $ fix svn history
 $ fix svn source code timestamp
-- fix and document LayoutTrack.cs -) add to demo
 - start "Yngwie Malmsteen - REH Video" transcription subproject
 	- see if there's an off the shelf solution to insert markers at scene breaks
 	- install vegas saurus scripts and check it out
@@ -917,7 +939,6 @@ Phone Enlightments
 
 x AddBeep: takes can hold Notes, beat, measure. Then I can press T to circle thru them
 ? write AddFrameBeeps script for Clauderen
-- write an app ext to monitor cursor position and display the event under it
 
 ---
 Measures & &Beats

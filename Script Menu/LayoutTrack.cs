@@ -313,26 +313,18 @@ public class EntryPoint : Form {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	private void initializeForm() {
-		cbChunk.Items.AddRange(getRange(1, 16));
+		cbChunk.Items.AddRange(Common.getRange(1, 16));
 		cbChunk.SelectedIndex = 3;
 		
-		cbCount.Items.AddRange(getRange(2, 4));
+		cbCount.Items.AddRange(Common.getRange(2, 4));
 		cbCount.SelectedIndex = 0;
 		
-		cbMargins.Items.AddRange(getRange(1, 4));
+		cbMargins.Items.AddRange(Common.getRange(1, 4));
 		cbMargins.SelectedIndex = 0;
 		
 		chkMiddle.Checked = false;
 		chkMiddle.Checked = false;
 		chkMiddle.Checked = false;
-	}
-	
-	private string[] getRange(int min, int max) {
-		List<string> list = new List<string>();
-		for (int i = min; i < max + 1; i++) {
-			list.Add("" + i);
-		}
-		return list.ToArray();
 	}
 	
 	/*private void validateForm() {

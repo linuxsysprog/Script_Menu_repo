@@ -594,6 +594,14 @@ public class Common {
 		throw new Exception("beep track not found");
 	}
 	
+	public static string[] getRange(int min, int max) {
+		List<string> list = new List<string>();
+		for (int i = min; i < max + 1; i++) {
+			list.Add("" + i);
+		}
+		return list.ToArray();
+	}
+	
 }
 
 public enum TrackType {
