@@ -97,12 +97,12 @@ public class CalcTempoControl : UserControl {
 	private ComboBox cbChunk = new ComboBox();
 	private Button btnLTrim = new Button();
 	private Button btnRTrim = new Button();
-	private Button btnRate = new Button();
 	private Button btnPrevBeat = new Button();
 	private Button btnNextBeat = new Button();
 	private Button btnPlay = new Button();
 	private Button btnPause = new Button();
 	private Button btnStop = new Button();
+	private Button btnRate = new Button();
 	
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 220);
@@ -256,12 +256,12 @@ public class CalcTempoControl : UserControl {
 			cbChunk,
 			btnLTrim,
 			btnRTrim,
-			btnRate,
 			btnPrevBeat,
 			btnNextBeat,
 			btnPlay,
 			btnPause,
-			btnStop});
+			btnStop,
+			btnRate});
 			
 
 		lblChunk.Size = new Size(75, 20);
@@ -284,14 +284,10 @@ public class CalcTempoControl : UserControl {
 		btnRTrim.Text = "||>";
 		btnRTrim.Click += new EventHandler(btnRTrim_Click);
 		
-		btnRate.Location = new Point(330, 55);
-		btnRate.Text = "Rate";
-		btnRate.Click += new EventHandler(btnRate_Click);
-		
 		btnPrevBeat.Size = new Size(35, 23);
 		btnPrevBeat.Location = new Point(330, 20);
 		btnPrevBeat.Text = "Prev";
-		btnPrevBeat.Click += new EventHandler(btnPrevBeat_Click);
+		btnPrevBeat.Click += new EventHandler(btnNextBeat_Click);
 		
 		btnNextBeat.Size = new Size(35, 23);
 		btnNextBeat.Location = new Point(370, 20);
@@ -311,6 +307,10 @@ public class CalcTempoControl : UserControl {
 		btnStop.Location = new Point(130, 55);
 		btnStop.Text = "Stop";
 		btnStop.Click += new EventHandler(btnStop_Click);
+		
+		btnRate.Location = new Point(330, 55);
+		btnRate.Text = "Rate";
+		btnRate.Click += new EventHandler(btnRate_Click);
 		
 		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
@@ -750,35 +750,41 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnLTrim_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnLTrim_Click() Entry.");
 	}
 	
 	void btnRTrim_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnRTrim_Click() Entry.");
-	}
-	
-	void btnPlay_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnPlay_Click() Entry.");
-	}
-	
-	void btnPause_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnPause_Click() Entry.");
-	}
-	
-	void btnStop_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnStop_Click() Entry.");
-	}
-	
-	void btnPrevBeat_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnPrevBeat_Click() Entry.");
 	}
 	
 	void btnNextBeat_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnNextBeat_Click() Entry.");
+		if ("" == lblPlayingTrackIndex.Text) {
+			btnPlayNext.PerformClick();
+		}
+		
+		int playingTrackDisplayIndex = Convert.ToInt32(lblPlayingTrackIndex.Text);
+
+		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
+		Track beepTrack = projectTracks[Common.getTrackIndex(TrackType.Beep, playingTrackDisplayIndex - 1)];
+		
+		TrackEvent nearestEvent = Common.FindNearestEvent(beepTrack, Common.vegas.Transport.CursorPosition, sender == btnNextBeat);
+		SetCursorPosition(nearestEvent.Start);
+	}
+	
+	void btnPlay_Click(object sender, EventArgs e) {
+	}
+	
+	void btnPause_Click(object sender, EventArgs e) {
+	}
+	
+	void btnStop_Click(object sender, EventArgs e) {
 	}
 	
 	void btnRate_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("btnRate_Click() Entry.");
+	}
+	
+	private void SetCursorPosition(Timecode pos) {
+		TransportControl tc = Common.vegas.Transport;
+		tc.CursorPosition = pos;
+		tc.ViewCursor(true);
 	}
 	
 	private void unmutePeerTrack(Track track, object sender) {
