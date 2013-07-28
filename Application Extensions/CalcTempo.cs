@@ -40,7 +40,7 @@ public class CalcTempo : ICustomCommandModule {
 			calcTempoControl = new CalcTempoControl();
 			calcTempoView.Controls.Add(calcTempoControl);
 			
-			calcTempoView.DefaultFloatingSize = new Size(465, 260);
+			calcTempoView.DefaultFloatingSize = new Size(465, 370);
 			Common.vegas.LoadDockView(calcTempoView);
 		}
 	}
@@ -92,6 +92,18 @@ public class CalcTempoControl : UserControl {
 	private Button btnRPlayNext = new Button();
 	public CheckBox chkLockLeftRight = new CheckBox();
 
+	private GroupBox gbTC= new GroupBox();
+	private Label lblChunk = new Label();
+	private ComboBox cbChunk = new ComboBox();
+	private Button btnLTrim = new Button();
+	private Button btnRTrim = new Button();
+	private Button btnRate = new Button();
+	private Button btnPrevBeat = new Button();
+	private Button btnNextBeat = new Button();
+	private Button btnPlay = new Button();
+	private Button btnPause = new Button();
+	private Button btnStop = new Button();
+	
 	public CalcTempoControl() {
 		gbCalcTempo.Size = new Size(135, 220);
 		gbCalcTempo.Location = new Point(310, 10);
@@ -236,11 +248,76 @@ public class CalcTempoControl : UserControl {
 		chkLockLeftRight.Text = "&Lock L and R";
 		chkLockLeftRight.Click += new EventHandler(chkLockLeftRight_Click);
 		
+		gbTC.Size = new Size(435, 95);
+		gbTC.Location = new Point(10, 240);
+		gbTC.Text = "Transport Controls";
+		gbTC.Controls.AddRange(new Control[] {
+			lblChunk,
+			cbChunk,
+			btnLTrim,
+			btnRTrim,
+			btnRate,
+			btnPrevBeat,
+			btnNextBeat,
+			btnPlay,
+			btnPause,
+			btnStop});
+			
+
+		lblChunk.Size = new Size(75, 20);
+		lblChunk.Location = new Point(10, 20);
+		lblChunk.Text = "Chunk:";
+		
+		cbChunk.Size = new Size(40, 20);
+		cbChunk.Location = new Point(90, 20);
+		cbChunk.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbChunk.Items.AddRange(Common.getRange(1, 16));
+		cbChunk.SelectedIndex = 0;
+		
+		btnLTrim.Size = new Size(35, 23);
+		btnLTrim.Location = new Point(180, 20);
+		btnLTrim.Text = "<||";
+		btnLTrim.Click += new EventHandler(btnLTrim_Click);
+		
+		btnRTrim.Size = new Size(35, 23);
+		btnRTrim.Location = new Point(220, 20);
+		btnRTrim.Text = "||>";
+		btnRTrim.Click += new EventHandler(btnRTrim_Click);
+		
+		btnRate.Location = new Point(330, 55);
+		btnRate.Text = "Rate";
+		btnRate.Click += new EventHandler(btnRate_Click);
+		
+		btnPrevBeat.Size = new Size(35, 23);
+		btnPrevBeat.Location = new Point(330, 20);
+		btnPrevBeat.Text = "Prev";
+		btnPrevBeat.Click += new EventHandler(btnPrevBeat_Click);
+		
+		btnNextBeat.Size = new Size(35, 23);
+		btnNextBeat.Location = new Point(370, 20);
+		btnNextBeat.Text = "Next";
+		btnNextBeat.Click += new EventHandler(btnNextBeat_Click);
+		
+		btnPlay.Location = new Point(10, 55);
+		btnPlay.Text = "Play";
+		btnPlay.Click += new EventHandler(btnPlay_Click);
+		
+		btnPause.Size = new Size(35, 23);
+		btnPause.Location = new Point(90, 55);
+		btnPause.Text = "||";
+		btnPause.Click += new EventHandler(btnPause_Click);
+		
+		btnStop.Size = new Size(35, 23);
+		btnStop.Location = new Point(130, 55);
+		btnStop.Text = "Stop";
+		btnStop.Click += new EventHandler(btnStop_Click);
+		
 		Size = new Size(1000, 1000);
 		Controls.AddRange(new Control[] {
 			gbCalcTempo,
 			gbMuteTracks,
-			gbVMuteTracks});
+			gbVMuteTracks,
+			gbTC});
 			
 		Common.vegas.ProjectClosed += HandleProjectClosed;
 		Common.vegas.TrackCountChanged += HandleTrackCountChanged;
@@ -670,6 +747,38 @@ public class CalcTempoControl : UserControl {
 				}
 			}
 		}
+	}
+	
+	void btnLTrim_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnLTrim_Click() Entry.");
+	}
+	
+	void btnRTrim_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnRTrim_Click() Entry.");
+	}
+	
+	void btnPlay_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnPlay_Click() Entry.");
+	}
+	
+	void btnPause_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnPause_Click() Entry.");
+	}
+	
+	void btnStop_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnStop_Click() Entry.");
+	}
+	
+	void btnPrevBeat_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnPrevBeat_Click() Entry.");
+	}
+	
+	void btnNextBeat_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnNextBeat_Click() Entry.");
+	}
+	
+	void btnRate_Click(object sender, EventArgs e) {
+		Common.vegas.DebugOut("btnRate_Click() Entry.");
 	}
 	
 	private void unmutePeerTrack(Track track, object sender) {
