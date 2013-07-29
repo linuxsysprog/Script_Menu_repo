@@ -592,8 +592,6 @@ public class Common {
 	}
 	
 	public static int getTrackIndex(TrackType trackType, int index) {
-		Regex regex = new Regex("BPM$");
-	
 		List<Track> tracks = TracksToTracks(vegas.Project.Tracks);
 		if (index > tracks.Count - 1) {
 			throw new ArgumentException("index out of range");
@@ -606,8 +604,7 @@ public class Common {
 					continue;
 				}
 			
-				string currentTrackEventName = getFullName(getTakeNames(trackEvents[0]));
-				if (regex.Match(currentTrackEventName).Success) {
+				if (isBPMEvent(trackEvents[0])) {
 					return tracks[i].Index;
 				}
 			}
@@ -618,14 +615,17 @@ public class Common {
 					continue;
 				}
 			
-				string currentTrackEventName = getFullName(getTakeNames(trackEvents[0]));
-				if (regex.Match(currentTrackEventName).Success) {
+				if (isBPMEvent(trackEvents[0])) {
 					return tracks[i].Index;
 				}
 			}
 		}
 		
 		throw new Exception("beep track not found");
+	}
+	
+	public static bool isBPMEvent(TrackEvent @event) {
+		return new Regex("BPM$").Match(getFullName(getTakeNames(@event))).Success;
 	}
 	
 	public static string[] getRange(int min, int max) {

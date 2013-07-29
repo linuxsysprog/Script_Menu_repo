@@ -846,15 +846,25 @@ x write batch slow down scripts
 		x design play controls
 			x chunk length in beats
 			x selection start end frame trim
+				- trim both ends left&right
 			x rate
 			x next/prev beat
+				x remove count-in beats
+				- limit wrap around to beeps with the same rate
 			x play/pause/stop
+		- the general principle: all controls preserve other controls' state
+		- all distances should be adjusted accordingly for 50% and 25% rates
 	- play button resets selection when pressed for the second time
-	- zoom to fav scale
-	- center cursor
+		- should check TC state (isPlaying etc..)
+	- stop button
+		- 2nd click to home position - 1st track, beat 1.1
+	? zoom to fav scale
+	x center cursor
 	- count-in
 		- play beep first, audio second
 		- checkout Project.InsertTime(), Undo
+		- create temporal count-in audio/video events at the end of the project
+		- create "enable click" checkbox 
 	x see how we can switch over (move cursor) between copies
 	! think how to get same piece at two different times in Left and Right screen
 	$ find out how-to move cursor back and forth in history or write a script
