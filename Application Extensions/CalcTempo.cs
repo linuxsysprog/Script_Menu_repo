@@ -759,11 +759,9 @@ public class CalcTempoControl : UserControl {
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		Track beepTrack = projectTracks[Common.getTrackIndex(TrackType.Beep, playingTrackDisplayIndex - 1)];
 		
-		TrackEvent nextEvent = null;
-		try {
-			nextEvent = FindNextEvent(beepTrack, Common.vegas.Transport.CursorPosition, sender == btnNextBeat);
-		} catch (Exception ex) {
-			MessageBox.Show("could not find next event: " + ex.Message, Common.TC, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		TrackEvent nextEvent = FindNextEvent(beepTrack, Common.vegas.Transport.CursorPosition, sender == btnNextBeat);
+		if (null == nextEvent) {
+			MessageBox.Show("could not find next event", Common.TC, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
@@ -785,15 +783,34 @@ public class CalcTempoControl : UserControl {
 	void btnRate_Click(object sender, EventArgs e) {
 	}
 	
-	// finds nearest event
 	private static TrackEvent FindNextEvent(Track track, Timecode position, bool forward) {
 		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
 		if (events.Count < 1) {
-			throw new Exception("track is empty");
+			return null;
 		}
+		
+		TrackEvent eventRight = Common.FindEventRight(track, position);
+		TrackEvent BPMEventRight = FindBPMEventRight(track, position);
+		TrackEvent eventLeft = Common.FindEventLeft(track, position);
+		TrackEvent BPMEventLeft = FindBPMEventLeft(track, position);
+		
+		Common.vegas.DebugOut("eventRight = " + ((eventRight == null) ? "" : "" + eventRight.Start));
+		Common.vegas.DebugOut("BPMEventRight = " + ((BPMEventRight == null) ? "" : "" + BPMEventRight.Start));
+		Common.vegas.DebugOut("eventLeft = " + ((eventLeft == null) ? "" : "" + eventLeft.Start));
+		Common.vegas.DebugOut("BPMEventLeft = " + ((BPMEventLeft == null) ? "" : "" + BPMEventLeft.Start));
 		
 		if (forward) {
 			// wrap around
+			if (null != BPMEventLeft && null != BPMEventRight) {
+				return BPMEventLeft;
+			} else if (null == BPMEventLeft && null != BPMEventRight) {
+				return BPMEventRight;
+			} else if (null != BPMEventLeft && null == BPMEventRight) {
+				return BPMEventLeft;
+			} else {
+				return null;
+			}
+			
 			if (position >= events[events.Count - 1].Start) {
 				position = new Timecode();
 			}
@@ -816,7 +833,31 @@ public class CalcTempoControl : UserControl {
 			}
 		}
 		
-		throw new Exception("event not found");
+		return null;
+	}
+	
+	private static TrackEvent FindBPMEventRight(Track track, Timecode position) {
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
+		
+		foreach (TrackEvent @event in events) {
+			if (@event.Start > position && Common.isBPMEvent(@event)) {
+				return @event;
+			}
+		}
+			
+		return null;
+	}
+	
+	private static TrackEvent FindBPMEventLeft(Track track, Timecode position) {
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
+		
+		for (int i = events.Count - 1; i >= 0; i--) {
+			if (events[i].Start < position && Common.isBPMEvent(events[i])) {
+				return events[i];
+			}
+		}
+			
+		return null;
 	}
 	
 	private void SetCursorPosition(Timecode pos) {
