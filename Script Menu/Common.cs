@@ -311,9 +311,6 @@ public class Common {
 	
 	public static TrackEvent FindEventRight(Track track, Timecode position) {
 		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
-		if (events.Count < 1) {
-			throw new Exception("track is empty");
-		}
 		
 		foreach (TrackEvent @event in events) {
 			if (@event.Start > position) {
@@ -321,14 +318,11 @@ public class Common {
 			}
 		}
 			
-		throw new Exception("event not found");
+		return null;
 	}
 	
 	public static TrackEvent FindEventLeft(Track track, Timecode position) {
 		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
-		if (events.Count < 1) {
-			throw new Exception("track is empty");
-		}
 		
 		for (int i = events.Count - 1; i >= 0; i--) {
 			if (events[i].Start < position) {
@@ -336,7 +330,7 @@ public class Common {
 			}
 		}
 			
-		throw new Exception("event not found");
+		return null;
 	}
 	
 	// finds events by track and selection
