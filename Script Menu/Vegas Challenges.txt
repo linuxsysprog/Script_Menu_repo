@@ -850,7 +850,7 @@ x write batch slow down scripts
 			x rate
 			x next/prev beat
 				x remove count-in beats
-				- limit wrap around to beeps with the same rate
+				x limit wrap around to beeps with the same rate
 			x play/pause/stop
 		- the general principle: all controls preserve other controls' state
 		- all distances should be adjusted accordingly for 50% and 25% rates

@@ -313,7 +313,7 @@ public class Common {
 		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
 		
 		foreach (TrackEvent @event in events) {
-			if (@event.Start > position) {
+			if (@event.Start >= position) {
 				return @event;
 			}
 		}
