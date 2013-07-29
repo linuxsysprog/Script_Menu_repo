@@ -759,8 +759,15 @@ public class CalcTempoControl : UserControl {
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		Track beepTrack = projectTracks[Common.getTrackIndex(TrackType.Beep, playingTrackDisplayIndex - 1)];
 		
-		TrackEvent nearestEvent = Common.FindNearestEvent(beepTrack, Common.vegas.Transport.CursorPosition, sender == btnNextBeat);
-		SetCursorPosition(nearestEvent.Start);
+		TrackEvent nextEvent = null;
+		try {
+			nextEvent = FindNextEvent(beepTrack, Common.vegas.Transport.CursorPosition, sender == btnNextBeat);
+		} catch (Exception ex) {
+			MessageBox.Show("could not find next event: " + ex.Message, Common.TC, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		SetCursorPosition(nextEvent.Start);
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
@@ -776,6 +783,40 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnRate_Click(object sender, EventArgs e) {
+	}
+	
+	// finds nearest event
+	private static TrackEvent FindNextEvent(Track track, Timecode position, bool forward) {
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
+		if (events.Count < 1) {
+			throw new Exception("track is empty");
+		}
+		
+		if (forward) {
+			// wrap around
+			if (position >= events[events.Count - 1].Start) {
+				position = new Timecode();
+			}
+			
+			foreach (TrackEvent @event in events) {
+				if (@event.Start > position) {
+					return @event;
+				}
+			}
+		} else {
+			// wrap around
+			if (position <= events[0].Start) {
+				position = events[events.Count - 1].Start + Timecode.FromFrames(1);
+			}
+			
+			for (int i = events.Count - 1; i >= 0; i--) {
+				if (events[i].Start < position) {
+					return events[i];
+				}
+			}
+		}
+		
+		throw new Exception("event not found");
 	}
 	
 	private void SetCursorPosition(Timecode pos) {
