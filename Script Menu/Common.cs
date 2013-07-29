@@ -34,6 +34,7 @@ public class Common {
 	public const string LAYOUT_TRACK = "Layout Track" + CP_RIGHT;
 	public const string RENDER_ALL = "Render All" + CP_RIGHT;
 	public const string UNFX_AUDIO = "UnFX Audio" + CP_RIGHT;
+	public const string TC = "Transport Controls" + CP_RIGHT;
 	
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
@@ -308,37 +309,33 @@ public class Common {
 		return events;
 	}
 	
-	// finds nearest event
-	public static TrackEvent FindNearestEvent(Track track, Timecode position, bool forward) {
+	public static TrackEvent FindEventRight(Track track, Timecode position) {
 		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
 		if (events.Count < 1) {
 			throw new Exception("track is empty");
 		}
 		
-		if (forward) {
-			// wrap around
-			if (position >= events[events.Count - 1].Start) {
-				position = new Timecode();
-			}
-			
-			foreach (TrackEvent @event in events) {
-				if (@event.Start > position) {
-					return @event;
-				}
-			}
-		} else {
-			for (int i = events.Count - 1; i >= 0; i--) {
-				// wrap around
-				if (position <= events[0].Start) {
-					position = events[events.Count - 1].Start + Timecode.FromFrames(1);
-				}
-				
-				if (events[i].Start < position) {
-					return events[i];
-				}
+		foreach (TrackEvent @event in events) {
+			if (@event.Start > position) {
+				return @event;
 			}
 		}
+			
+		throw new Exception("event not found");
+	}
+	
+	public static TrackEvent FindEventLeft(Track track, Timecode position) {
+		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
+		if (events.Count < 1) {
+			throw new Exception("track is empty");
+		}
 		
+		for (int i = events.Count - 1; i >= 0; i--) {
+			if (events[i].Start < position) {
+				return events[i];
+			}
+		}
+			
 		throw new Exception("event not found");
 	}
 	
