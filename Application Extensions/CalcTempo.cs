@@ -789,58 +789,41 @@ public class CalcTempoControl : UserControl {
 			return null;
 		}
 		
+		List<TrackEvent> currentEvents = Common.FindEventsByPosition(track, position);
+		if (currentEvents.Count > 0 && forward) {
+			position += Timecode.FromFrames(1);
+		}
+		
 		TrackEvent eventRight = Common.FindEventRight(track, position);
 		TrackEvent BPMEventRight = FindBPMEventRight(track, position);
 		TrackEvent eventLeft = Common.FindEventLeft(track, position);
 		TrackEvent BPMEventLeft = FindBPMEventLeft(track, position);
 		
-		Common.vegas.DebugOut("eventRight = " + ((eventRight == null) ? "" : "" + eventRight.Start));
-		Common.vegas.DebugOut("BPMEventRight = " + ((BPMEventRight == null) ? "" : "" + BPMEventRight.Start));
-		Common.vegas.DebugOut("eventLeft = " + ((eventLeft == null) ? "" : "" + eventLeft.Start));
-		Common.vegas.DebugOut("BPMEventLeft = " + ((BPMEventLeft == null) ? "" : "" + BPMEventLeft.Start));
-		
 		if (forward) {
-			// wrap around
-			if (null != BPMEventLeft && null != BPMEventRight) {
+			if (eventRight == BPMEventRight && null != BPMEventLeft) {
 				return BPMEventLeft;
-			} else if (null == BPMEventLeft && null != BPMEventRight) {
-				return BPMEventRight;
-			} else if (null != BPMEventLeft && null == BPMEventRight) {
-				return BPMEventLeft;
-			} else {
-				return null;
 			}
 			
-			if (position >= events[events.Count - 1].Start) {
-				position = new Timecode();
-			}
-			
-			foreach (TrackEvent @event in events) {
-				if (@event.Start > position) {
-					return @event;
-				}
-			}
+			return eventRight;
 		} else {
-			// wrap around
-			if (position <= events[0].Start) {
-				position = events[events.Count - 1].Start + Timecode.FromFrames(1);
+			if (null == eventRight) {
+				return events[events.Count - 1];
 			}
 			
-			for (int i = events.Count - 1; i >= 0; i--) {
-				if (events[i].Start < position) {
-					return events[i];
-				}
+			if (eventRight == BPMEventRight) {
+				TrackEvent @event = FindBPMEventRight(track, eventRight.Start + Timecode.FromFrames(1));
+				return null == @event ? events[events.Count - 1] : Common.FindEventLeft(track, @event.Start);
 			}
+			
+			return eventLeft;
 		}
-		
-		return null;
 	}
 	
 	private static TrackEvent FindBPMEventRight(Track track, Timecode position) {
 		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
 		
 		foreach (TrackEvent @event in events) {
-			if (@event.Start > position && Common.isBPMEvent(@event)) {
+			if (@event.Start >= position && Common.isBPMEvent(@event)) {
 				return @event;
 			}
 		}
