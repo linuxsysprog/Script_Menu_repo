@@ -459,7 +459,6 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnPlayNext_Click(object sender, EventArgs e) {
-		Regex regex = new Regex("BPM$");
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		List<Track> unfilteredTracks = Common.AudioTracksToTracks(Audio.FindAudioTracks(Common.vegas.Project));
 		
@@ -468,12 +467,7 @@ public class CalcTempoControl : UserControl {
 		List<Track> tracks = new List<Track>();
 		foreach (Track unfilteredTrack in unfilteredTracks) {
 			List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(unfilteredTrack.Events);
-			if (trackEvents.Count < 1) {
-				continue;
-			}
-			
-			string trackEventFullName = Common.getFullName(Common.getTakeNames(trackEvents[0]));
-			if (regex.Match(trackEventFullName).Success) {
+			if (trackEvents.Count < 1 || Common.isBPMEvent(trackEvents[0])) {
 				continue;
 			}
 			
@@ -770,12 +764,15 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
+		Common.vegas.Transport.Play();
 	}
 	
 	void btnPause_Click(object sender, EventArgs e) {
+		Common.vegas.Transport.Pause();
 	}
 	
 	void btnStop_Click(object sender, EventArgs e) {
+		Common.vegas.Transport.Stop();
 	}
 	
 	void btnRate_Click(object sender, EventArgs e) {
