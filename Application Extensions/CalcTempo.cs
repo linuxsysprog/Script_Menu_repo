@@ -777,7 +777,18 @@ public class CalcTempoControl : UserControl {
 	}
 	
 	void btnStop_Click(object sender, EventArgs e) {
-		Common.vegas.Transport.Stop();
+		TransportControl tc = Common.vegas.Transport;
+		if (tc.IsPlaying) {
+			tc.Stop();
+			return;
+		}
+	
+		// to home position
+		chkMuteAll.Checked = true;
+		chkMuteAll_Click(chkMuteAll, e);
+		btnPlayNext.PerformClick();
+		SetCursorPosition(new Timecode());
+		btnNextBeat_Click(btnNextBeat, e);
 	}
 	
 	void btnRate_Click(object sender, EventArgs e) {
