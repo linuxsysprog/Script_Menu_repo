@@ -856,8 +856,8 @@ x write batch slow down scripts
 		- all distances should be adjusted accordingly for 50% and 25% rates
 	- play button resets selection when pressed for the second time
 		- should check TC state (isPlaying etc..)
-	- stop button
-		- 2nd click to home position - 1st track, beat 1.1
+	x stop button
+		x if not playing go to home position - 1st track, beat 1.1
 	? zoom to fav scale
 	x center cursor
 	- count-in
