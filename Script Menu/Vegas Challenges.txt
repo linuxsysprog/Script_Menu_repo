@@ -834,19 +834,19 @@ x write batch slow down scripts
 	- fix aspect ratio (PAR?)
 - write horizontal navigation plus my own play controls
 	- redesign
-		- see how an app ext can process key presses
 		x split app ext up to Calculate Tempo and TC
 		x extract calc tempo into a stand-alone app ext
 		- zoom to fav scale
+		- simplify nav by assuming there are only 3 rates: 100%, 50% and 25%
 		- create Navigate app ext
 			- the general principle for all controls is to preserve other controls' state
 			- all distances should be adjusted accordingly for 50% and 25% rates
 			- implement tooltips
 			x create files&icons
 			- write GUI
-				- Audio
-					- add L/Both/R radio buttons to choose which channels to play
-					- add mute audio/beeps checkboxes
+				x Audio
+					x add L/Both/R radio buttons to choose which channels to play
+					x add mute audio/beeps checkboxes
 				- Selection
 					- trim both ends of sel
 						- display beat size in frames
@@ -858,6 +858,8 @@ x write batch slow down scripts
 				- Navigation
 				- Transport Controls
 					- play button resets selection when pressed for the second time
+		- see how an app ext can process key presses
+		- update docs
 	x research
 		x cursor
 			x move
@@ -887,7 +889,7 @@ x write batch slow down scripts
 	! think how to get same piece at two different times in Left and Right screen
 	$ find out how-to move cursor back and forth in history or write a script
 	$ write an app ext to monitor cursor position and display the event under it
-- write LayoutTrack.cs
+? write LayoutTrack.cs
 	x think which script to use as a model (SpreadBeeps.cs)
 	x create files and icons
 	- input
