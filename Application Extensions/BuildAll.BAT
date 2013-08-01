@@ -15,7 +15,7 @@ IF NOT "%ERRORLEVEL%" == "0" (
 	goto label
 )
 
-csc /target:library /reference:..\Sony.Vegas.dll;Common.DLL;Audio.DLL;Video.DLL /out:CalcTempo.DLL CalcTempo.cs
+csc /target:library /reference:..\Sony.Vegas.dll;Common.DLL;Audio.DLL;Video.DLL /out:CalcTempo.DLL CalcTempo.cs Navigate.cs
 IF NOT "%ERRORLEVEL%" == "0" (
 	goto label
 )
