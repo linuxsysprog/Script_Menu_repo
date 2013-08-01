@@ -833,6 +833,31 @@ x write batch slow down scripts
 	$ wait for saving dialog to go away
 	- fix aspect ratio (PAR?)
 - write horizontal navigation plus my own play controls
+	- redesign
+		- see how an app ext can process key presses
+		x split app ext up to Calculate Tempo and TC
+		x extract calc tempo into a stand-alone app ext
+		- zoom to fav scale
+		- create Navigate app ext
+			- the general principle for all controls is to preserve other controls' state
+			- all distances should be adjusted accordingly for 50% and 25% rates
+			- implement tooltips
+			x create files&icons
+			- write GUI
+				- Audio
+					- add L/Both/R radio buttons to choose which channels to play
+					- add mute audio/beeps checkboxes
+				- Selection
+					- trim both ends of sel
+						- display beat size in frames
+						- display +/- frame extension
+					- count-in
+						- play two beeps then audio
+						- checkout Project.InsertTime(), Undo
+						- create temporal count-in audio/video events at the end of the project
+				- Navigation
+				- Transport Controls
+					- play button resets selection when pressed for the second time
 	x research
 		x cursor
 			x move
@@ -842,41 +867,26 @@ x write batch slow down scripts
 		x play controls
 		x how to not jump back after playing back selection
 	x write GUI
-		- redesign
-			- split app ext up to Calculate Tempo and TC
-				x extract calc tempo into a stand-alone app ext
-				- create TC app ext
 		* Transport Controls
 		x design play controls
 			x chunk length in beats
 			x selection start end frame trim
-				- trim both ends left&right
-			- rate
+			x rate
 			x next/prev beat
 				x remove count-in beats
 				x limit wrap around to beeps with the same rate
 			x play/pause/stop
-		- the general principle: all controls preserve other controls' state
-		- all distances should be adjusted accordingly for 50% and 25% rates
-	- play button resets selection when pressed for the second time
+	x play button
 		x should check TC state (isPlaying etc..)
 		x stroboscopic playback
 			! manipulate playback rate programmatically
 	x stop button
 		x if not playing go to home position - 1st track, beat 1.1
-	x zoom to fav scale
 	x center cursor
-	- count-in
-		- play beep first, audio second
-		- checkout Project.InsertTime(), Undo
-		- create temporal count-in audio/video events at the end of the project
-	- add mute audio/beeps checkboxes
-	- add Left Only and Right Only checkboxes to choose which channels to play
 	x see how we can switch over (move cursor) between copies
 	! think how to get same piece at two different times in Left and Right screen
 	$ find out how-to move cursor back and forth in history or write a script
 	$ write an app ext to monitor cursor position and display the event under it
-	- see how an app ext can process key presses
 - write LayoutTrack.cs
 	x think which script to use as a model (SpreadBeeps.cs)
 	x create files and icons
