@@ -112,6 +112,9 @@ public class NavigateControl : UserControl {
 			CreateGroupBoxNav(),
 			CreateGroupBoxTC()});
 			
+		InitGroupBoxAudio();
+		InitGroupBoxSel();
+			
 		// ToggleColor(gbTC);
 	}
 	
@@ -151,7 +154,6 @@ public class NavigateControl : UserControl {
 		rbChanBoth.Location = new Point(60, 40);
 		rbChanBoth.Text = "──";
 		rbChanBoth.CheckedChanged += new EventHandler(rbChanBoth_CheckedChanged);
-		rbChanBoth.Checked = true;
 		new ToolTip().SetToolTip(rbChanBoth, "Play both channels");
 		
 		rbChanRight.Size = new Size(20, 20);
@@ -174,6 +176,12 @@ public class NavigateControl : UserControl {
 		return gbAudio;
 	}
 	
+	private void InitGroupBoxAudio() {
+		rbChanBoth.Checked = true;
+		chkMuteAudio.Checked = false;
+		chkMuteClick.Checked = false;
+	}
+	
 	private GroupBox CreateGroupBoxSel() {
 		gbSel.Size = new Size(135, 160);
 		gbSel.Location = new Point(10, 150);
@@ -189,12 +197,10 @@ public class NavigateControl : UserControl {
 		cbBeats.DropDownStyle = ComboBoxStyle.DropDownList;
 		cbBeats.SelectedValueChanged += new EventHandler(cbBeats_SelectedValueChanged);
 		cbBeats.Items.AddRange(Common.getRange(0, 16));
-		cbBeats.SelectedIndex = 1;
 		new ToolTip().SetToolTip(cbBeats, "Selection length in beats");
 		
 		lblBeats.Size = new Size(70, 20);
 		lblBeats.Location = new Point(55, 20);
-		lblBeats.Text = "bts (1b=14f)";
 		
 		gbTrimSel.Size = new Size(115, 70);
 		gbTrimSel.Location = new Point(10, 50);
@@ -236,6 +242,14 @@ public class NavigateControl : UserControl {
 		return gbSel;
 	}
 	
+	private void InitGroupBoxSel() {
+		cbBeats.SelectedIndex = 0;
+		lblBeats.Text = "bts (1b=14f)";
+		spinSelStart.Value = 0;
+		spinSelEnd.Value = 0;
+		chkCountIn.Checked = false;
+	}
+	
 	private GroupBox CreateGroupBoxNav() {
 		gbNav.Size = new Size(135, 105);
 		gbNav.Location = new Point(10, 320);
@@ -274,7 +288,7 @@ public class NavigateControl : UserControl {
 		btnDown.Size = new Size(20, 20);
 		btnDown.Location = new Point(55, 70);
 		btnDown.Text = "↓";
-		btnDown.Click += new EventHandler(btnDown_Click);
+		btnDown.Click += new EventHandler(btnUp_Click);
 		new ToolTip().SetToolTip(btnDown, "Go one track down");
 		
 		return gbNav;
@@ -367,6 +381,74 @@ public class NavigateControl : UserControl {
 	}
 	
 	void btnUp_Click(object sender, EventArgs e) {
+		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
+		
+		// skip non-audio, empty and beep tracks
+		List<Track> filteredAudioTracks = new List<Track>();
+		foreach (Track projectTrack in projectTracks) {
+			if (!projectTrack.IsAudio()) {
+				continue;
+			}
+			
+			List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(projectTrack.Events);
+			if (trackEvents.Count < 1) {
+				continue;
+			}
+			
+			List<TrackEvent> measureStartEvents = Common.FindMeasureStartEvents(trackEvents);
+			if (measureStartEvents.Count > 0) {
+				continue;
+			}
+			
+			filteredAudioTracks.Add(projectTrack);
+		}
+		
+		if (filteredAudioTracks.Count < 1) {
+			MessageBox.Show("Track not found",
+				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		int audioTrackIndex = filteredAudioTracks[0].Index;
+		
+		if (filteredAudioTracks.Count > 1 && Common.FindUnmutedTracks(filteredAudioTracks).Count > 0) {
+			for (int i = 0; i < filteredAudioTracks.Count; i++) {
+				// skip to first unmuted track
+				if (filteredAudioTracks[i].Mute) {
+					continue;
+				}
+				
+				if (sender == btnUp) { // backwards
+					if (i > 0) {
+						audioTrackIndex = filteredAudioTracks[i - 1].Index;
+					} else {
+						audioTrackIndex = filteredAudioTracks[filteredAudioTracks.Count - 1].Index; // wrap around
+					}
+				} else { // forward
+					if (i < filteredAudioTracks.Count - 1) {
+						audioTrackIndex = filteredAudioTracks[i + 1].Index;
+					} else {
+						audioTrackIndex = filteredAudioTracks[0].Index; // wrap around
+					}
+				}
+				
+				break;
+			}
+		}
+		
+		int videoTrackIndex = audioTrackIndex - 1;
+		int beepTrackIndex = Common.getTrackIndex(TrackType.Beep, audioTrackIndex);
+		
+		// mute all
+		Common.MuteAllTracks(projectTracks, true);
+		Common.SoloAllTracks(projectTracks, false);
+		
+		// unmute select tracks
+		List<Track> tracksPendingUnmute = new List<Track>();
+		tracksPendingUnmute.Add(projectTracks[audioTrackIndex]);
+		tracksPendingUnmute.Add(projectTracks[videoTrackIndex]);
+		tracksPendingUnmute.Add(projectTracks[beepTrackIndex]);
+		Common.MuteAllTracks(tracksPendingUnmute, false);
 	}
 	
 	void btnLeft_Click(object sender, EventArgs e) {
@@ -378,16 +460,16 @@ public class NavigateControl : UserControl {
 	void btnRight_Click(object sender, EventArgs e) {
 	}
 	
-	void btnDown_Click(object sender, EventArgs e) {
-	}
-	
 	void btnPlay_Click(object sender, EventArgs e) {
+		Common.vegas.Transport.Play();
 	}
 	
 	void btnPause_Click(object sender, EventArgs e) {
+		Common.vegas.Transport.Pause();
 	}
 	
 	void btnStop_Click(object sender, EventArgs e) {
+		Common.vegas.Transport.Stop();
 	}
 	
 	void btnSlower_Click(object sender, EventArgs e) {
