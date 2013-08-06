@@ -38,7 +38,7 @@ public class Navigate : ICustomCommandModule {
 			Common.vegas.ProjectClosed += HandleProjectClosed;
 			navView.Controls.Add(navControl);
 			
-			navView.DefaultFloatingSize = new Size(165, 265);
+			navView.DefaultFloatingSize = new Size(165, 560);
 			Common.vegas.LoadDockView(navView);
 		}
 	}
@@ -55,6 +55,7 @@ public class Navigate : ICustomCommandModule {
 public class NavigateControl : UserControl {
 	private Color color = Color.Red;
 	
+	// audio group box
 	private GroupBox gbAudio = new GroupBox();
 	
 	private Label lblChanLeft = new Label();
@@ -65,14 +66,53 @@ public class NavigateControl : UserControl {
 	private RadioButton rbChanBoth = new MyRadioButton();
 	private RadioButton rbChanRight = new RadioButton();
 
-	public CheckBox chkMuteAudio = new CheckBox();
-	public CheckBox chkMuteClick = new CheckBox();
+	private CheckBox chkMuteAudio = new CheckBox();
+	private CheckBox chkMuteClick = new CheckBox();
+	
+	// sel group box
+	private GroupBox gbSel = new GroupBox();
+	
+	private ComboBox cbBeats = new ComboBox();
+	private Label lblBeats = new Label();
+	
+	private GroupBox gbTrimSel = new GroupBox();
+	
+	private Label lblSelStart = new Label();
+	private NumericUpDown spinSelStart = new NumericUpDown();
+	
+	private Label lblSelEnd = new Label();
+	private NumericUpDown spinSelEnd = new NumericUpDown();
+	
+	private CheckBox chkCountIn = new CheckBox();
+	
+	// nav group box
+	private GroupBox gbNav = new GroupBox();
+	
+	private Button btnUp = new Button();
+	private Button btnLeft = new Button();
+	private Button btnHome = new Button();
+	private Button btnRight = new Button();
+	private Button btnDown = new Button();
+	
+	// TC group box
+	private GroupBox gbTC = new GroupBox();
+	
+	private Button btnPlay = new Button();
+	private Button btnPause = new Button();
+	private Button btnStop = new Button();
+	private Button btnSlower = new Button();
+	private Button btnFaster = new Button();
 	
 	public NavigateControl() {
+		Size = new Size(165, 560);
+	
 		Controls.AddRange(new Control[] {
-			CreateGroupBoxAudio()});
+			CreateGroupBoxAudio(),
+			CreateGroupBoxSel(),
+			CreateGroupBoxNav(),
+			CreateGroupBoxTC()});
 			
-		// ToggleColor(gbAudio);
+		// ToggleColor(gbTC);
 	}
 	
 	private GroupBox CreateGroupBoxAudio() {
@@ -134,6 +174,156 @@ public class NavigateControl : UserControl {
 		return gbAudio;
 	}
 	
+	private GroupBox CreateGroupBoxSel() {
+		gbSel.Size = new Size(135, 160);
+		gbSel.Location = new Point(10, 150);
+		gbSel.Text = "Selection";
+		gbSel.Controls.AddRange(new Control[] {
+			cbBeats,
+			lblBeats,
+			gbTrimSel,
+			chkCountIn});
+			
+		cbBeats.Size = new Size(40, 20);
+		cbBeats.Location = new Point(10, 20);
+		cbBeats.DropDownStyle = ComboBoxStyle.DropDownList;
+		cbBeats.SelectedValueChanged += new EventHandler(cbBeats_SelectedValueChanged);
+		cbBeats.Items.AddRange(Common.getRange(0, 16));
+		cbBeats.SelectedIndex = 1;
+		new ToolTip().SetToolTip(cbBeats, "Selection length in beats");
+		
+		lblBeats.Size = new Size(70, 20);
+		lblBeats.Location = new Point(55, 20);
+		lblBeats.Text = "bts (1b=14f)";
+		
+		gbTrimSel.Size = new Size(115, 70);
+		gbTrimSel.Location = new Point(10, 50);
+		gbTrimSel.Text = "Trim";
+		gbTrimSel.Controls.AddRange(new Control[] {
+			lblSelStart,
+			spinSelStart,
+			lblSelEnd,
+			spinSelEnd});
+			
+		lblSelStart.Size = new Size(40, 20);
+		lblSelStart.Location = new Point(10, 20);
+		lblSelStart.Text = "Start";
+		
+		spinSelStart.Size = new Size(40, 20);
+		spinSelStart.Location = new Point(10, 40);
+		spinSelStart.Maximum = 16;
+		spinSelStart.Minimum = -16;
+		spinSelStart.ValueChanged += new EventHandler(spinSelStart_ValueChanged);
+		new ToolTip().SetToolTip(spinSelStart, "Trim selection start N frames left or right");
+		
+		lblSelEnd.Size = new Size(40, 20);
+		lblSelEnd.Location = new Point(65, 20);
+		lblSelEnd.Text = "End";
+		
+		spinSelEnd.Size = new Size(40, 20);
+		spinSelEnd.Location = new Point(65, 40);
+		spinSelEnd.Maximum = 16;
+		spinSelEnd.Minimum = -16;
+		spinSelEnd.ValueChanged += new EventHandler(spinSelStart_ValueChanged);
+		new ToolTip().SetToolTip(spinSelEnd, "Trim selection end N frames left or right");
+		
+		chkCountIn.Size = new Size(100, 20);
+		chkCountIn.Location = new Point(10, 130);
+		chkCountIn.Text = "Count-in";
+		chkCountIn.Click += new EventHandler(chkCountIn_Click);
+		new ToolTip().SetToolTip(chkCountIn, "Enable two count-in clicks before playback");
+		
+		return gbSel;
+	}
+	
+	private GroupBox CreateGroupBoxNav() {
+		gbNav.Size = new Size(135, 105);
+		gbNav.Location = new Point(10, 320);
+		gbNav.Text = "Navigation";
+		gbNav.Controls.AddRange(new Control[] {
+			btnUp,
+			btnLeft,
+			btnHome,
+			btnRight,
+			btnDown});
+			
+		btnUp.Size = new Size(20, 20);
+		btnUp.Location = new Point(55, 20);
+		btnUp.Text = "↑";
+		btnUp.Click += new EventHandler(btnUp_Click);
+		new ToolTip().SetToolTip(btnUp, "Go one track up");
+		
+		btnLeft.Size = new Size(20, 20);
+		btnLeft.Location = new Point(30, 45);
+		btnLeft.Text = "←";
+		btnLeft.Click += new EventHandler(btnLeft_Click);
+		new ToolTip().SetToolTip(btnLeft, "Go one beat left");
+		
+		btnHome.Size = new Size(20, 20);
+		btnHome.Location = new Point(55, 45);
+		btnHome.Text = "H";
+		btnHome.Click += new EventHandler(btnHome_Click);
+		new ToolTip().SetToolTip(btnHome, "Go to home position");
+		
+		btnRight.Size = new Size(20, 20);
+		btnRight.Location = new Point(80, 45);
+		btnRight.Text = "→";
+		btnRight.Click += new EventHandler(btnRight_Click);
+		new ToolTip().SetToolTip(btnRight, "Go one beat right");
+		
+		btnDown.Size = new Size(20, 20);
+		btnDown.Location = new Point(55, 70);
+		btnDown.Text = "↓";
+		btnDown.Click += new EventHandler(btnDown_Click);
+		new ToolTip().SetToolTip(btnDown, "Go one track down");
+		
+		return gbNav;
+	}
+	
+	private GroupBox CreateGroupBoxTC() {
+		gbTC.Size = new Size(135, 85);
+		gbTC.Location = new Point(10, 435);
+		gbTC.Text = "Transport Controls";
+		gbTC.Controls.AddRange(new Control[] {
+			btnPlay,
+			btnPause,
+			btnStop,
+			btnSlower,
+			btnFaster});
+			
+		btnPlay.Size = new Size(60, 20);
+		btnPlay.Location = new Point(10, 25);
+		btnPlay.Text = "Play";
+		btnPlay.Click += new EventHandler(btnPlay_Click);
+		new ToolTip().SetToolTip(btnPlay, "Play");
+		
+		btnPause.Size = new Size(20, 20);
+		btnPause.Location = new Point(70, 25);
+		btnPause.Text = "||";
+		btnPause.Click += new EventHandler(btnPause_Click);
+		new ToolTip().SetToolTip(btnPause, "Pause");
+		
+		btnStop.Size = new Size(35, 20);
+		btnStop.Location = new Point(90, 25);
+		btnStop.Text = "Stop";
+		btnStop.Click += new EventHandler(btnStop_Click);
+		new ToolTip().SetToolTip(btnStop, "Stop");
+		
+		btnSlower.Size = new Size(60, 20);
+		btnSlower.Location = new Point(10, 55);
+		btnSlower.Text = "<<";
+		btnSlower.Click += new EventHandler(btnSlower_Click);
+		new ToolTip().SetToolTip(btnSlower, "Slower");
+		
+		btnFaster.Size = new Size(55, 20);
+		btnFaster.Location = new Point(70, 55);
+		btnFaster.Text = ">>";
+		btnFaster.Click += new EventHandler(btnFaster_Click);
+		new ToolTip().SetToolTip(btnFaster, "Faster");
+		
+		return gbTC;
+	}
+	
 	private void ToggleColor(Control control) {
 		foreach (Control childControl in control.Controls) {
 			if (Color.Red == color) {
@@ -167,6 +357,45 @@ public class NavigateControl : UserControl {
 	void chkMuteClick_Click(object sender, EventArgs e) {
 	}
 	
+	void cbBeats_SelectedValueChanged(object sender, EventArgs e) {
+	}
+	
+	void spinSelStart_ValueChanged(object sender, EventArgs e) {
+	}
+	
+	void chkCountIn_Click(object sender, EventArgs e) {
+	}
+	
+	void btnUp_Click(object sender, EventArgs e) {
+	}
+	
+	void btnLeft_Click(object sender, EventArgs e) {
+	}
+	
+	void btnHome_Click(object sender, EventArgs e) {
+	}
+	
+	void btnRight_Click(object sender, EventArgs e) {
+	}
+	
+	void btnDown_Click(object sender, EventArgs e) {
+	}
+	
+	void btnPlay_Click(object sender, EventArgs e) {
+	}
+	
+	void btnPause_Click(object sender, EventArgs e) {
+	}
+	
+	void btnStop_Click(object sender, EventArgs e) {
+	}
+	
+	void btnSlower_Click(object sender, EventArgs e) {
+	}
+	
+	void btnFaster_Click(object sender, EventArgs e) {
+	}
+	
 	//
 	// Event handlers END
 	//
@@ -180,7 +409,7 @@ public class NavigateControlTest : Form {
 	
 	public NavigateControlTest() {
 		Controls.Add(navControl);
-		Size = new Size(315, 215);
+		Size = new Size(165, 560);
 	}
 	
 	public static void Main() {
