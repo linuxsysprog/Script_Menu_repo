@@ -33,7 +33,6 @@ public class Common {
 	public const string LAYOUT_TRACK = "Layout Track" + CP_RIGHT;
 	public const string RENDER_ALL = "Render All" + CP_RIGHT;
 	public const string UNFX_AUDIO = "UnFX Audio" + CP_RIGHT;
-	public const string TC = "Transport Controls" + CP_RIGHT;
 	
 	public const string SPACER = "     " + "     " + "     " + "     " + "     " + "     "  + "XXXXX";
 	public const string AUDIO_RE = "^\\d+\\.\\d+";
@@ -170,6 +169,18 @@ public class Common {
 		}
 		
 		return tracks;
+	}
+	
+	public static List<Track> FindUnmutedTracks(List<Track> tracks) {
+		List<Track> unmutedTracks = new List<Track>();
+		
+		foreach (Track track in tracks) {
+			if (!track.Mute) {
+				unmutedTracks.Add(track);
+			}
+		}
+		
+		return unmutedTracks;
 	}
 	
 	// finds events that have at least one take whose name matches regex
@@ -562,21 +573,25 @@ public class Common {
 	}
 	
 	public static void MuteAllTracks(List<Track> tracks, bool mute) {
-		foreach (Track track in tracks) {
-			if (mute && !track.Mute) {
-				track.Mute = true;
-			} else if (!mute && track.Mute) {
-				track.Mute = false;
+		using (UndoBlock undo = new UndoBlock("MuteAllTracks")) {
+			foreach (Track track in tracks) {
+				if (mute && !track.Mute) {
+					track.Mute = true;
+				} else if (!mute && track.Mute) {
+					track.Mute = false;
+				}
 			}
 		}
 	}
 	
 	public static void SoloAllTracks(List<Track> tracks, bool solo) {
-		foreach (Track track in tracks) {
-			if (solo && !track.Solo) {
-				track.Solo = true;
-			} else if (!solo && track.Solo) {
-				track.Solo = false;
+		using (UndoBlock undo = new UndoBlock("SoloAllTracks")) {
+			foreach (Track track in tracks) {
+				if (solo && !track.Solo) {
+					track.Solo = true;
+				} else if (!solo && track.Solo) {
+					track.Solo = false;
+				}
 			}
 		}
 	}
@@ -593,8 +608,8 @@ public class Common {
 				if (!tracks[i].IsAudio() || trackEvents.Count < 1) {
 					continue;
 				}
-			
-				if (isBPMEvent(trackEvents[0])) {
+				
+				if (FindMeasureStartEvents(trackEvents).Count > 0) {
 					return tracks[i].Index;
 				}
 			}
@@ -605,17 +620,13 @@ public class Common {
 					continue;
 				}
 			
-				if (isBPMEvent(trackEvents[0])) {
+				if (FindMeasureStartEvents(trackEvents).Count > 0) {
 					return tracks[i].Index;
 				}
 			}
 		}
 		
-		throw new Exception("beep track not found");
-	}
-	
-	public static bool isBPMEvent(TrackEvent @event) {
-		return new Regex("BPM$").Match(getFullName(getTakeNames(@event))).Success;
+		throw new Exception("track not found");
 	}
 	
 	public static string[] getRange(int min, int max) {

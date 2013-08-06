@@ -838,25 +838,31 @@ x write batch slow down scripts
 		x extract calc tempo into a stand-alone app ext
 		- zoom to fav scale
 		- simplify nav by assuming there are only 3 rates: 100%, 50% and 25%
+		x look for 1.1 not BPM
 		- create Navigate app ext
 			- the general principle for all controls is to preserve other controls' state
 			- all distances should be adjusted accordingly for 50% and 25% rates
 			- implement tooltips
 			x create files&icons
-			- write GUI
+			x write GUI
 				x Audio
 					x add L/Both/R radio buttons to choose which channels to play
 					x add mute audio/beeps checkboxes
-				- Selection
-					- trim both ends of sel
-						- display beat size in frames
-						- display +/- frame extension
-					- count-in
+				x Selection
+					x trim both ends of sel
+						x make a nested groupbox
+						x use spin control
+							? display + for positive values
+								* use DomainUpDown
+							- limit range to 1 beat
+							$ vertical orientation
+						x display beat size in frames
+					x count-in
 						- play two beeps then audio
 						- checkout Project.InsertTime(), Undo
 						- create temporal count-in audio/video events at the end of the project
-				- Navigation
-				- Transport Controls
+				x Navigation
+				x Transport Controls
 					- play button resets selection when pressed for the second time
 		- see how an app ext can process key presses
 		- update docs
