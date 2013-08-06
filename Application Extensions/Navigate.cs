@@ -1,5 +1,5 @@
 // Copyright (C) 2011-2013 Andrey Chislenko
-// $Id: CalcTempo.cs 349 2013-08-01 10:54:45Z Andrey $
+// $Id$
 // Navigation and Transport Controls
 
 using System;
