@@ -194,7 +194,10 @@ public class NavigateControl : UserControl {
 	}
 	
 	public void InitGroupBoxAudio() {
+		rbChanLeft.Checked = false;
 		rbChanBoth.Checked = true;
+		rbChanRight.Checked = false;
+		
 		chkMuteAudio.Checked = false;
 		chkMuteClick.Checked = false;
 	}
