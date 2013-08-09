@@ -637,6 +637,14 @@ public class Common {
 		return list.ToArray();
 	}
 	
+	public static void ToggleCheckBox(CheckBox cb) {
+		if (cb.Checked) {
+			cb.Checked = false;
+		} else {
+			cb.Checked = true;
+		}
+	}
+	
 }
 
 public enum TrackType {

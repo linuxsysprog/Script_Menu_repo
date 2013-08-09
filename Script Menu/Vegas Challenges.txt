@@ -836,13 +836,13 @@ x write batch slow down scripts
 	- redesign
 		x split app ext up to Calculate Tempo and TC
 		x extract calc tempo into a stand-alone app ext
-		- zoom to fav scale
+		x zoom to fav scale
 		- simplify nav by assuming there are only 3 rates: 100%, 50% and 25%
 		x look for 1.1 not BPM
 		- create Navigate app ext
 			- the general principle for all controls is to preserve other controls' state
 			- all distances should be adjusted accordingly for 50% and 25% rates
-			- implement tooltips
+			x implement tooltips
 			x create files&icons
 			x write GUI
 				x Audio
@@ -862,6 +862,8 @@ x write batch slow down scripts
 						- checkout Project.InsertTime(), Undo
 						- create temporal count-in audio/video events at the end of the project
 				x Navigation
+					x  create step left/right buttons
+					x create step size (frames) spinbox
 				x Transport Controls
 					- play button resets selection when pressed for the second time
 		- see how an app ext can process key presses
