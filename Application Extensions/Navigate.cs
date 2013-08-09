@@ -161,17 +161,20 @@ public class NavigateControl : UserControl {
 		rbChanLeft.Size = new Size(50, 20);
 		rbChanLeft.Location = new Point(10, 40);
 		rbChanLeft.Text = "──";
+		rbChanLeft.AutoCheck = false;
 		rbChanLeft.Click += new EventHandler(rbChanLeft_Click);
 		new ToolTip().SetToolTip(rbChanLeft, "Play left channel only");
 		
 		rbChanBoth.Size = new Size(50, 20);
 		rbChanBoth.Location = new Point(60, 40);
 		rbChanBoth.Text = "──";
+		rbChanBoth.AutoCheck = false;
 		rbChanBoth.Click += new EventHandler(rbChanLeft_Click);
 		new ToolTip().SetToolTip(rbChanBoth, "Play both channels");
 		
 		rbChanRight.Size = new Size(20, 20);
 		rbChanRight.Location = new Point(110, 40);
+		rbChanRight.AutoCheck = false;
 		rbChanRight.Click += new EventHandler(rbChanLeft_Click);
 		new ToolTip().SetToolTip(rbChanRight, "Play right channel only");
 		
@@ -412,7 +415,26 @@ public class NavigateControl : UserControl {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	void rbChanLeft_Click(object sender, EventArgs e) {
-		Common.vegas.DebugOut("rbChanLeft_Click() Entry.");
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		if (rbChanLeft == sender) {
+			rbChanLeft.Checked = true;
+			rbChanBoth.Checked = false;
+			rbChanRight.Checked = false;
+		} else if (rbChanBoth == sender) {
+			rbChanLeft.Checked = false;
+			rbChanBoth.Checked = true;
+			rbChanRight.Checked = false;
+		} else if (rbChanRight == sender) {
+			rbChanLeft.Checked = false;
+			rbChanBoth.Checked = false;
+			rbChanRight.Checked = true;
+		} else {
+			MessageBox.Show("rbChanLeft_Click: unknown sender", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
 	}
 	
 	void chkMuteAudio_Click(object sender, EventArgs e) {
