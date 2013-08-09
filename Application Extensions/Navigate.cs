@@ -421,9 +421,27 @@ public class NavigateControl : UserControl {
 	}
 	
 	void chkMuteAudio_Click(object sender, EventArgs e) {
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			Common.ToggleCheckBox(chkMuteAudio);
+			return;
+		}
+		
+		List<Track> tracks = new List<Track>();
+		tracks.Add(audioTrack);
+		Common.MuteAllTracks(tracks, chkMuteAudio.Checked);
 	}
 	
 	void chkMuteClick_Click(object sender, EventArgs e) {
+		if (null == beepTrack) {
+			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			Common.ToggleCheckBox(chkMuteClick);
+			return;
+		}
+		
+		List<Track> tracks = new List<Track>();
+		tracks.Add(beepTrack);
+		Common.MuteAllTracks(tracks, chkMuteClick.Checked);
 	}
 	
 	void spinBeats_ValueChanged(object sender, EventArgs e) {
@@ -462,7 +480,7 @@ public class NavigateControl : UserControl {
 		}
 		
 		if (filteredAudioTracks.Count < 1) {
-			MessageBox.Show("Track not found",
+			MessageBox.Show("Audio track not found",
 				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
@@ -512,6 +530,9 @@ public class NavigateControl : UserControl {
 		// save tracks for future reference
 		audioTrack = projectTracks[audioTrackIndex];
 		beepTrack = projectTracks[beepTrackIndex];
+		
+		InitGroupBoxAudio();
+		InitGroupBoxSel();
 	}
 	
 	void btnStepLeft_Click(object sender, EventArgs e) {
@@ -542,6 +563,7 @@ public class NavigateControl : UserControl {
 	}
 	
 	void btnHome_Click(object sender, EventArgs e) {
+		btnUp_Click(null, null);
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
