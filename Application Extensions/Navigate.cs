@@ -49,6 +49,8 @@ public class Navigate : ICustomCommandModule {
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {
+		navControl.InitGroupBoxAudio();
+		navControl.InitGroupBoxSel();
 	}
 	
 }
@@ -56,6 +58,9 @@ public class Navigate : ICustomCommandModule {
 public class NavigateControl : UserControl {
 	private Color color = Color.Red;
 	private Regex specialBeepRegex = new Regex("1\\.1");
+	
+	private Track audioTrack = null;
+	private Track beepTrack = null;
 	
 	// audio group box
 	private GroupBox gbAudio = new GroupBox();
@@ -74,7 +79,7 @@ public class NavigateControl : UserControl {
 	// sel group box
 	private GroupBox gbSel = new GroupBox();
 	
-	private ComboBox cbBeats = new ComboBox();
+	private NumericUpDown spinBeats = new NumericUpDown();
 	private Label lblBeats = new Label();
 	
 	private GroupBox gbTrimSel = new GroupBox();
@@ -185,7 +190,7 @@ public class NavigateControl : UserControl {
 		return gbAudio;
 	}
 	
-	private void InitGroupBoxAudio() {
+	public void InitGroupBoxAudio() {
 		rbChanBoth.Checked = true;
 		chkMuteAudio.Checked = false;
 		chkMuteClick.Checked = false;
@@ -196,18 +201,18 @@ public class NavigateControl : UserControl {
 		gbSel.Location = new Point(10, 140);
 		gbSel.Text = "Selection";
 		gbSel.Controls.AddRange(new Control[] {
-			cbBeats,
+			spinBeats,
 			lblBeats,
 			gbTrimSel,
 			chkCountIn,
 			chkZoom});
 			
-		cbBeats.Size = new Size(40, 20);
-		cbBeats.Location = new Point(10, 20);
-		cbBeats.DropDownStyle = ComboBoxStyle.DropDownList;
-		cbBeats.SelectedValueChanged += new EventHandler(cbBeats_SelectedValueChanged);
-		cbBeats.Items.AddRange(Common.getRange(0, 16));
-		new ToolTip().SetToolTip(cbBeats, "Selection length in beats");
+		spinBeats.Size = new Size(40, 20);
+		spinBeats.Location = new Point(10, 20);
+		spinBeats.Maximum = 16;
+		spinBeats.Minimum = 0;
+		spinBeats.ValueChanged += new EventHandler(spinBeats_ValueChanged);
+		new ToolTip().SetToolTip(spinBeats, "Selection length in beats");
 		
 		lblBeats.Size = new Size(70, 20);
 		lblBeats.Location = new Point(55, 20);
@@ -257,11 +262,13 @@ public class NavigateControl : UserControl {
 		return gbSel;
 	}
 	
-	private void InitGroupBoxSel() {
-		cbBeats.SelectedIndex = 0;
+	public void InitGroupBoxSel() {
+		spinBeats.Value = 0;
 		lblBeats.Text = "bts (1b=14f)";
+		
 		spinSelStart.Value = 0;
 		spinSelEnd.Value = 0;
+		
 		chkCountIn.Checked = false;
 		chkZoom.Checked = false;
 	}
@@ -419,7 +426,7 @@ public class NavigateControl : UserControl {
 	void chkMuteClick_Click(object sender, EventArgs e) {
 	}
 	
-	void cbBeats_SelectedValueChanged(object sender, EventArgs e) {
+	void spinBeats_ValueChanged(object sender, EventArgs e) {
 	}
 	
 	void spinSelStart_ValueChanged(object sender, EventArgs e) {
@@ -462,7 +469,8 @@ public class NavigateControl : UserControl {
 		
 		int audioTrackIndex = filteredAudioTracks[0].Index;
 		
-		if (filteredAudioTracks.Count > 1 && Common.FindUnmutedTracks(filteredAudioTracks).Count > 0) {
+		bool home = (null == e);
+		if (!home && filteredAudioTracks.Count > 1 && Common.FindUnmutedTracks(filteredAudioTracks).Count > 0) {
 			for (int i = 0; i < filteredAudioTracks.Count; i++) {
 				// skip to first unmuted track
 				if (filteredAudioTracks[i].Mute) {
@@ -500,6 +508,10 @@ public class NavigateControl : UserControl {
 		tracksPendingUnmute.Add(projectTracks[videoTrackIndex]);
 		tracksPendingUnmute.Add(projectTracks[beepTrackIndex]);
 		Common.MuteAllTracks(tracksPendingUnmute, false);
+		
+		// save tracks for future reference
+		audioTrack = projectTracks[audioTrackIndex];
+		beepTrack = projectTracks[beepTrackIndex];
 	}
 	
 	void btnStepLeft_Click(object sender, EventArgs e) {
