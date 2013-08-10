@@ -51,6 +51,9 @@ public class Navigate : ICustomCommandModule {
 	void HandleProjectClosed(Object sender, EventArgs args) {
 		navControl.InitGroupBoxAudio();
 		navControl.InitGroupBoxSel();
+		
+		navControl.audioTrack = null;
+		navControl.beepTrack = null;
 	}
 	
 }
@@ -59,8 +62,8 @@ public class NavigateControl : UserControl {
 	private Color color = Color.Red;
 	private Regex specialBeepRegex = new Regex("1\\.1");
 	
-	private Track audioTrack = null;
-	private Track beepTrack = null;
+	public Track audioTrack = null;
+	public Track beepTrack = null;
 	
 	// audio group box
 	private GroupBox gbAudio = new GroupBox();
@@ -423,20 +426,36 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		if (rbChanLeft == sender) {
-			rbChanLeft.Checked = true;
-			rbChanBoth.Checked = false;
-			rbChanRight.Checked = false;
-		} else if (rbChanBoth == sender) {
-			rbChanLeft.Checked = false;
-			rbChanBoth.Checked = true;
-			rbChanRight.Checked = false;
-		} else if (rbChanRight == sender) {
-			rbChanLeft.Checked = false;
-			rbChanBoth.Checked = false;
-			rbChanRight.Checked = true;
-		} else {
-			MessageBox.Show("rbChanLeft_Click: unknown sender", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		List<AudioEvent> audioEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(audioTrack.Events));
+		if (audioEvents.Count < 1) {
+			MessageBox.Show("Audio event not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		using (UndoBlock undo = new UndoBlock("rbChanLeft_Click")) {
+			if (rbChanLeft == sender) {
+				try {
+					audioEvents[0].Channels = ChannelRemapping.DisableRight;
+				} catch (Exception ex) {
+					MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			
+				rbChanLeft.Checked = true;
+				rbChanBoth.Checked = false;
+				rbChanRight.Checked = false;
+			} else if (rbChanBoth == sender) {
+				audioEvents[0].Channels = ChannelRemapping.None;
+				
+				rbChanLeft.Checked = false;
+				rbChanBoth.Checked = true;
+				rbChanRight.Checked = false;
+			} else { // rbChanRight == sender
+				audioEvents[0].Channels = ChannelRemapping.DisableLeft;
+				
+				rbChanLeft.Checked = false;
+				rbChanBoth.Checked = false;
+				rbChanRight.Checked = true;
+			}
 		}
 	}
 	
@@ -546,6 +565,16 @@ public class NavigateControl : UserControl {
 		tracksPendingUnmute.Add(projectTracks[videoTrackIndex]);
 		tracksPendingUnmute.Add(projectTracks[beepTrackIndex]);
 		Common.MuteAllTracks(tracksPendingUnmute, false);
+		
+		// force no channel mapping
+		List<AudioEvent> audioEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(projectTracks[audioTrackIndex].Events));
+		if (audioEvents.Count < 1) {
+			MessageBox.Show("Audio event not found, skipping channel mapping", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		} else {
+			using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
+				audioEvents[0].Channels = ChannelRemapping.None;
+			}
+		}
 		
 		// save tracks for future reference
 		audioTrack = projectTracks[audioTrackIndex];
