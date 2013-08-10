@@ -434,11 +434,7 @@ public class NavigateControl : UserControl {
 		
 		using (UndoBlock undo = new UndoBlock("rbChanLeft_Click")) {
 			if (rbChanLeft == sender) {
-				try {
-					audioEvents[0].Channels = ChannelRemapping.DisableRight;
-				} catch (Exception ex) {
-					MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
+				audioEvents[0].Channels = ChannelRemapping.DisableRight;
 			
 				rbChanLeft.Checked = true;
 				rbChanBoth.Checked = false;
@@ -569,7 +565,7 @@ public class NavigateControl : UserControl {
 		// force no channel mapping
 		List<AudioEvent> audioEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(projectTracks[audioTrackIndex].Events));
 		if (audioEvents.Count < 1) {
-			MessageBox.Show("Audio event not found, skipping channel mapping", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show("Audio event not found, not mapping channels", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		} else {
 			using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
 				audioEvents[0].Channels = ChannelRemapping.None;
