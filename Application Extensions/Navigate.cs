@@ -584,27 +584,25 @@ public class NavigateControl : UserControl {
 	}
 	
 	void btnLeft_Click(object sender, EventArgs e) {
-		Track beepTrack = FindActiveBeepTrack();
 		if (null == beepTrack) {
-			MessageBox.Show("Beep track not found",
-				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
-		TrackEvent specialBeep;
-		if (sender == btnLeft) { // backwards
-			specialBeep = FindSpecialBeepLeft(beepTrack, Common.vegas.Transport.CursorPosition);
-		} else { //forward
-			specialBeep = FindSpecialBeepRight(beepTrack, Common.vegas.Transport.CursorPosition);
-		}
-		
-		if (null == specialBeep) {
-			MessageBox.Show("special beep not found",
-				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
+		if (events.Count < 1) {
+			MessageBox.Show("Beep track is empty", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
-		SetCursorPosition(specialBeep.Start);
+		bool forward = (sender == btnRight);
+		TrackEvent nextBeep = FindNextBeep(beepTrack, Common.vegas.Transport.CursorPosition, forward);
+		if (null == nextBeep) {
+			MessageBox.Show("Could not find next beep", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		SetCursorPosition(nextBeep.Start);
 	}
 	
 	void btnHome_Click(object sender, EventArgs e) {
@@ -649,37 +647,6 @@ public class NavigateControl : UserControl {
 		tc.ViewCursor(true);
 	}
 	
-	private Track FindActiveBeepTrack() {
-		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
-		foreach (Track projectTrack in projectTracks) {
-			// skip non-audio
-			if (!projectTrack.IsAudio()) {
-				continue;
-			}
-			
-			// skip muted
-			if (projectTrack.Mute == true) {
-				continue;
-			}
-			
-			// skip empty
-			List<TrackEvent> trackEvents = Common.TrackEventsToTrackEvents(projectTrack.Events);
-			if (trackEvents.Count < 1) {
-				continue;
-			}
-			
-			// skip non-beep
-			List<TrackEvent> measureStartEvents = Common.FindMeasureStartEvents(trackEvents);
-			if (measureStartEvents.Count < 1) {
-				continue;
-			}
-			
-			return projectTrack;
-		}
-		
-		return null;
-	}
-	
 	private TrackEvent FindSpecialBeepRight(Track track, Timecode position) {
 		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
 		
@@ -712,6 +679,46 @@ public class NavigateControl : UserControl {
 		}
 			
 		return null;
+	}
+	
+	private TrackEvent FindNextBeep(Track beepTrack, Timecode position, bool forward) {
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
+		if (events.Count < 1) {
+			return null;
+		}
+		
+		if (forward) {
+			List<TrackEvent> currentEvents = Common.FindEventsByPosition(beepTrack, position);
+			if (currentEvents.Count > 0) {
+				position += Timecode.FromFrames(1);
+			}
+		}
+		
+		TrackEvent eventLeft = Common.FindEventLeft(beepTrack, position);
+		TrackEvent eventRight = Common.FindEventRight(beepTrack, position);
+		
+		TrackEvent specialBeepLeft = FindSpecialBeepLeft(beepTrack, position);
+		TrackEvent specialBeepRight = FindSpecialBeepRight(beepTrack, position);
+		
+		if (forward) {
+			if (eventRight == specialBeepRight && null != specialBeepLeft) {
+				return specialBeepLeft;
+			}
+			
+			return eventRight;
+		}
+		
+		// backwards
+		if (null == eventRight) {
+			return events[events.Count - 1];
+		}
+		
+		if (eventRight == specialBeepRight) {
+			TrackEvent @event = FindSpecialBeepRight(beepTrack, eventRight.Start + Timecode.FromFrames(1));
+			return (null == @event) ? events[events.Count - 1] : Common.FindEventLeft(beepTrack, @event.Start);
+		}
+		
+		return eventLeft;
 	}
 	
 }
