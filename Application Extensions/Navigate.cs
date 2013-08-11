@@ -607,6 +607,19 @@ public class NavigateControl : UserControl {
 	
 	void btnHome_Click(object sender, EventArgs e) {
 		btnUp_Click(null, null);
+		if (null == beepTrack) {
+			return;
+		}
+		
+		Common.vegas.Transport.CursorPosition = new Timecode();
+		
+		TrackEvent nextBeep = FindNextBeep(beepTrack, Common.vegas.Transport.CursorPosition, true);
+		if (null == nextBeep) {
+			MessageBox.Show("Could not find next beep", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		SetCursorPosition(nextBeep.Start);
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
