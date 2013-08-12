@@ -396,7 +396,7 @@ public class NavigateControl : UserControl {
 		btnFaster.Size = new Size(55, 20);
 		btnFaster.Location = new Point(70, 55);
 		btnFaster.Text = ">>";
-		btnFaster.Click += new EventHandler(btnFaster_Click);
+		btnFaster.Click += new EventHandler(btnSlower_Click);
 		new ToolTip().SetToolTip(btnFaster, "Faster");
 		
 		return gbTC;
@@ -589,12 +589,6 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
-		if (events.Count < 1) {
-			MessageBox.Show("Beep track is empty", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
 		bool forward = (sender == btnRight);
 		TrackEvent nextBeep = FindNextBeep(beepTrack, Common.vegas.Transport.CursorPosition, forward);
 		if (null == nextBeep) {
@@ -635,9 +629,19 @@ public class NavigateControl : UserControl {
 	}
 	
 	void btnSlower_Click(object sender, EventArgs e) {
-	}
-	
-	void btnFaster_Click(object sender, EventArgs e) {
+		if (null == beepTrack) {
+			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		bool forward = (sender == btnFaster);
+		Timecode nextRate = FindNextRate(beepTrack, Common.vegas.Transport.CursorPosition, forward);
+		if (null == nextRate) {
+			MessageBox.Show("Could not find next rate", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		SetCursorPosition(nextRate);
 	}
 	
 	//
@@ -694,6 +698,10 @@ public class NavigateControl : UserControl {
 		return null;
 	}
 	
+	private TrackEvent FindRightmostSpecialBeep(Track beepTrack, List<TrackEvent> events) {
+		return FindSpecialBeepLeft(beepTrack, events[events.Count - 1].Start + Timecode.FromFrames(1));
+	}
+	
 	private TrackEvent FindNextBeep(Track beepTrack, Timecode position, bool forward) {
 		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
 		if (events.Count < 1) {
@@ -732,6 +740,104 @@ public class NavigateControl : UserControl {
 		}
 		
 		return eventLeft;
+	}
+	
+	private Timecode FindNextRate(Track beepTrack, Timecode position, bool forward) {
+		Common.vegas.DebugClear();
+		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
+		if (events.Count < 1) {
+			return null;
+		}
+		
+		Timecode unchangedPosition = position;
+		
+		if (forward) {
+			List<TrackEvent> currentEvents = Common.FindEventsByPosition(beepTrack, position);
+			if (currentEvents.Count > 0) {
+				position += Timecode.FromFrames(1);
+				Common.vegas.DebugOut("position = " + position);
+			}
+		}
+		
+		TrackEvent specialBeepLeft = FindSpecialBeepLeft(beepTrack, position);
+		TrackEvent specialBeepRight = FindSpecialBeepRight(beepTrack, position);
+		
+		Timecode srcOrigin = null;
+		Timecode srcOffset = null;
+		Timecode tarOrigin = null;
+		Timecode tarOffset = null;
+		try {
+			srcOrigin = GetSrcOrigin(beepTrack, specialBeepLeft, events);
+			srcOffset = GetSrcOffset(beepTrack, unchangedPosition, specialBeepLeft, events, srcOrigin);
+			tarOrigin = GetTarOrigin(beepTrack, forward, events, specialBeepLeft, specialBeepRight);
+			tarOffset = GetTarOffset(beepTrack, forward, specialBeepLeft, specialBeepRight, srcOffset);
+		} catch (Exception ex) {
+			string msg = "srcOrigin = " + srcOrigin + "\r\n" +
+				"srcOffset = " + srcOffset + "\r\n" +
+				"tarOrigin = " + tarOrigin + "\r\n" +
+				"tarOffset = " + tarOffset + "\r\n";
+				
+			MessageBox.Show(ex.Message + "\r\n" + msg, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+		
+		return tarOrigin + tarOffset;
+	}
+	
+	private Timecode GetSrcOrigin(Track beepTrack, TrackEvent specialBeepLeft, List<TrackEvent> events) {
+		return (null == specialBeepLeft) ? FindRightmostSpecialBeep(beepTrack, events).Start : specialBeepLeft.Start;
+	}
+	
+	private Timecode GetSrcOffset(Track beepTrack, Timecode unchangedPosition, TrackEvent specialBeepLeft,
+		List<TrackEvent> events, Timecode srcOrigin) {
+		
+		if (null == specialBeepLeft) {
+			return events[events.Count - 1].Start - FindRightmostSpecialBeep(beepTrack, events).Start + unchangedPosition;
+		}
+		
+		return unchangedPosition - srcOrigin;
+	}
+	
+	private Timecode GetTarOrigin(Track beepTrack, bool forward, List<TrackEvent> events,
+		TrackEvent specialBeepLeft, TrackEvent specialBeepRight) {
+		
+		if (forward) {
+			return (null == specialBeepRight) ? events[0].Start : specialBeepRight.Start;
+		}
+		
+		TrackEvent rightmostSpecial = FindRightmostSpecialBeep(beepTrack, events);
+		
+		if (null == specialBeepLeft) {
+			return FindSpecialBeepLeft(beepTrack, rightmostSpecial.Start).Start;
+		}
+		
+		TrackEvent @event = FindSpecialBeepLeft(beepTrack, specialBeepLeft.Start);
+		return (null == @event) ? rightmostSpecial.Start : @event.Start;
+	}
+	
+	private Timecode GetTarOffset(Track beepTrack,
+		bool forward,
+		TrackEvent specialBeepLeft,
+		TrackEvent specialBeepRight,
+		Timecode srcOffset) {
+		
+		if (forward) {
+			if (null == specialBeepRight || null == specialBeepLeft) {
+				return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 4.0));
+			}
+			
+			return srcOffset + srcOffset;
+		}
+		
+		if (null == specialBeepLeft) {
+			return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 2.0));
+		}
+		
+		TrackEvent @event = FindSpecialBeepLeft(beepTrack, specialBeepLeft.Start);
+		if (null == @event) {
+			return srcOffset + srcOffset + srcOffset + srcOffset;
+		}
+		
+		return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 2.0));
 	}
 	
 }
