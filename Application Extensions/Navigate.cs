@@ -65,6 +65,9 @@ public class NavigateControl : UserControl {
 	public Track audioTrack = null;
 	public Track beepTrack = null;
 	
+	private double[] rates;
+	private List<RateRegion> rateRegions = new List<RateRegion>();
+	
 	// audio group box
 	private GroupBox gbAudio = new GroupBox();
 	
@@ -121,6 +124,8 @@ public class NavigateControl : UserControl {
 	private Button btnFaster = new Button();
 	
 	public NavigateControl() {
+		rates = new double[] { 100.0, 50.0, 25.0 };
+		
 		Size = new Size(165, 600);
 	
 		Controls.AddRange(new Control[] {
@@ -578,6 +583,12 @@ public class NavigateControl : UserControl {
 		
 		InitGroupBoxAudio();
 		InitGroupBoxSel();
+		
+		// build rate regions
+		List<TrackEvent> regionEvents = Common.TrackEventsToTrackEvents(projectTracks[beepTrackIndex].Events);
+		rateRegions.Add(new RateRegion(new Timecode(), new Timecode(), regionEvents, rates[0]));
+		Common.vegas.DebugClear();
+		Common.vegas.DebugOut("" + rateRegions[0]);
 	}
 	
 	void btnStepLeft_Click(object sender, EventArgs e) {
@@ -798,6 +809,51 @@ public class NavigateControl : UserControl {
 		}
 		
 		return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 2.0));
+	}
+	
+}
+
+public class RateRegion {
+	private Timecode start;
+	private Timecode end;
+	private List<TrackEvent> regionEvents;
+	private double rate;
+
+	public RateRegion(Timecode start, Timecode end, List<TrackEvent> regionEvents, double rate) {
+		this.start = start;
+		this.end = end;
+		this.regionEvents = regionEvents;
+		this.rate = rate;
+	}
+	
+	public Timecode Start {
+		get {
+			return start;
+		}
+	}
+	
+	public Timecode End {
+		get {
+			return end;
+		}
+	}
+	
+	public List<TrackEvent> RegionEvents {
+		get {
+			return regionEvents;
+		}
+	}
+	
+	public double Rate {
+		get {
+			return rate;
+		}
+	}
+	
+	public override string ToString() {
+		return "{start=" + start + ", end=" + end + "}\r\n" +
+		"{rate=" + rate + "}\r\n" +
+		Common.TrackEventsToString(regionEvents);
 	}
 	
 }
