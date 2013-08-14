@@ -61,6 +61,7 @@ public class Navigate : ICustomCommandModule {
 public class NavigateControl : UserControl {
 	private Color color = Color.Red;
 	private Regex specialBeepRegex = new Regex("1\\.1");
+	private Regex rateRegionStartEventRegex = new Regex("1\\.1");
 	
 	public Track audioTrack = null;
 	public Track beepTrack = null;
@@ -497,6 +498,7 @@ public class NavigateControl : UserControl {
 	}
 	
 	void btnUp_Click(object sender, EventArgs e) {
+		Common.vegas.DebugClear();
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		
 		// skip non-audio, empty and beep tracks
@@ -553,8 +555,70 @@ public class NavigateControl : UserControl {
 			}
 		}
 		
+		// validate audio track
+		List<AudioEvent> audioEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(projectTracks[audioTrackIndex].Events));
+		if (audioEvents.Count < 1) {
+			MessageBox.Show("Audio event not found",
+				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
 		int videoTrackIndex = audioTrackIndex - 1;
 		int beepTrackIndex = Common.getTrackIndex(TrackType.Beep, audioTrackIndex);
+		
+		// build rate regions
+		List<TrackEvent> beepTrackEvents = Common.TrackEventsToTrackEvents(projectTracks[beepTrackIndex].Events);
+		List<TrackEvent> rateRegionStartEvents = Common.FindEventsByRegex(beepTrackEvents, rateRegionStartEventRegex);
+		if (rateRegionStartEvents.Count != rates.Length) {
+			MessageBox.Show("Inconsistent number (" + rateRegionStartEvents.Count +
+				") of rate region start events. " + rates.Length + " expected.",
+				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		rateRegions.Clear();
+		
+		for (int i = 0; i < rateRegionStartEvents.Count; i++) {
+			Timecode start = rateRegionStartEvents[i].Start;
+			Timecode end;
+			List<TrackEvent> regionEvents;
+			double rate = rates[i];
+			
+			Selection selection;
+			
+			if (i < rateRegionStartEvents.Count - 1) {
+				end = rateRegionStartEvents[i + 1].Start;
+				selection = new Selection(rateRegionStartEvents[i].Start,
+					rateRegionStartEvents[i + 1].Start - rateRegionStartEvents[i].Start);
+			} else {
+				end = rateRegionStartEvents[0].Start;
+				selection = new Selection(rateRegionStartEvents[i].Start,
+					beepTrackEvents[beepTrackEvents.Count - 1].Start - rateRegionStartEvents[i].Start);
+			}
+			
+			regionEvents = Common.FindEventsBySelection(projectTracks[beepTrackIndex], selection.Normalize());
+			if (!(i < rateRegionStartEvents.Count - 1)) {
+				regionEvents.Add(beepTrackEvents[beepTrackEvents.Count - 1]);
+			}
+		
+			RateRegion rateRegion = new RateRegion(start, end, regionEvents, rate);
+			Common.vegas.DebugOut("" + rateRegion);
+			rateRegions.Add(rateRegion);
+		}
+		
+		// validate rate regions
+		for (int i = 0; i < rateRegions.Count - 1; i++) {
+			if (rateRegions[i].RegionEvents.Count != rateRegions[i + 1].RegionEvents.Count) {
+				MessageBox.Show("Number of events differs across rate regions",
+					Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+		}
+		
+		// restore channel mapping
+		using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
+			audioEvents[0].Channels = ChannelRemapping.None;
+		}
 		
 		// mute all
 		Common.MuteAllTracks(projectTracks, true);
@@ -567,28 +631,12 @@ public class NavigateControl : UserControl {
 		tracksPendingUnmute.Add(projectTracks[beepTrackIndex]);
 		Common.MuteAllTracks(tracksPendingUnmute, false);
 		
-		// force no channel mapping
-		List<AudioEvent> audioEvents = Common.EventsToAudioEvents(Common.TrackEventsToTrackEvents(projectTracks[audioTrackIndex].Events));
-		if (audioEvents.Count < 1) {
-			MessageBox.Show("Audio event not found, not mapping channels", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-		} else {
-			using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
-				audioEvents[0].Channels = ChannelRemapping.None;
-			}
-		}
-		
 		// save tracks for future reference
 		audioTrack = projectTracks[audioTrackIndex];
 		beepTrack = projectTracks[beepTrackIndex];
 		
 		InitGroupBoxAudio();
 		InitGroupBoxSel();
-		
-		// build rate regions
-		List<TrackEvent> regionEvents = Common.TrackEventsToTrackEvents(projectTracks[beepTrackIndex].Events);
-		rateRegions.Add(new RateRegion(new Timecode(), new Timecode(), regionEvents, rates[0]));
-		Common.vegas.DebugClear();
-		Common.vegas.DebugOut("" + rateRegions[0]);
 	}
 	
 	void btnStepLeft_Click(object sender, EventArgs e) {
