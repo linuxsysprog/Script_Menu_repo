@@ -664,42 +664,8 @@ public class NavigateControl : UserControl {
 		tc.ViewCursor(true);
 	}
 	
-	private TrackEvent FindSpecialBeepRight(Track track, Timecode position) {
-		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
-		
-		foreach (TrackEvent @event in events) {
-			if (@event.Start >= position) {
-				List<TrackEvent> eventsToSearch = new List<TrackEvent>();
-				eventsToSearch.Add(@event);
-				
-				if (Common.FindEventsByRegex(eventsToSearch, specialBeepRegex).Count > 0) {
-					return @event;
-				}
-			}
-		}
-			
-		return null;
-	}
-	
-	private TrackEvent FindSpecialBeepLeft(Track track, Timecode position) {
-		List<TrackEvent> events = Common.TrackEventsToTrackEvents(track.Events);
-		
-		for (int i = events.Count - 1; i >= 0; i--) {
-			if (events[i].Start < position) {
-				List<TrackEvent> eventsToSearch = new List<TrackEvent>();
-				eventsToSearch.Add(events[i]);
-				
-				if (Common.FindEventsByRegex(eventsToSearch, specialBeepRegex).Count > 0) {
-					return events[i];
-				}
-			}
-		}
-			
-		return null;
-	}
-	
 	private TrackEvent FindRightmostSpecialBeep(Track beepTrack, List<TrackEvent> events) {
-		return FindSpecialBeepLeft(beepTrack, events[events.Count - 1].Start + Timecode.FromFrames(1));
+		return Common.FindEventLeft(beepTrack, events[events.Count - 1].Start + Timecode.FromFrames(1), specialBeepRegex);
 	}
 	
 	private TrackEvent FindNextBeep(Track beepTrack, Timecode position, bool forward) {
@@ -715,11 +681,11 @@ public class NavigateControl : UserControl {
 			}
 		}
 		
-		TrackEvent eventLeft = Common.FindEventLeft(beepTrack, position);
-		TrackEvent eventRight = Common.FindEventRight(beepTrack, position);
+		TrackEvent eventLeft = Common.FindEventLeft(beepTrack, position, null);
+		TrackEvent eventRight = Common.FindEventRight(beepTrack, position, null);
 		
-		TrackEvent specialBeepLeft = FindSpecialBeepLeft(beepTrack, position);
-		TrackEvent specialBeepRight = FindSpecialBeepRight(beepTrack, position);
+		TrackEvent specialBeepLeft = Common.FindEventLeft(beepTrack, position, specialBeepRegex);
+		TrackEvent specialBeepRight = Common.FindEventRight(beepTrack, position, specialBeepRegex);
 		
 		if (forward) {
 			if (eventRight == specialBeepRight && null != specialBeepLeft) {
@@ -735,8 +701,8 @@ public class NavigateControl : UserControl {
 		}
 		
 		if (eventRight == specialBeepRight) {
-			TrackEvent @event = FindSpecialBeepRight(beepTrack, eventRight.Start + Timecode.FromFrames(1));
-			return (null == @event) ? events[events.Count - 1] : Common.FindEventLeft(beepTrack, @event.Start);
+			TrackEvent @event = Common.FindEventRight(beepTrack, eventRight.Start + Timecode.FromFrames(1), specialBeepRegex);
+			return (null == @event) ? events[events.Count - 1] : Common.FindEventLeft(beepTrack, @event.Start, null);
 		}
 		
 		return eventLeft;
@@ -759,26 +725,20 @@ public class NavigateControl : UserControl {
 			}
 		}
 		
-		TrackEvent specialBeepLeft = FindSpecialBeepLeft(beepTrack, position);
-		TrackEvent specialBeepRight = FindSpecialBeepRight(beepTrack, position);
+		TrackEvent specialBeepLeft = Common.FindEventLeft(beepTrack, position, specialBeepRegex);
+		TrackEvent specialBeepRight = Common.FindEventRight(beepTrack, position, specialBeepRegex);
 		
-		Timecode srcOrigin = null;
-		Timecode srcOffset = null;
-		Timecode tarOrigin = null;
-		Timecode tarOffset = null;
-		try {
-			srcOrigin = GetSrcOrigin(beepTrack, specialBeepLeft, events);
-			srcOffset = GetSrcOffset(beepTrack, unchangedPosition, specialBeepLeft, events, srcOrigin);
-			tarOrigin = GetTarOrigin(beepTrack, forward, events, specialBeepLeft, specialBeepRight);
-			tarOffset = GetTarOffset(beepTrack, forward, specialBeepLeft, specialBeepRight, srcOffset);
-		} catch (Exception ex) {
-			string msg = "srcOrigin = " + srcOrigin + "\r\n" +
-				"srcOffset = " + srcOffset + "\r\n" +
-				"tarOrigin = " + tarOrigin + "\r\n" +
-				"tarOffset = " + tarOffset + "\r\n";
-				
-			MessageBox.Show(ex.Message + "\r\n" + msg, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
+		Timecode srcOrigin = GetSrcOrigin(beepTrack, specialBeepLeft, events);
+		Common.vegas.DebugOut("srcOrigin = " + srcOrigin);
+		
+		Timecode srcOffset = GetSrcOffset(beepTrack, unchangedPosition, specialBeepLeft, events, srcOrigin);
+		Common.vegas.DebugOut("srcOffset = " + srcOffset);
+		
+		Timecode tarOrigin = GetTarOrigin(beepTrack, forward, events, specialBeepLeft, specialBeepRight);
+		Common.vegas.DebugOut("tarOrigin = " + tarOrigin);
+		
+		Timecode tarOffset = GetTarOffset(beepTrack, forward, specialBeepLeft, specialBeepRight, srcOffset);
+		Common.vegas.DebugOut("tarOffset = " + tarOffset);
 		
 		return tarOrigin + tarOffset;
 	}
@@ -807,10 +767,10 @@ public class NavigateControl : UserControl {
 		TrackEvent rightmostSpecial = FindRightmostSpecialBeep(beepTrack, events);
 		
 		if (null == specialBeepLeft) {
-			return FindSpecialBeepLeft(beepTrack, rightmostSpecial.Start).Start;
+			return Common.FindEventLeft(beepTrack, rightmostSpecial.Start, specialBeepRegex).Start;
 		}
 		
-		TrackEvent @event = FindSpecialBeepLeft(beepTrack, specialBeepLeft.Start);
+		TrackEvent @event = Common.FindEventLeft(beepTrack, specialBeepLeft.Start, specialBeepRegex);
 		return (null == @event) ? rightmostSpecial.Start : @event.Start;
 	}
 	
@@ -832,7 +792,7 @@ public class NavigateControl : UserControl {
 			return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 2.0));
 		}
 		
-		TrackEvent @event = FindSpecialBeepLeft(beepTrack, specialBeepLeft.Start);
+		TrackEvent @event = Common.FindEventLeft(beepTrack, specialBeepLeft.Start, specialBeepRegex);
 		if (null == @event) {
 			return srcOffset + srcOffset + srcOffset + srcOffset;
 		}
