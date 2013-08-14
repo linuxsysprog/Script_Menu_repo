@@ -862,10 +862,19 @@ x write batch slow down scripts
 						- checkout Project.InsertTime(), Undo
 						- create temporal count-in audio/video events at the end of the project
 				x Navigation
-					x  create step left/right buttons
+					- merge FindSpecialBeepLeft w/ FindEventLeft and so on
+					- wrap-around is broken
+					- align behavior with faster/slower
+					x create step left/right buttons
 					x create step size (frames) spinbox
+						- calculate step value
 				x Transport Controls
 					- play button resets selection when pressed for the second time
+					- slower/faster buttons
+						- ensure continuous playback
+						- review adding one frame when indexing events array
+							- review next/prev beep
+						x remove not used parameters from GetNNNXXX()
 		- see how an app ext can process key presses
 		- update docs
 	x research
