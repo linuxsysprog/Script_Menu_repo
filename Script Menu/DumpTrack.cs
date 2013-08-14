@@ -39,35 +39,7 @@ public class EntryPoint {
 		// clear output window
 		vegas.DebugClear();
 		
-		if (events.Count < 1) {
-			vegas.DebugOut("No events found.");
-			return;
-		}
-		
-		vegas.DebugOut(events.Count + " " + (events.Count > 1 ? "events" : "event") + " found.");
-
-		string spacer = "    " + "    ";
-		foreach (TrackEvent @event in events) {
-			vegas.DebugOut("Event " + @event.Index + spacer + @event.Start + " " +
-				@event.End + " " + @event.Length + " ");
-		
-			foreach (Take take in @event.Takes) {
-				if (take.Media.Generator == null) {
-					string takeName = "n/a";
-					if (take.Name.IndexOf(Common.SPACER) != -1) {
-						takeName = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
-					}
-				
-					vegas.DebugOut("    Take " + take.Index + spacer + takeName + spacer +
-						Common.Basename(take.Media.FilePath) + (take.IsActive == true ? " *" : ""));
-				} else {
-					vegas.DebugOut("    Take " + take.Index + spacer + take.Name +
-						(take.IsActive == true ? " *" : ""));
-				}
-			}
-		}
-		
-		vegas.DebugOut(events.Count + " " + (events.Count > 1 ? "events" : "event") + " found.");
+		vegas.DebugOut(Common.TrackEventsToString(events));
 	}
 	
 }

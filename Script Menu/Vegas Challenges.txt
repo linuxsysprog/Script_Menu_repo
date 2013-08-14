@@ -862,7 +862,11 @@ x write batch slow down scripts
 						- checkout Project.InsertTime(), Undo
 						- create temporal count-in audio/video events at the end of the project
 				x Navigation
-					- merge FindSpecialBeepLeft w/ FindEventLeft and so on
+					- introduce rate regions
+						x create RateRegion class
+						x extract core function from DumpTrack to common
+						- build regions
+					x merge FindSpecialBeepLeft w/ FindEventLeft and for the right.
 					- wrap-around is broken
 					- align behavior with faster/slower
 					x create step left/right buttons

@@ -306,6 +306,39 @@ public class Common {
 		return events;
 	}
 	
+	public static string TrackEventsToString(List<TrackEvent> trackEvents) {
+		if (trackEvents.Count < 1) {
+			return "No events found.";
+		}
+		
+		string str = trackEvents.Count + " " + (trackEvents.Count > 1 ? "events" : "event") + " found.\r\n";
+
+		string spacer = "    " + "    ";
+		foreach (TrackEvent trackEvent in trackEvents) {
+			str += "Event " + trackEvent.Index + spacer + trackEvent.Start + " " +
+				trackEvent.End + " " + trackEvent.Length + " \r\n";
+		
+			foreach (Take take in trackEvent.Takes) {
+				if (take.Media.Generator == null) {
+					string takeName = "n/a";
+					if (take.Name.IndexOf(Common.SPACER) != -1) {
+						takeName = take.Name.Substring(0, take.Name.IndexOf(Common.SPACER));
+					}
+				
+					str += "    Take " + take.Index + spacer + takeName + spacer +
+						Common.Basename(take.Media.FilePath) + (take.IsActive == true ? " *" : "") + "\r\n";
+				} else {
+					str += "    Take " + take.Index + spacer + take.Name +
+						(take.IsActive == true ? " *" : "") + "\r\n";
+				}
+			}
+		}
+		
+		str += trackEvents.Count + " " + (trackEvents.Count > 1 ? "events" : "event") + " found.";
+		
+		return str;
+	}
+	
 	// finds events by track and position
 	public static List<TrackEvent> FindEventsByPosition(Track track, Timecode position) {
 		List<TrackEvent> events = new List<TrackEvent>();
