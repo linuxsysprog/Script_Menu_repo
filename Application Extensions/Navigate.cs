@@ -647,13 +647,9 @@ public class NavigateControl : UserControl {
 		}
 		
 		bool forward = (sender == btnRight);
-		TrackEvent nextBeep = FindNextBeep(beepTrack, Common.vegas.Transport.CursorPosition, forward);
-		if (null == nextBeep) {
-			MessageBox.Show("Could not find next beep", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		SetCursorPosition(nextBeep.Start);
+		RateRegion srcRateRegion = FindRateRegion(Common.vegas.Transport.CursorPosition);
+		TrackEvent regionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, forward);
+		SetCursorPosition(regionEvent.Start);
 	}
 	
 	void btnHome_Click(object sender, EventArgs e) {
@@ -662,15 +658,7 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		Common.vegas.Transport.CursorPosition = new Timecode();
-		
-		TrackEvent nextBeep = FindNextBeep(beepTrack, Common.vegas.Transport.CursorPosition, true);
-		if (null == nextBeep) {
-			MessageBox.Show("Could not find next beep", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-		
-		SetCursorPosition(nextBeep.Start);
+		SetCursorPosition(FindRateRegion(new Timecode()).Start);
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
@@ -693,8 +681,8 @@ public class NavigateControl : UserControl {
 		
 		RateRegion srcRateRegion = FindRateRegion(Common.vegas.Transport.CursorPosition);
 		int srcRateRegionIndex = rateRegions.IndexOf(srcRateRegion);
-		RateRegion tarRateRegion = null;
-		Timecode offset = null;
+		RateRegion tarRateRegion;
+		Timecode offset;
 		
 		bool faster = (sender == btnFaster);
 		if (faster) {
@@ -738,46 +726,6 @@ public class NavigateControl : UserControl {
 		tc.ViewCursor(true);
 	}
 	
-	private TrackEvent FindNextBeep(Track beepTrack, Timecode position, bool forward) {
-		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
-		if (events.Count < 1) {
-			return null;
-		}
-		
-		if (forward) {
-			List<TrackEvent> currentEvents = Common.FindEventsByPosition(beepTrack, position);
-			if (currentEvents.Count > 0) {
-				position += Timecode.FromFrames(1);
-			}
-		}
-		
-		TrackEvent eventLeft = Common.FindEventLeft(beepTrack, position, null);
-		TrackEvent eventRight = Common.FindEventRight(beepTrack, position, null);
-		
-		TrackEvent specialBeepLeft = Common.FindEventLeft(beepTrack, position, specialBeepRegex);
-		TrackEvent specialBeepRight = Common.FindEventRight(beepTrack, position, specialBeepRegex);
-		
-		if (forward) {
-			if (eventRight == specialBeepRight && null != specialBeepLeft) {
-				return specialBeepLeft;
-			}
-			
-			return eventRight;
-		}
-		
-		// backwards
-		if (null == eventRight) {
-			return events[events.Count - 1];
-		}
-		
-		if (eventRight == specialBeepRight) {
-			TrackEvent @event = Common.FindEventRight(beepTrack, eventRight.Start + Timecode.FromFrames(1), specialBeepRegex);
-			return (null == @event) ? events[events.Count - 1] : Common.FindEventLeft(beepTrack, @event.Start, null);
-		}
-		
-		return eventLeft;
-	}
-	
 	private RateRegion FindRateRegion(Timecode position) {
 		foreach (RateRegion rateRegion in rateRegions) {
 			if (rateRegion.BelongsTo(position)) {
@@ -793,6 +741,26 @@ public class NavigateControl : UserControl {
 		
 		rateRegions[rateRegions.Count - 1].Offset = rateRegions[rateRegions.Count - 1].End - rateRegions[rateRegions.Count - 1].Start;
 		return rateRegions[rateRegions.Count - 1];
+	}
+	
+	private TrackEvent FindRegionEvent(RateRegion rateRegion, Timecode position, bool forward) {
+		if (forward) {
+			for (int i = 0; i < rateRegion.RegionEvents.Count - 1; i++) {
+				if (position >= rateRegion.RegionEvents[i].Start && position < rateRegion.RegionEvents[i + 1].Start) {
+					return rateRegion.RegionEvents[i + 1];
+				}
+			}
+			
+			return rateRegion.RegionEvents[0];
+		} else {
+			for (int i = rateRegion.RegionEvents.Count - 1; i > 0; i--) {
+				if (position > rateRegion.RegionEvents[i - 1].Start && position <= rateRegion.RegionEvents[i].Start) {
+					return rateRegion.RegionEvents[i - 1];
+				}
+			}
+			
+			return rateRegion.RegionEvents[rateRegion.RegionEvents.Count - 1];
+		}
 	}
 	
 }
