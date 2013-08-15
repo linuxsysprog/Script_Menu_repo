@@ -498,7 +498,6 @@ public class NavigateControl : UserControl {
 	}
 	
 	void btnUp_Click(object sender, EventArgs e) {
-		Common.vegas.DebugClear();
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		
 		// skip non-audio, empty and beep tracks
@@ -591,7 +590,7 @@ public class NavigateControl : UserControl {
 				selection = new Selection(rateRegionStartEvents[i].Start,
 					rateRegionStartEvents[i + 1].Start - rateRegionStartEvents[i].Start);
 			} else {
-				end = rateRegionStartEvents[0].Start;
+				end = beepTrackEvents[beepTrackEvents.Count - 1].Start + rateRegionStartEvents[0].Start;
 				selection = new Selection(rateRegionStartEvents[i].Start,
 					beepTrackEvents[beepTrackEvents.Count - 1].Start - rateRegionStartEvents[i].Start);
 			}
@@ -602,7 +601,6 @@ public class NavigateControl : UserControl {
 			}
 		
 			RateRegion rateRegion = new RateRegion(start, end, regionEvents, rate);
-			Common.vegas.DebugOut("" + rateRegion);
 			rateRegions.Add(rateRegion);
 		}
 		
@@ -693,14 +691,31 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		bool forward = (sender == btnFaster);
-		Timecode nextRate = FindNextRate(beepTrack, Common.vegas.Transport.CursorPosition, forward);
-		if (null == nextRate) {
-			MessageBox.Show("Could not find next rate", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
+		RateRegion srcRateRegion = FindRateRegion(Common.vegas.Transport.CursorPosition);
+		int srcRateRegionIndex = rateRegions.IndexOf(srcRateRegion);
+		RateRegion tarRateRegion = null;
+		Timecode offset = null;
+		
+		bool faster = (sender == btnFaster);
+		if (faster) {
+			if (srcRateRegionIndex > 0) {
+				tarRateRegion = rateRegions[srcRateRegionIndex - 1];
+				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 2.0));
+			} else { // wrap around
+				tarRateRegion = rateRegions[rateRegions.Count - 1];
+				offset = srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset;
+			}
+		} else {
+			if (srcRateRegionIndex < rateRegions.Count - 1) {
+				tarRateRegion = rateRegions[srcRateRegionIndex + 1];
+				offset = srcRateRegion.Offset + srcRateRegion.Offset;
+			} else { // wrap around
+				tarRateRegion = rateRegions[0];
+				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 4.0));
+			}
 		}
 		
-		SetCursorPosition(nextRate);
+		SetCursorPosition(tarRateRegion.Start + offset);
 	}
 	
 	//
@@ -721,10 +736,6 @@ public class NavigateControl : UserControl {
 
 		tc.CursorPosition = position;
 		tc.ViewCursor(true);
-	}
-	
-	private TrackEvent FindRightmostSpecialBeep(Track beepTrack, List<TrackEvent> events) {
-		return Common.FindEventLeft(beepTrack, events[events.Count - 1].Start + Timecode.FromFrames(1), specialBeepRegex);
 	}
 	
 	private TrackEvent FindNextBeep(Track beepTrack, Timecode position, bool forward) {
@@ -767,96 +778,21 @@ public class NavigateControl : UserControl {
 		return eventLeft;
 	}
 	
-	private Timecode FindNextRate(Track beepTrack, Timecode position, bool forward) {
-		Common.vegas.DebugClear();
-		List<TrackEvent> events = Common.TrackEventsToTrackEvents(beepTrack.Events);
-		if (events.Count < 1) {
-			return null;
-		}
-		
-		Timecode unchangedPosition = position;
-		
-		if (forward) {
-			List<TrackEvent> currentEvents = Common.FindEventsByPosition(beepTrack, position);
-			if (currentEvents.Count > 0) {
-				position += Timecode.FromFrames(1);
-				Common.vegas.DebugOut("position = " + position);
+	private RateRegion FindRateRegion(Timecode position) {
+		foreach (RateRegion rateRegion in rateRegions) {
+			if (rateRegion.BelongsTo(position)) {
+				rateRegion.Offset = position - rateRegion.Start;
+				return rateRegion;
 			}
 		}
 		
-		TrackEvent specialBeepLeft = Common.FindEventLeft(beepTrack, position, specialBeepRegex);
-		TrackEvent specialBeepRight = Common.FindEventRight(beepTrack, position, specialBeepRegex);
-		
-		Timecode srcOrigin = GetSrcOrigin(beepTrack, specialBeepLeft, events);
-		Common.vegas.DebugOut("srcOrigin = " + srcOrigin);
-		
-		Timecode srcOffset = GetSrcOffset(beepTrack, unchangedPosition, specialBeepLeft, events, srcOrigin);
-		Common.vegas.DebugOut("srcOffset = " + srcOffset);
-		
-		Timecode tarOrigin = GetTarOrigin(beepTrack, forward, events, specialBeepLeft, specialBeepRight);
-		Common.vegas.DebugOut("tarOrigin = " + tarOrigin);
-		
-		Timecode tarOffset = GetTarOffset(beepTrack, forward, specialBeepLeft, specialBeepRight, srcOffset);
-		Common.vegas.DebugOut("tarOffset = " + tarOffset);
-		
-		return tarOrigin + tarOffset;
-	}
-	
-	private Timecode GetSrcOrigin(Track beepTrack, TrackEvent specialBeepLeft, List<TrackEvent> events) {
-		return (null == specialBeepLeft) ? FindRightmostSpecialBeep(beepTrack, events).Start : specialBeepLeft.Start;
-	}
-	
-	private Timecode GetSrcOffset(Track beepTrack, Timecode unchangedPosition, TrackEvent specialBeepLeft,
-		List<TrackEvent> events, Timecode srcOrigin) {
-		
-		if (null == specialBeepLeft) {
-			return events[events.Count - 1].Start - FindRightmostSpecialBeep(beepTrack, events).Start + unchangedPosition;
+		if (position < rateRegions[0].Start) {
+			rateRegions[0].Offset = new Timecode();
+			return rateRegions[0];
 		}
 		
-		return unchangedPosition - srcOrigin;
-	}
-	
-	private Timecode GetTarOrigin(Track beepTrack, bool forward, List<TrackEvent> events,
-		TrackEvent specialBeepLeft, TrackEvent specialBeepRight) {
-		
-		if (forward) {
-			return (null == specialBeepRight) ? events[0].Start : specialBeepRight.Start;
-		}
-		
-		TrackEvent rightmostSpecial = FindRightmostSpecialBeep(beepTrack, events);
-		
-		if (null == specialBeepLeft) {
-			return Common.FindEventLeft(beepTrack, rightmostSpecial.Start, specialBeepRegex).Start;
-		}
-		
-		TrackEvent @event = Common.FindEventLeft(beepTrack, specialBeepLeft.Start, specialBeepRegex);
-		return (null == @event) ? rightmostSpecial.Start : @event.Start;
-	}
-	
-	private Timecode GetTarOffset(Track beepTrack,
-		bool forward,
-		TrackEvent specialBeepLeft,
-		TrackEvent specialBeepRight,
-		Timecode srcOffset) {
-		
-		if (forward) {
-			if (null == specialBeepRight || null == specialBeepLeft) {
-				return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 4.0));
-			}
-			
-			return srcOffset + srcOffset;
-		}
-		
-		if (null == specialBeepLeft) {
-			return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 2.0));
-		}
-		
-		TrackEvent @event = Common.FindEventLeft(beepTrack, specialBeepLeft.Start, specialBeepRegex);
-		if (null == @event) {
-			return srcOffset + srcOffset + srcOffset + srcOffset;
-		}
-		
-		return Timecode.FromNanos((int)Math.Round(srcOffset.Nanos / 2.0));
+		rateRegions[rateRegions.Count - 1].Offset = rateRegions[rateRegions.Count - 1].End - rateRegions[rateRegions.Count - 1].Start;
+		return rateRegions[rateRegions.Count - 1];
 	}
 	
 }
@@ -866,6 +802,8 @@ public class RateRegion {
 	private Timecode end;
 	private List<TrackEvent> regionEvents;
 	private double rate;
+	
+	private Timecode offset = null;
 
 	public RateRegion(Timecode start, Timecode end, List<TrackEvent> regionEvents, double rate) {
 		this.start = start;
@@ -898,9 +836,22 @@ public class RateRegion {
 		}
 	}
 	
+	public Timecode Offset {
+		get {
+			return offset;
+		}
+		set {
+			this.offset = value;
+		}
+	}
+	
+	public bool BelongsTo(Timecode position) {
+		return (position >= start && position < end);
+	}
+	
 	public override string ToString() {
 		return "{start=" + start + ", end=" + end + "}\r\n" +
-		"{rate=" + rate + "}\r\n" +
+		"{rate=" + rate + ", offset=" + offset + "}\r\n" +
 		Common.TrackEventsToString(regionEvents);
 	}
 	
