@@ -352,44 +352,6 @@ public class Common {
 		return events;
 	}
 	
-	public static TrackEvent FindEventRight(Track track, Timecode position, Regex regex) {
-		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
-		
-		foreach (TrackEvent @event in events) {
-			if (@event.Start >= position) {
-				if (null == regex) {
-					return @event;
-				}
-				
-				string eventFullName = getFullName(getTakeNames(@event));
-				if (regex.Match(eventFullName).Success) {
-					return @event;
-				}
-			}
-		}
-			
-		return null;
-	}
-	
-	public static TrackEvent FindEventLeft(Track track, Timecode position, Regex regex) {
-		List<TrackEvent> events = TrackEventsToTrackEvents(track.Events);
-		
-		for (int i = events.Count - 1; i >= 0; i--) {
-			if (events[i].Start < position) {
-				if (null == regex) {
-					return events[i];
-				}
-				
-				string eventFullName = getFullName(getTakeNames(events[i]));
-				if (regex.Match(eventFullName).Success) {
-					return events[i];
-				}
-			}
-		}
-			
-		return null;
-	}
-	
 	// finds events by track and selection
 	public static List<TrackEvent> FindEventsBySelection(Track track, Selection selection) {
 		List<TrackEvent> events = new List<TrackEvent>();
