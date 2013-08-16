@@ -64,13 +64,15 @@ public class NavigateControl : UserControl {
 	private Regex rateRegionStartEventRegex = new Regex("1\\.1");
 	private Regex BPMRegex = new Regex(" ([0-9\\.]+) BPM$");
 	
-	private double srcTrackBPM;
-	private double tarTrackBPM;
+	private double prevTrackBPM;
+	private double trackBPM;
 	
 	public Track audioTrack = null;
 	public Track beepTrack = null;
 	private double[] rates;
+	
 	private List<RateRegion> rateRegions = new List<RateRegion>();
+	private List<RateRegion> prevRateRegions = new List<RateRegion>();
 	
 	// audio group box
 	private GroupBox gbAudio = new GroupBox();
@@ -619,14 +621,26 @@ public class NavigateControl : UserControl {
 		// read in track BPM
 		string BPMEventFullName = Common.getFullName(Common.getTakeNames(beepTrackEvents[0]));
 		try {
-			tarTrackBPM = Convert.ToDouble(BPMRegex.Match(BPMEventFullName).Groups[1].Value);
+			trackBPM = Convert.ToDouble(BPMRegex.Match(BPMEventFullName).Groups[1].Value);
 		} catch (Exception ex) {
 			MessageBox.Show("Can not read in track BPM: " + ex.Message,
 				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
 		}
 		
-		srcTrackBPM = tarTrackBPM;
+		// set cursor position
+		if (prevRateRegions.Count > 0) {
+			RateRegion srcRateRegion = FindRateRegion(prevRateRegions, Common.vegas.Transport.CursorPosition);
+			int srcRateRegionIndex = prevRateRegions.IndexOf(srcRateRegion);
+			RateRegion tarRateRegion = rateRegions[srcRateRegionIndex];
+			
+			double scaleFactor = prevTrackBPM / trackBPM;
+			Timecode offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos * scaleFactor));
+			SetCursorPosition(tarRateRegion.Start + offset);
+		}
+		
+		prevTrackBPM = trackBPM;
+		prevRateRegions = rateRegions;
 		
 		// restore channel mapping
 		using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
@@ -662,7 +676,7 @@ public class NavigateControl : UserControl {
 		}
 		
 		bool forward = (sender == btnRight);
-		RateRegion srcRateRegion = FindRateRegion(Common.vegas.Transport.CursorPosition);
+		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
 		TrackEvent regionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, forward);
 		SetCursorPosition(regionEvent.Start);
 	}
@@ -673,7 +687,7 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		SetCursorPosition(FindRateRegion(new Timecode()).Start);
+		SetCursorPosition(FindRateRegion(rateRegions, new Timecode()).Start);
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
@@ -694,7 +708,7 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		RateRegion srcRateRegion = FindRateRegion(Common.vegas.Transport.CursorPosition);
+		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
 		int srcRateRegionIndex = rateRegions.IndexOf(srcRateRegion);
 		RateRegion tarRateRegion;
 		Timecode offset;
@@ -741,7 +755,7 @@ public class NavigateControl : UserControl {
 		tc.ViewCursor(true);
 	}
 	
-	private RateRegion FindRateRegion(Timecode position) {
+	private RateRegion FindRateRegion(List<RateRegion> rateRegions, Timecode position) {
 		foreach (RateRegion rateRegion in rateRegions) {
 			if (rateRegion.BelongsTo(position)) {
 				rateRegion.Offset = position - rateRegion.Start;
