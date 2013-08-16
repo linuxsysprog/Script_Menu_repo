@@ -60,12 +60,15 @@ public class Navigate : ICustomCommandModule {
 
 public class NavigateControl : UserControl {
 	private Color color = Color.Red;
-	private Regex specialBeepRegex = new Regex("1\\.1");
+	
 	private Regex rateRegionStartEventRegex = new Regex("1\\.1");
+	private Regex BPMRegex = new Regex(" ([0-9\\.]+) BPM$");
+	
+	private double srcTrackBPM;
+	private double tarTrackBPM;
 	
 	public Track audioTrack = null;
 	public Track beepTrack = null;
-	
 	private double[] rates;
 	private List<RateRegion> rateRegions = new List<RateRegion>();
 	
@@ -612,6 +615,18 @@ public class NavigateControl : UserControl {
 				return;
 			}
 		}
+		
+		// read in track BPM
+		string BPMEventFullName = Common.getFullName(Common.getTakeNames(beepTrackEvents[0]));
+		try {
+			tarTrackBPM = Convert.ToDouble(BPMRegex.Match(BPMEventFullName).Groups[1].Value);
+		} catch (Exception ex) {
+			MessageBox.Show("Can not read in track BPM: " + ex.Message,
+				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		srcTrackBPM = tarTrackBPM;
 		
 		// restore channel mapping
 		using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
