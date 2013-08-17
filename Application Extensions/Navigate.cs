@@ -659,17 +659,35 @@ public class NavigateControl : UserControl {
 		
 		// set cursor position
 		if (prevRateRegions.Count > 0) {
+			// figure target rate region
 			RateRegion srcRateRegion = FindRateRegion(prevRateRegions, Common.vegas.Transport.CursorPosition);
 			int srcRateRegionIndex = prevRateRegions.IndexOf(srcRateRegion);
 			RateRegion tarRateRegion = rateRegions[srcRateRegionIndex];
 			
+			// figure target region event
+			TrackEvent srcRegionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, false, true);
+			
+			Timecode tarOffset = null;
+			int srcRegionEventIndex = srcRateRegion.RegionEvents.IndexOf(srcRegionEvent);
+			if (srcRegionEventIndex > tarRateRegion.RegionEvents.Count - 1) {
+				srcRegionEventIndex = tarRateRegion.RegionEvents.Count - 1;
+				tarOffset = new Timecode();
+			}
+			
+			TrackEvent tarRegionEvent = tarRateRegion.RegionEvents[srcRegionEventIndex];
+			
+			// figure target offset
+			Timecode srcOffset = Common.vegas.Transport.CursorPosition - srcRegionEvent.Start;
 			double scaleFactor = prevTrackBPM / trackBPM;
-			Timecode offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos * scaleFactor));
-			SetCursorPosition(tarRateRegion.Start + offset);
+			if (null == tarOffset) {
+				tarOffset = Timecode.FromNanos((int)Math.Round(srcOffset.Nanos * scaleFactor));
+			}
+			
+			SetCursorPosition(tarRegionEvent.Start + tarOffset);
 		}
 		
 		prevTrackBPM = trackBPM;
-		prevRateRegions = rateRegions;
+		prevRateRegions = new List<RateRegion>(rateRegions);
 		
 		// restore channel mapping
 		using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
@@ -714,7 +732,7 @@ public class NavigateControl : UserControl {
 		
 		bool forward = (sender == btnRight);
 		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
-		TrackEvent regionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, forward);
+		TrackEvent regionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, forward, false);
 		SetCursorPosition(regionEvent.Start);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -832,7 +850,7 @@ public class NavigateControl : UserControl {
 		return rateRegions[rateRegions.Count - 1];
 	}
 	
-	private TrackEvent FindRegionEvent(RateRegion rateRegion, Timecode position, bool forward) {
+	private TrackEvent FindRegionEvent(RateRegion rateRegion, Timecode position, bool forward, bool btnUp_Click_mode) {
 		if (forward) {
 			for (int i = 0; i < rateRegion.RegionEvents.Count - 1; i++) {
 				if (position >= rateRegion.RegionEvents[i].Start && position < rateRegion.RegionEvents[i + 1].Start) {
@@ -843,8 +861,14 @@ public class NavigateControl : UserControl {
 			return rateRegion.RegionEvents[0];
 		} else {
 			for (int i = rateRegion.RegionEvents.Count - 1; i > 0; i--) {
-				if (position > rateRegion.RegionEvents[i - 1].Start && position <= rateRegion.RegionEvents[i].Start) {
-					return rateRegion.RegionEvents[i - 1];
+				if (btnUp_Click_mode) {
+					if (position >= rateRegion.RegionEvents[i - 1].Start && position < rateRegion.RegionEvents[i].Start) {
+						return rateRegion.RegionEvents[i - 1];
+					}
+				} else {
+					if (position > rateRegion.RegionEvents[i - 1].Start && position <= rateRegion.RegionEvents[i].Start) {
+						return rateRegion.RegionEvents[i - 1];
+					}
 				}
 			}
 			
