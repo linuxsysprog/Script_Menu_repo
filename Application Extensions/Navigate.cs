@@ -432,6 +432,7 @@ public class NavigateControl : UserControl {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	void rbChanLeft_Click(object sender, EventArgs e) {
+	try {
 		if (null == audioTrack) {
 			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
@@ -464,9 +465,13 @@ public class NavigateControl : UserControl {
 				rbChanRight.Checked = true;
 			}
 		}
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void chkMuteAudio_Click(object sender, EventArgs e) {
+	try {
 		if (null == audioTrack) {
 			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			Common.ToggleCheckBox(chkMuteAudio);
@@ -476,9 +481,13 @@ public class NavigateControl : UserControl {
 		List<Track> tracks = new List<Track>();
 		tracks.Add(audioTrack);
 		Common.MuteAllTracks(tracks, chkMuteAudio.Checked);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void chkMuteClick_Click(object sender, EventArgs e) {
+	try {
 		if (null == beepTrack) {
 			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			Common.ToggleCheckBox(chkMuteClick);
@@ -488,21 +497,41 @@ public class NavigateControl : UserControl {
 		List<Track> tracks = new List<Track>();
 		tracks.Add(beepTrack);
 		Common.MuteAllTracks(tracks, chkMuteClick.Checked);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void spinBeats_ValueChanged(object sender, EventArgs e) {
+	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void spinSelStart_ValueChanged(object sender, EventArgs e) {
+	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void chkCountIn_Click(object sender, EventArgs e) {
+	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void spinStep_ValueChanged(object sender, EventArgs e) {
+	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnUp_Click(object sender, EventArgs e) {
+	try {
 		List<Track> projectTracks = Common.TracksToTracks(Common.vegas.Project.Tracks);
 		
 		// skip non-audio, empty and beep tracks
@@ -664,12 +693,20 @@ public class NavigateControl : UserControl {
 		
 		InitGroupBoxAudio();
 		InitGroupBoxSel();
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnStepLeft_Click(object sender, EventArgs e) {
+	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnLeft_Click(object sender, EventArgs e) {
+	try {
 		if (null == beepTrack) {
 			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
@@ -679,30 +716,50 @@ public class NavigateControl : UserControl {
 		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
 		TrackEvent regionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, forward);
 		SetCursorPosition(regionEvent.Start);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnHome_Click(object sender, EventArgs e) {
+	try {
 		btnUp_Click(null, null);
 		if (null == beepTrack) {
 			return;
 		}
 		
 		SetCursorPosition(FindRateRegion(rateRegions, new Timecode()).Start);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnPlay_Click(object sender, EventArgs e) {
+	try {
 		Common.vegas.Transport.Play();
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnPause_Click(object sender, EventArgs e) {
+	try {
 		Common.vegas.Transport.Pause();
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnStop_Click(object sender, EventArgs e) {
+	try {
 		Common.vegas.Transport.Stop();
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	void btnSlower_Click(object sender, EventArgs e) {
+	try {
 		if (null == beepTrack) {
 			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			return;
@@ -733,6 +790,9 @@ public class NavigateControl : UserControl {
 		}
 		
 		SetCursorPosition(tarRateRegion.Start + offset);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
 	}
 	
 	//
