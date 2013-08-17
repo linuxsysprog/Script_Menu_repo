@@ -71,6 +71,9 @@ public class NavigateControl : UserControl {
 	public Track beepTrack = null;
 	private double[] rates;
 	
+	private Timer timer = new Timer();
+	private int clickCount = 0;
+	
 	private List<RateRegion> rateRegions = new List<RateRegion>();
 	private List<RateRegion> prevRateRegions = new List<RateRegion>();
 	
@@ -131,6 +134,9 @@ public class NavigateControl : UserControl {
 	
 	public NavigateControl() {
 		rates = new double[] { 100.0, 50.0, 25.0 };
+		
+		timer.Interval = 500;
+		timer.Tick += new EventHandler(timer_Tick);
 		
 		Size = new Size(165, 600);
 	
@@ -741,12 +747,22 @@ public class NavigateControl : UserControl {
 	
 	void btnHome_Click(object sender, EventArgs e) {
 	try {
-		btnUp_Click(null, null);
+		clickCount++;
+		if (!timer.Enabled) {
+			timer.Start();
+		}
+		
+		if (null == beepTrack) {
+			btnUp_Click(null, null);
+		}
 		if (null == beepTrack) {
 			return;
 		}
 		
 		SetCursorPosition(FindRateRegion(rateRegions, new Timecode()).Start);
+		if (clickCount > 1) {
+			btnUp_Click(null, null);
+		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -808,6 +824,15 @@ public class NavigateControl : UserControl {
 		}
 		
 		SetCursorPosition(tarRateRegion.Start + offset);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+	}
+	
+	void timer_Tick(object sender, EventArgs e) {
+	try {
+		timer.Stop();
+		clickCount = 0;
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
