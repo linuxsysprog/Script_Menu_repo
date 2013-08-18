@@ -49,11 +49,7 @@ public class Navigate : ICustomCommandModule {
 	}
 	
 	void HandleProjectClosed(Object sender, EventArgs args) {
-		navControl.InitGroupBoxAudio();
-		navControl.InitGroupBoxSel();
-		
-		navControl.audioTrack = null;
-		navControl.beepTrack = null;
+		navControl.Init();
 	}
 	
 }
@@ -64,8 +60,8 @@ public class NavigateControl : UserControl {
 	private Regex rateRegionStartEventRegex = new Regex("1\\.1");
 	private Regex BPMRegex = new Regex(" ([0-9\\.]+) BPM$");
 	
-	private double prevTrackBPM;
-	private double trackBPM;
+	private double prevTrackBPM = 0.0;
+	private double trackBPM = 0.0;
 	
 	public Track audioTrack = null;
 	public Track beepTrack = null;
@@ -146,10 +142,41 @@ public class NavigateControl : UserControl {
 			CreateGroupBoxNav(),
 			CreateGroupBoxTC()});
 			
-		InitGroupBoxAudio();
-		InitGroupBoxSel();
+		Init();
 			
 		// ToggleColor(gbSel);
+	}
+	
+	public void Init() {
+		// audio groupbox
+		rbChanLeft.Checked = false;
+		rbChanBoth.Checked = true;
+		rbChanRight.Checked = false;
+		
+		chkMuteAudio.Checked = false;
+		chkMuteClick.Checked = false;
+		
+		// selection groupbox
+		spinBeats.Value = 0;
+		lblBeats.Text = "bts (1b=14f)";
+		
+		spinSelStart.Value = 0;
+		spinSelEnd.Value = 0;
+		
+		chkCountIn.Checked = false;
+		chkZoom.Checked = false;
+		
+		// fields
+		prevTrackBPM = 0.0;
+		trackBPM = 0.0;
+		
+		audioTrack = null;
+		beepTrack = null;
+		
+		clickCount = 0;
+		
+		rateRegions.Clear();
+		prevRateRegions.Clear();
 	}
 	
 	private GroupBox CreateGroupBoxAudio() {
@@ -211,15 +238,6 @@ public class NavigateControl : UserControl {
 		new ToolTip().SetToolTip(chkMuteClick, "Mute beep track");
 		
 		return gbAudio;
-	}
-	
-	public void InitGroupBoxAudio() {
-		rbChanLeft.Checked = false;
-		rbChanBoth.Checked = true;
-		rbChanRight.Checked = false;
-		
-		chkMuteAudio.Checked = false;
-		chkMuteClick.Checked = false;
 	}
 	
 	private GroupBox CreateGroupBoxSel() {
@@ -286,17 +304,6 @@ public class NavigateControl : UserControl {
 		new ToolTip().SetToolTip(chkZoom, "Zoom to fav scale");
 		
 		return gbSel;
-	}
-	
-	public void InitGroupBoxSel() {
-		spinBeats.Value = 0;
-		lblBeats.Text = "bts (1b=14f)";
-		
-		spinSelStart.Value = 0;
-		spinSelEnd.Value = 0;
-		
-		chkCountIn.Checked = false;
-		chkZoom.Checked = false;
 	}
 	
 	private GroupBox CreateGroupBoxNav() {
@@ -714,9 +721,6 @@ public class NavigateControl : UserControl {
 		// save tracks for future reference
 		audioTrack = projectTracks[audioTrackIndex];
 		beepTrack = projectTracks[beepTrackIndex];
-		
-		InitGroupBoxAudio();
-		InitGroupBoxSel();
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -747,21 +751,27 @@ public class NavigateControl : UserControl {
 	
 	void btnHome_Click(object sender, EventArgs e) {
 	try {
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
 		clickCount++;
 		if (!timer.Enabled) {
 			timer.Start();
 		}
 		
-		if (null == beepTrack) {
+		if (1 == clickCount) { // to first beat
+			SetCursorPosition(FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition).Start);
+		} else if (2 == clickCount) { // to first RR
+			SetCursorPosition(rateRegions[0].Start);
+		} else if (3 == clickCount) {  // to first track
 			btnUp_Click(null, null);
-		}
-		if (null == beepTrack) {
-			return;
-		}
-		
-		SetCursorPosition(FindRateRegion(rateRegions, new Timecode()).Start);
-		if (clickCount > 1) {
+			SetCursorPosition(rateRegions[0].Start);
+		} else if (clickCount >= 4) { // full init
+			Init();
 			btnUp_Click(null, null);
+			SetCursorPosition(rateRegions[0].Start);
 		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
