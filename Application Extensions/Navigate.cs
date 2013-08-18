@@ -160,12 +160,25 @@ public class NavigateControl : UserControl {
 		
 		// selection groupbox
 		spinBeats.Value = 0;
-		lblBeats.Text = "bts (1b=14f)";
+		spinBeats.Maximum = 15;
+		spinBeats.Minimum = 0;
+		
+		lblBeats.Text = "bts";
 		
 		spinSelStart.Value = 0;
+		spinSelStart.Maximum = 15;
+		spinSelStart.Minimum = -15;
+		
 		spinSelEnd.Value = 0;
+		spinSelEnd.Maximum = 15;
+		spinSelEnd.Minimum = -15;
 		
 		chkCountIn.Checked = false;
+		
+		// navigation groupbox
+		spinStep.Value = 0;
+		spinStep.Maximum = 15;
+		spinStep.Minimum = 0;
 		
 		// everything else
 		prevTrackBPM = 0.0;
@@ -256,8 +269,6 @@ public class NavigateControl : UserControl {
 			
 		spinBeats.Size = new Size(40, 20);
 		spinBeats.Location = new Point(10, 20);
-		spinBeats.Maximum = 16;
-		spinBeats.Minimum = 0;
 		spinBeats.ValueChanged += new EventHandler(spinBeats_ValueChanged);
 		new ToolTip().SetToolTip(spinBeats, "Selection length in beats");
 		
@@ -279,8 +290,6 @@ public class NavigateControl : UserControl {
 		
 		spinSelStart.Size = new Size(40, 20);
 		spinSelStart.Location = new Point(10, 40);
-		spinSelStart.Maximum = 16;
-		spinSelStart.Minimum = -16;
 		spinSelStart.ValueChanged += new EventHandler(spinSelStart_ValueChanged);
 		new ToolTip().SetToolTip(spinSelStart, "Trim selection start N frames left or right");
 		
@@ -290,8 +299,6 @@ public class NavigateControl : UserControl {
 		
 		spinSelEnd.Size = new Size(40, 20);
 		spinSelEnd.Location = new Point(65, 40);
-		spinSelEnd.Maximum = 16;
-		spinSelEnd.Minimum = -16;
 		spinSelEnd.ValueChanged += new EventHandler(spinSelStart_ValueChanged);
 		new ToolTip().SetToolTip(spinSelEnd, "Trim selection end N frames left or right");
 		
@@ -335,8 +342,6 @@ public class NavigateControl : UserControl {
 		
 		spinStep.Size = new Size(45, 20);
 		spinStep.Location = new Point(55, 20);
-		spinStep.Maximum = 16;
-		spinStep.Minimum = 0;
 		spinStep.ValueChanged += new EventHandler(spinStep_ValueChanged);
 		new ToolTip().SetToolTip(spinStep, "Define step in frames for step right/left buttons");
 		
