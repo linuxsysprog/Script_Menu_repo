@@ -166,13 +166,14 @@ public class NavigateControl : UserControl {
 		chkCountIn.Checked = false;
 		chkZoom.Checked = false;
 		
-		// fields
+		// everything else
 		prevTrackBPM = 0.0;
 		trackBPM = 0.0;
 		
 		audioTrack = null;
 		beepTrack = null;
 		
+		timer.Stop();
 		clickCount = 0;
 		
 		rateRegions.Clear();
@@ -740,10 +741,20 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
+		clickCount++;
+		if (!timer.Enabled) {
+			timer.Start();
+		}
+		
 		bool forward = (sender == btnRight);
-		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
-		TrackEvent regionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, forward, false);
-		SetCursorPosition(regionEvent.Start);
+		RateRegion rateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
+		
+		if (1 == clickCount) { // next/prev
+			TrackEvent regionEvent = FindRegionEvent(rateRegion, Common.vegas.Transport.CursorPosition, forward, false);
+			SetCursorPosition(regionEvent.Start);
+		} else if (2 == clickCount) { // first/last
+			SetCursorPosition((forward) ? rateRegion.RegionEvents[rateRegion.RegionEvents.Count - 1].Start : rateRegion.Start);
+		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -761,14 +772,12 @@ public class NavigateControl : UserControl {
 			timer.Start();
 		}
 		
-		if (1 == clickCount) { // to first beat
-			SetCursorPosition(FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition).Start);
-		} else if (2 == clickCount) { // to first RR
+		if (1 == clickCount) { // to first RR
 			SetCursorPosition(rateRegions[0].Start);
-		} else if (3 == clickCount) {  // to first track
+		} else if (2 == clickCount) {  // to first track
 			btnUp_Click(null, null);
 			SetCursorPosition(rateRegions[0].Start);
-		} else if (clickCount >= 4) { // full init
+		} else if (clickCount >= 3) { // full init
 			Init();
 			btnUp_Click(null, null);
 			SetCursorPosition(rateRegions[0].Start);
