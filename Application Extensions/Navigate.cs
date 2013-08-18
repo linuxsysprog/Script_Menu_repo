@@ -801,8 +801,8 @@ public class NavigateControl : UserControl {
 		
 		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
 		int srcRateRegionIndex = rateRegions.IndexOf(srcRateRegion);
-		RateRegion tarRateRegion;
-		Timecode offset;
+		RateRegion tarRateRegion = null;
+		Timecode offset = null;
 		
 		bool faster = (sender == btnFaster);
 		if (faster) {
@@ -810,20 +810,22 @@ public class NavigateControl : UserControl {
 				tarRateRegion = rateRegions[srcRateRegionIndex - 1];
 				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 2.0));
 			} else { // wrap around
-				tarRateRegion = rateRegions[rateRegions.Count - 1];
-				offset = srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset;
+				// tarRateRegion = rateRegions[rateRegions.Count - 1];
+				// offset = srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset;
 			}
 		} else {
 			if (srcRateRegionIndex < rateRegions.Count - 1) {
 				tarRateRegion = rateRegions[srcRateRegionIndex + 1];
 				offset = srcRateRegion.Offset + srcRateRegion.Offset;
 			} else { // wrap around
-				tarRateRegion = rateRegions[0];
-				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 4.0));
+				// tarRateRegion = rateRegions[0];
+				// offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 4.0));
 			}
 		}
 		
-		SetCursorPosition(tarRateRegion.Start + offset);
+		if (null != tarRateRegion && null != offset) {
+			SetCursorPosition(tarRateRegion.Start + offset);
+		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
