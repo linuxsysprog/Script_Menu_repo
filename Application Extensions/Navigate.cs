@@ -102,7 +102,9 @@ public class NavigateControl : UserControl {
 	private NumericUpDown spinSelEnd = new NumericUpDown();
 	
 	private CheckBox chkCountIn = new CheckBox();
-	private CheckBox chkZoom = new CheckBox();
+	
+	private Label lblZoom = new Label();
+	private Button btnZoom = new MyButton();
 	
 	// nav group box
 	private GroupBox gbNav = new GroupBox();
@@ -164,7 +166,6 @@ public class NavigateControl : UserControl {
 		spinSelEnd.Value = 0;
 		
 		chkCountIn.Checked = false;
-		chkZoom.Checked = false;
 		
 		// everything else
 		prevTrackBPM = 0.0;
@@ -250,7 +251,8 @@ public class NavigateControl : UserControl {
 			lblBeats,
 			gbTrimSel,
 			chkCountIn,
-			chkZoom});
+			lblZoom,
+			btnZoom});
 			
 		spinBeats.Size = new Size(40, 20);
 		spinBeats.Location = new Point(10, 20);
@@ -299,10 +301,14 @@ public class NavigateControl : UserControl {
 		chkCountIn.Click += new EventHandler(chkCountIn_Click);
 		new ToolTip().SetToolTip(chkCountIn, "Enable two count-in clicks before playback");
 		
-		chkZoom.Size = new Size(70, 20);
-		chkZoom.Location = new Point(10, 150);
-		chkZoom.Text = "Zoom";
-		new ToolTip().SetToolTip(chkZoom, "Zoom to fav scale");
+		lblZoom.Size = new Size(40, 15);
+		lblZoom.Location = new Point(27, 150);
+		lblZoom.Text = "Zoom";
+		
+		btnZoom.Size = new Size(13, 13);
+		btnZoom.Location = new Point(10, 150);
+		btnZoom.Click += new EventHandler(btnZoom_Click);
+		new ToolTip().SetToolTip(btnZoom, "Zoom to fav scale");
 		
 		return gbSel;
 	}
@@ -532,6 +538,18 @@ public class NavigateControl : UserControl {
 	
 	void chkCountIn_Click(object sender, EventArgs e) {
 	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+	}
+	
+	void btnZoom_Click(object sender, EventArgs e) {
+	try {
+		TransportControl tc = Common.vegas.Transport;
+		tc.SelectionStart = new Timecode();
+		tc.SelectionLength = Timecode.FromFrames(110);
+		tc.ZoomSelection();
+		tc.SelectionLength = new Timecode();
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -854,14 +872,6 @@ public class NavigateControl : UserControl {
 	
 	private void SetCursorPosition(Timecode position) {
 		TransportControl tc = Common.vegas.Transport;
-		
-		if (chkZoom.Checked) {
-			tc.SelectionStart = new Timecode();
-			tc.SelectionLength = Timecode.FromFrames(110);
-			tc.ZoomSelection();
-			tc.SelectionLength = new Timecode();
-		}
-
 		tc.CursorPosition = position;
 		tc.ViewCursor(true);
 	}
@@ -986,6 +996,14 @@ public class NavigateControlTest : Form {
 }
 
 public class MyRadioButton : RadioButton {
+	protected override bool ShowFocusCues {
+		get {
+			return false;
+		}
+	}
+}
+
+public class MyButton: Button {
 	protected override bool ShowFocusCues {
 		get {
 			return false;
