@@ -92,6 +92,7 @@ public class NavigateControl : UserControl {
 	
 	private NumericUpDown spinBeats = new NumericUpDown();
 	private Label lblBeats = new Label();
+	private long frameCount = 0;
 	
 	private GroupBox gbTrimSel = new GroupBox();
 	
@@ -105,6 +106,8 @@ public class NavigateControl : UserControl {
 	
 	private Label lblZoom = new Label();
 	private Button btnZoom = new MyButton();
+	
+	private Button btnCommit = new MyButton();
 	
 	// nav group box
 	private GroupBox gbNav = new GroupBox();
@@ -159,11 +162,12 @@ public class NavigateControl : UserControl {
 		chkMuteClick.Checked = false;
 		
 		// selection groupbox
-		spinBeats.Value = 0;
+		spinBeats.Value = 1;
 		spinBeats.Maximum = 255;
 		spinBeats.Minimum = 0;
 		
 		lblBeats.Text = "b";
+		frameCount = 0;
 		
 		spinSelStart.Value = 0;
 		spinSelStart.Maximum = 255;
@@ -176,7 +180,7 @@ public class NavigateControl : UserControl {
 		chkCountIn.Checked = false;
 		
 		// navigation groupbox
-		spinStep.Value = 0;
+		spinStep.Value = 1;
 		spinStep.Maximum = 255;
 		spinStep.Minimum = 0;
 		
@@ -265,7 +269,8 @@ public class NavigateControl : UserControl {
 			gbTrimSel,
 			chkCountIn,
 			lblZoom,
-			btnZoom});
+			btnZoom,
+			btnCommit});
 			
 		spinBeats.Size = new Size(40, 20);
 		spinBeats.Location = new Point(10, 20);
@@ -300,19 +305,24 @@ public class NavigateControl : UserControl {
 		new ToolTip().SetToolTip(spinSelEnd, "Trim selection end N frames left or right");
 		
 		chkCountIn.Size = new Size(70, 20);
-		chkCountIn.Location = new Point(10, 130);
+		chkCountIn.Location = new Point(10, 150);
 		chkCountIn.Text = "Count-in";
 		chkCountIn.Click += new EventHandler(chkCountIn_Click);
 		new ToolTip().SetToolTip(chkCountIn, "Enable two count-in clicks before playback");
 		
 		lblZoom.Size = new Size(40, 15);
-		lblZoom.Location = new Point(27, 150);
+		lblZoom.Location = new Point(27, 130);
 		lblZoom.Text = "Zoom";
 		
 		btnZoom.Size = new Size(13, 13);
-		btnZoom.Location = new Point(10, 150);
+		btnZoom.Location = new Point(10, 130);
 		btnZoom.Click += new EventHandler(btnZoom_Click);
 		new ToolTip().SetToolTip(btnZoom, "Zoom to fav scale");
+		
+		btnCommit.Size = new Size(13, 13);
+		btnCommit.Location = new Point(112, 130);
+		btnCommit.Click += new EventHandler(btnCommit_Click);
+		new ToolTip().SetToolTip(btnCommit, "Commit spin boxes values");
 		
 		return gbSel;
 	}
@@ -541,6 +551,19 @@ public class NavigateControl : UserControl {
 		tc.SelectionLength = new Timecode();
 		
 		SetCursorPosition(cursorPosition);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+	}
+	
+	void btnCommit_Click(object sender, EventArgs e) {
+	try {
+		long beats = (long)spinBeats.Value;
+		long selStart = (long)spinSelStart.Value;
+		long selEnd = (long)spinSelEnd.Value;
+		
+		Common.vegas.Transport.SelectionStart = Common.vegas.Transport.CursorPosition + Timecode.FromFrames(selStart);
+		Common.vegas.Transport.SelectionLength = Timecode.FromFrames(frameCount * beats + selEnd - selStart);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -867,10 +890,6 @@ public class NavigateControl : UserControl {
 	////////////////////////////////////////////////////////////////////////////////
 	
 	private void SetCursorPosition(Timecode position) {
-		TransportControl tc = Common.vegas.Transport;
-		tc.CursorPosition = position;
-		tc.ViewCursor(true);
-		
 		// figure beat size in frames
 		RateRegion rateRegion = FindRateRegion(rateRegions, position);
 		TrackEvent regionEvent = FindRegionEvent(rateRegion, position, true, false);
@@ -884,7 +903,22 @@ public class NavigateControl : UserControl {
 			prevRegionEvent = rateRegion.RegionEvents[regionEventIndex - 1];
 		}
 		
-		lblBeats.Text = "b (1f=" + (regionEvent.Start - prevRegionEvent.Start).FrameCount + "b)";
+		frameCount = (regionEvent.Start - prevRegionEvent.Start).FrameCount;
+		spinSelStart.Maximum = frameCount;
+		spinSelEnd.Minimum = -frameCount;
+		
+		lblBeats.Text = "b (1f=" + frameCount + "b)";
+		
+		// set cursor position preserving selection
+		TransportControl tc = Common.vegas.Transport;
+		
+		if (tc.SelectionLength > new Timecode()) {
+			tc.SelectionStart = position;
+		} else {
+			tc.CursorPosition = position;
+		}
+		
+		tc.ViewCursor(true);
 		
 		// ensure continuous playback
 		if (tc.IsPlaying) {
