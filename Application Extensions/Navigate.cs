@@ -196,6 +196,8 @@ public class NavigateControl : UserControl {
 		
 		rateRegions.Clear();
 		prevRateRegions.Clear();
+		
+		Common.vegas.Transport.SelectionLength = new Timecode();
 	}
 	
 	private GroupBox CreateGroupBoxAudio() {
@@ -558,12 +560,19 @@ public class NavigateControl : UserControl {
 	
 	void btnCommit_Click(object sender, EventArgs e) {
 	try {
+		TransportControl tc = Common.vegas.Transport;
+	
 		long beats = (long)spinBeats.Value;
 		long selStart = (long)spinSelStart.Value;
 		long selEnd = (long)spinSelEnd.Value;
 		
-		Common.vegas.Transport.SelectionStart = Common.vegas.Transport.CursorPosition + Timecode.FromFrames(selStart);
-		Common.vegas.Transport.SelectionLength = Timecode.FromFrames(frameCount * beats + selEnd - selStart);
+		if (new Timecode() == tc.SelectionLength) {
+			tc.SelectionStart = tc.CursorPosition + Timecode.FromFrames(selStart);
+			tc.SelectionLength = Timecode.FromFrames(frameCount * beats + selEnd - selStart);
+		} else {
+			tc.SelectionStart = tc.SelectionStart + Timecode.FromFrames(selStart);
+			tc.SelectionLength = tc.SelectionLength + Timecode.FromFrames(selEnd - selStart);
+		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -912,10 +921,10 @@ public class NavigateControl : UserControl {
 		// set cursor position preserving selection
 		TransportControl tc = Common.vegas.Transport;
 		
-		if (tc.SelectionLength > new Timecode()) {
-			tc.SelectionStart = position;
-		} else {
+		if (new Timecode() == tc.SelectionLength) {
 			tc.CursorPosition = position;
+		} else {
+			tc.SelectionStart = position;
 		}
 		
 		tc.ViewCursor(true);
