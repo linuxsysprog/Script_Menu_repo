@@ -160,18 +160,18 @@ public class NavigateControl : UserControl {
 		
 		// selection groupbox
 		spinBeats.Value = 0;
-		spinBeats.Maximum = 15;
+		spinBeats.Maximum = 255;
 		spinBeats.Minimum = 0;
 		
 		lblBeats.Text = "b";
 		
 		spinSelStart.Value = 0;
-		spinSelStart.Maximum = 15;
-		spinSelStart.Minimum = -15;
+		spinSelStart.Maximum = 255;
+		spinSelStart.Minimum = -256;
 		
 		spinSelEnd.Value = 0;
-		spinSelEnd.Maximum = 15;
-		spinSelEnd.Minimum = -15;
+		spinSelEnd.Maximum = 255;
+		spinSelEnd.Minimum = -256;
 		
 		chkCountIn.Checked = false;
 		
@@ -269,7 +269,6 @@ public class NavigateControl : UserControl {
 			
 		spinBeats.Size = new Size(40, 20);
 		spinBeats.Location = new Point(10, 20);
-		spinBeats.ValueChanged += new EventHandler(spinBeats_ValueChanged);
 		new ToolTip().SetToolTip(spinBeats, "Selection length in beats");
 		
 		lblBeats.Size = new Size(70, 20);
@@ -290,7 +289,6 @@ public class NavigateControl : UserControl {
 		
 		spinSelStart.Size = new Size(40, 20);
 		spinSelStart.Location = new Point(10, 40);
-		spinSelStart.ValueChanged += new EventHandler(spinSelStart_ValueChanged);
 		new ToolTip().SetToolTip(spinSelStart, "Trim selection start N frames left or right");
 		
 		lblSelEnd.Size = new Size(40, 20);
@@ -299,7 +297,6 @@ public class NavigateControl : UserControl {
 		
 		spinSelEnd.Size = new Size(40, 20);
 		spinSelEnd.Location = new Point(65, 40);
-		spinSelEnd.ValueChanged += new EventHandler(spinSelStart_ValueChanged);
 		new ToolTip().SetToolTip(spinSelEnd, "Trim selection end N frames left or right");
 		
 		chkCountIn.Size = new Size(70, 20);
@@ -342,7 +339,6 @@ public class NavigateControl : UserControl {
 		
 		spinStep.Size = new Size(45, 20);
 		spinStep.Location = new Point(55, 20);
-		spinStep.ValueChanged += new EventHandler(spinStep_ValueChanged);
 		new ToolTip().SetToolTip(spinStep, "Define step in frames for step right/left buttons");
 		
 		lblFrames.Size = new Size(20, 20);
@@ -527,20 +523,6 @@ public class NavigateControl : UserControl {
 	}
 	}
 	
-	void spinBeats_ValueChanged(object sender, EventArgs e) {
-	try {
-	} catch (Exception ex) {
-		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-	}
-	}
-	
-	void spinSelStart_ValueChanged(object sender, EventArgs e) {
-	try {
-	} catch (Exception ex) {
-		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-	}
-	}
-	
 	void chkCountIn_Click(object sender, EventArgs e) {
 	try {
 	} catch (Exception ex) {
@@ -559,13 +541,6 @@ public class NavigateControl : UserControl {
 		tc.SelectionLength = new Timecode();
 		
 		SetCursorPosition(cursorPosition);
-	} catch (Exception ex) {
-		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-	}
-	}
-	
-	void spinStep_ValueChanged(object sender, EventArgs e) {
-	try {
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
