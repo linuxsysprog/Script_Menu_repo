@@ -761,11 +761,13 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		Timecode pos = Common.vegas.Transport.CursorPosition;
 		Timecode step = Timecode.FromFrames((long)spinStep.Value);
-		bool forward = (sender == btnStepRight);
+		if (new Timecode() == step) {
+			return;
+		}
 		
-		SetCursorPosition(forward ? pos + step : pos - step);
+		bool forward = (sender == btnStepRight);
+		SetCursorPosition(forward ? Common.vegas.Transport.CursorPosition + step : Common.vegas.Transport.CursorPosition - step);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -908,6 +910,11 @@ public class NavigateControl : UserControl {
 		}
 		
 		lblBeats.Text = "b (1f=" + (regionEvent.Start - prevRegionEvent.Start).FrameCount + "b)";
+		
+		// ensure continuous playback
+		if (tc.IsPlaying) {
+			tc.Play();
+		}
 	}
 	
 	private RateRegion FindRateRegion(List<RateRegion> rateRegions, Timecode position) {
