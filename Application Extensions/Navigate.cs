@@ -110,7 +110,7 @@ public class NavigateControl : UserControl {
 	private GroupBox gbNav = new GroupBox();
 	
 	private Label lblStep = new Label();
-	private NumericUpDown spinStep = new NumericUpDown();
+	private NumericUpDown spinStep = new MyNumericUpDown();
 	private Label lblFrames = new Label();
 	
 	private Button btnUp = new Button();
@@ -163,7 +163,7 @@ public class NavigateControl : UserControl {
 		spinBeats.Maximum = 15;
 		spinBeats.Minimum = 0;
 		
-		lblBeats.Text = "bts";
+		lblBeats.Text = "b";
 		
 		spinSelStart.Value = 0;
 		spinSelStart.Maximum = 15;
@@ -177,7 +177,7 @@ public class NavigateControl : UserControl {
 		
 		// navigation groupbox
 		spinStep.Value = 0;
-		spinStep.Maximum = 15;
+		spinStep.Maximum = 255;
 		spinStep.Minimum = 0;
 		
 		// everything else
@@ -551,10 +551,14 @@ public class NavigateControl : UserControl {
 	void btnZoom_Click(object sender, EventArgs e) {
 	try {
 		TransportControl tc = Common.vegas.Transport;
+		Timecode cursorPosition = tc.CursorPosition;
+		
 		tc.SelectionStart = new Timecode();
 		tc.SelectionLength = Timecode.FromFrames(110);
 		tc.ZoomSelection();
 		tc.SelectionLength = new Timecode();
+		
+		SetCursorPosition(cursorPosition);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -752,6 +756,16 @@ public class NavigateControl : UserControl {
 	
 	void btnStepLeft_Click(object sender, EventArgs e) {
 	try {
+		if (null == beepTrack) {
+			MessageBox.Show("Beep track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+		
+		Timecode pos = Common.vegas.Transport.CursorPosition;
+		Timecode step = Timecode.FromFrames((long)spinStep.Value);
+		bool forward = (sender == btnStepRight);
+		
+		SetCursorPosition(forward ? pos + step : pos - step);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -879,6 +893,21 @@ public class NavigateControl : UserControl {
 		TransportControl tc = Common.vegas.Transport;
 		tc.CursorPosition = position;
 		tc.ViewCursor(true);
+		
+		// figure beat size in frames
+		RateRegion rateRegion = FindRateRegion(rateRegions, position);
+		TrackEvent regionEvent = FindRegionEvent(rateRegion, position, true, false);
+		int regionEventIndex = rateRegion.RegionEvents.IndexOf(regionEvent);
+		
+		TrackEvent prevRegionEvent;
+		if (0 == regionEventIndex) {
+			regionEvent = rateRegion.RegionEvents[rateRegion.RegionEvents.Count - 1];
+			prevRegionEvent = rateRegion.RegionEvents[rateRegion.RegionEvents.Count - 2];
+		} else {
+			prevRegionEvent = rateRegion.RegionEvents[regionEventIndex - 1];
+		}
+		
+		lblBeats.Text = "b (1f=" + (regionEvent.Start - prevRegionEvent.Start).FrameCount + "b)";
 	}
 	
 	private RateRegion FindRateRegion(List<RateRegion> rateRegions, Timecode position) {
@@ -1016,3 +1045,33 @@ public class MyButton: Button {
 	}
 }
 
+// http://connect.microsoft.com/VisualStudio/feedback/details/216189/numericupdown-use-of-mouse-wheel-may-result-in-different-increment
+/// <summary>
+/// A NumericUpDown class that handles mouse wheel scrolling correctly
+/// </summary>
+public class MyNumericUpDown : NumericUpDown
+{
+	protected override void OnMouseWheel(MouseEventArgs e)
+	{
+		// Change the value based on the number of wheel clicks.
+
+		// NOTE: This overrides a bug in NumericUpDown where the value
+		// change is based on the mouse wheel scrolling setting in Control
+		// Panel.
+		//
+		decimal val = Value;
+
+		val += ((e.Delta/120) * Increment);
+	
+		if (val < Minimum)
+		{
+			val = Minimum;
+		}
+		else if (val > Maximum)
+		{
+			val = Maximum;
+		}
+
+		Value = val;
+	}
+}
