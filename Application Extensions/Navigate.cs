@@ -545,12 +545,21 @@ public class NavigateControl : UserControl {
 	void btnZoom_Click(object sender, EventArgs e) {
 	try {
 		TransportControl tc = Common.vegas.Transport;
-		Timecode cursorPosition = tc.CursorPosition;
 		
+		// save 
+		Timecode cursorPosition = tc.CursorPosition;
+		Timecode selectionLength = tc.SelectionLength;
+		
+		// zoom
 		tc.SelectionStart = new Timecode();
 		tc.SelectionLength = Timecode.FromFrames(110);
 		tc.ZoomSelection();
 		tc.SelectionLength = new Timecode();
+		
+		// restore
+		if (selectionLength != new Timecode()) {
+			tc.SelectionLength = selectionLength;
+		}
 		
 		SetCursorPosition(cursorPosition);
 	} catch (Exception ex) {
@@ -707,13 +716,15 @@ public class NavigateControl : UserControl {
 		
 		// set cursor position
 		if (prevRateRegions.Count > 0) {
+			TransportControl tc = Common.vegas.Transport;
+			
 			// figure target rate region
-			RateRegion srcRateRegion = FindRateRegion(prevRateRegions, Common.vegas.Transport.CursorPosition);
+			RateRegion srcRateRegion = FindRateRegion(prevRateRegions, tc.CursorPosition);
 			int srcRateRegionIndex = prevRateRegions.IndexOf(srcRateRegion);
 			RateRegion tarRateRegion = rateRegions[srcRateRegionIndex];
 			
 			// figure target region event
-			TrackEvent srcRegionEvent = FindRegionEvent(srcRateRegion, Common.vegas.Transport.CursorPosition, false, true);
+			TrackEvent srcRegionEvent = FindRegionEvent(srcRateRegion, tc.CursorPosition, false, true);
 			
 			Timecode tarOffset = null;
 			int srcRegionEventIndex = srcRateRegion.RegionEvents.IndexOf(srcRegionEvent);
@@ -725,10 +736,15 @@ public class NavigateControl : UserControl {
 			TrackEvent tarRegionEvent = tarRateRegion.RegionEvents[srcRegionEventIndex];
 			
 			// figure target offset
-			Timecode srcOffset = Common.vegas.Transport.CursorPosition - srcRegionEvent.Start;
+			Timecode srcOffset = tc.CursorPosition - srcRegionEvent.Start;
 			double scaleFactor = prevTrackBPM / trackBPM;
 			if (null == tarOffset) {
 				tarOffset = Timecode.FromNanos((int)Math.Round(srcOffset.Nanos * scaleFactor));
+			}
+			
+			// scale selection
+			if (tc.SelectionLength != new Timecode()) {
+				tc.SelectionLength = Timecode.FromNanos((int)Math.Round(tc.SelectionLength.Nanos * scaleFactor));
 			}
 			
 			SetCursorPosition(tarRegionEvent.Start + tarOffset);
@@ -851,7 +867,9 @@ public class NavigateControl : UserControl {
 			return;
 		}
 		
-		RateRegion srcRateRegion = FindRateRegion(rateRegions, Common.vegas.Transport.CursorPosition);
+		TransportControl tc = Common.vegas.Transport;
+		
+		RateRegion srcRateRegion = FindRateRegion(rateRegions, tc.CursorPosition);
 		int srcRateRegionIndex = rateRegions.IndexOf(srcRateRegion);
 		RateRegion tarRateRegion = null;
 		Timecode offset = null;
@@ -861,17 +879,19 @@ public class NavigateControl : UserControl {
 			if (srcRateRegionIndex < rateRegions.Count - 1) {
 				tarRateRegion = rateRegions[srcRateRegionIndex + 1];
 				offset = srcRateRegion.Offset + srcRateRegion.Offset;
-			} else { // wrap around
-				// tarRateRegion = rateRegions[0];
-				// offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 4.0));
+				
+				if (tc.SelectionLength != new Timecode()) {
+					tc.SelectionLength = tc.SelectionLength + tc.SelectionLength;
+				}
 			}
 		} else {
 			if (srcRateRegionIndex > 0) {
 				tarRateRegion = rateRegions[srcRateRegionIndex - 1];
 				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 2.0));
-			} else { // wrap around
-				// tarRateRegion = rateRegions[rateRegions.Count - 1];
-				// offset = srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset + srcRateRegion.Offset;
+				
+				if (tc.SelectionLength != new Timecode()) {
+					tc.SelectionLength = Timecode.FromNanos((int)Math.Round(tc.SelectionLength.Nanos / 2.0));
+				}
 			}
 		}
 		
