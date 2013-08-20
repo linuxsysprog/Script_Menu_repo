@@ -90,17 +90,17 @@ public class NavigateControl : UserControl {
 	// sel group box
 	private GroupBox gbSel = new GroupBox();
 	
-	private NumericUpDown spinBeats = new NumericUpDown();
+	private NumericUpDown spinBeats = new MyNumericUpDown();
 	private Label lblBeats = new Label();
 	private long frameCount = 0;
 	
 	private GroupBox gbTrimSel = new GroupBox();
 	
 	private Label lblSelStart = new Label();
-	private NumericUpDown spinSelStart = new NumericUpDown();
+	private NumericUpDown spinSelStart = new MyNumericUpDown();
 	
 	private Label lblSelEnd = new Label();
-	private NumericUpDown spinSelEnd = new NumericUpDown();
+	private NumericUpDown spinSelEnd = new MyNumericUpDown();
 	
 	private CheckBox chkCountIn = new CheckBox();
 	
@@ -854,7 +854,17 @@ public class NavigateControl : UserControl {
 	
 	void btnStop_Click(object sender, EventArgs e) {
 	try {
-		Common.vegas.Transport.Stop();
+		TransportControl tc = Common.vegas.Transport;
+		
+		if (tc.IsPlaying) {
+			tc.Stop();
+		} else {
+			// invert selection
+			if (tc.SelectionLength != new Timecode()) {
+				tc.SelectionStart = tc.SelectionStart + tc.SelectionLength;
+				tc.SelectionLength = new Timecode() - tc.SelectionLength;
+			}
+		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
