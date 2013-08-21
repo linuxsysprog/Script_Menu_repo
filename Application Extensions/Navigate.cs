@@ -168,7 +168,7 @@ public class NavigateControl : UserControl {
 		rbChanRight.Checked = false;
 		
 		chkMuteAudio.Checked = false;
-		chkMuteClick.Checked = false;
+		chkMuteClick.Checked = true;
 		
 		// selection groupbox
 		spinBeats.Value = 1;
@@ -803,9 +803,15 @@ public class NavigateControl : UserControl {
 		prevTrackBPM = trackBPM;
 		prevRateRegions = new List<RateRegion>(rateRegions);
 		
-		// restore channel mapping
+		// update channel mapping
 		using (UndoBlock undo = new UndoBlock("btnUp_Click")) {
-			audioEvents[0].Channels = ChannelRemapping.None;
+			if (rbChanLeft.Checked) {
+				audioEvents[0].Channels = ChannelRemapping.DisableRight;
+			} else if (rbChanBoth.Checked) {
+				audioEvents[0].Channels = ChannelRemapping.None;
+			} else { // rbChanRight.Checked
+				audioEvents[0].Channels = ChannelRemapping.DisableLeft;
+			}
 		}
 		
 		// mute all
@@ -814,9 +820,17 @@ public class NavigateControl : UserControl {
 		
 		// unmute select tracks
 		List<Track> tracksPendingUnmute = new List<Track>();
-		tracksPendingUnmute.Add(projectTracks[audioTrackIndex]);
+		
+		if (!chkMuteAudio.Checked) {
+			tracksPendingUnmute.Add(projectTracks[audioTrackIndex]);
+		}
+		
 		tracksPendingUnmute.Add(projectTracks[videoTrackIndex]);
-		tracksPendingUnmute.Add(projectTracks[beepTrackIndex]);
+		
+		if (!chkMuteClick.Checked) {
+			tracksPendingUnmute.Add(projectTracks[beepTrackIndex]);
+		}
+		
 		Common.MuteAllTracks(tracksPendingUnmute, false);
 		
 		// save tracks for future reference
