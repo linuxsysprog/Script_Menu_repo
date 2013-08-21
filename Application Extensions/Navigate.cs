@@ -169,7 +169,7 @@ public class NavigateControl : UserControl {
 		chkMuteClick.Checked = false;
 		
 		// selection groupbox
-		spinBeats.Value = 0;
+		spinBeats.Value = 1;
 		spinBeats.Maximum = 255;
 		spinBeats.Minimum = 0;
 		
@@ -565,13 +565,24 @@ public class NavigateControl : UserControl {
 	
 	void btnSelStartMinus_Click(object sender, EventArgs e) {
 	try {
-	} catch (Exception ex) {
-		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-	}
-	}
-	
-	void chkCountIn_Click(object sender, EventArgs e) {
-	try {
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+
+		TransportControl tc = Common.vegas.Transport;
+		
+		long offset = (long)spinBeats.Value * frameCount + (long)spinFrames.Value;
+		if (sender == btnSelStartMinus || sender == btnSelEndMinus) {
+			offset = -offset;
+		}
+		
+		if (sender == btnSelStartMinus || sender == btnSelStartPlus) {
+			tc.SelectionStart = tc.SelectionStart + Timecode.FromFrames(offset);
+			tc.SelectionLength = tc.SelectionLength - Timecode.FromFrames(offset);
+		} else {
+			tc.SelectionLength = tc.SelectionLength + Timecode.FromFrames(offset);
+		}
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -604,28 +615,13 @@ public class NavigateControl : UserControl {
 	}
 	}
 	
-	void btnCommit_Click(object sender, EventArgs e) {
-	try {
-		TransportControl tc = Common.vegas.Transport;
-	
-		long beats = (long)spinBeats.Value;
-		long selStart = (long)spinFrames.Value;
-		long selEnd = 0;
-		
-		if (new Timecode() == tc.SelectionLength) {
-			tc.SelectionStart = tc.CursorPosition + Timecode.FromFrames(selStart);
-			tc.SelectionLength = Timecode.FromFrames(frameCount * beats + selEnd - selStart);
-		} else {
-			tc.SelectionStart = tc.SelectionStart + Timecode.FromFrames(selStart);
-			tc.SelectionLength = tc.SelectionLength + Timecode.FromFrames(selEnd - selStart);
-		}
-	} catch (Exception ex) {
-		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-	}
-	}
-	
 	void btnReset_Click(object sender, EventArgs e) {
 	try {
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+
 		TransportControl tc = Common.vegas.Transport;
 	
 		if (new Timecode() == tc.SelectionLength) {
