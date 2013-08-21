@@ -90,31 +90,38 @@ public class NavigateControl : UserControl {
 	// sel group box
 	private GroupBox gbSel = new GroupBox();
 	
+	private Label lblFrameCount = new Label();
+	private long frameCount = 0;
+	
 	private NumericUpDown spinBeats = new MyNumericUpDown();
 	private Label lblBeats = new Label();
-	private long frameCount = 0;
+	
+	private NumericUpDown spinFrames = new MyNumericUpDown();
+	private Label lblFrames = new Label();
 	
 	private GroupBox gbTrimSel = new GroupBox();
 	
 	private Label lblSelStart = new Label();
-	private NumericUpDown spinSelStart = new MyNumericUpDown();
-	
 	private Label lblSelEnd = new Label();
-	private NumericUpDown spinSelEnd = new MyNumericUpDown();
 	
-	private CheckBox chkCountIn = new CheckBox();
+	private Button btnSelStartMinus = new MyButton();
+	private Button btnSelStartPlus = new MyButton();
 	
-	private Label lblZoom = new Label();
+	private Button btnSelEndMinus = new MyButton();
+	private Button btnSelEndPlus = new MyButton();
+	
 	private Button btnZoom = new MyButton();
+	private Label lblZoom = new Label();
 	
-	private Button btnCommit = new MyButton();
+	private Button btnReset = new MyButton();
+	private Label lblReset = new Label();
 	
 	// nav group box
 	private GroupBox gbNav = new GroupBox();
 	
 	private Label lblStep = new Label();
 	private NumericUpDown spinStep = new MyNumericUpDown();
-	private Label lblFrames = new Label();
+	private Label lblStepFrames = new Label();
 	
 	private Button btnUp = new Button();
 	private Button btnStepLeft = new Button();
@@ -162,22 +169,16 @@ public class NavigateControl : UserControl {
 		chkMuteClick.Checked = false;
 		
 		// selection groupbox
-		spinBeats.Value = 1;
+		spinBeats.Value = 0;
 		spinBeats.Maximum = 255;
 		spinBeats.Minimum = 0;
 		
-		lblBeats.Text = "b";
+		lblFrameCount.Text = "";
 		frameCount = 0;
 		
-		spinSelStart.Value = 0;
-		spinSelStart.Maximum = 255;
-		spinSelStart.Minimum = -256;
-		
-		spinSelEnd.Value = 0;
-		spinSelEnd.Maximum = 255;
-		spinSelEnd.Minimum = -256;
-		
-		chkCountIn.Checked = false;
+		spinFrames.Value = 0;
+		spinFrames.Maximum = 255;
+		spinFrames.Minimum = 0;
 		
 		// navigation groupbox
 		spinStep.Value = 1;
@@ -266,65 +267,92 @@ public class NavigateControl : UserControl {
 		gbSel.Location = new Point(10, 140);
 		gbSel.Text = "Selection";
 		gbSel.Controls.AddRange(new Control[] {
+			lblFrameCount,
 			spinBeats,
 			lblBeats,
+			spinFrames,
+			lblFrames,
 			gbTrimSel,
-			chkCountIn,
-			lblZoom,
 			btnZoom,
-			btnCommit});
+			lblZoom,
+			btnReset,
+			lblReset});
 			
-		spinBeats.Size = new Size(40, 20);
-		spinBeats.Location = new Point(10, 20);
-		new ToolTip().SetToolTip(spinBeats, "Selection length in beats");
+		lblFrameCount.Size = new Size(115, 20);
+		lblFrameCount.Location = new Point(10, 20);
 		
-		lblBeats.Size = new Size(70, 20);
-		lblBeats.Location = new Point(55, 20);
+		spinBeats.Size = new Size(40, 20);
+		spinBeats.Location = new Point(10, 45);
+		new ToolTip().SetToolTip(spinBeats, "Add full beats to selection");
+		
+		lblBeats.Size = new Size(10, 20);
+		lblBeats.Location = new Point(50, 45);
+		lblBeats.Text = "b";
+		
+		spinFrames.Size = new Size(40, 20);
+		spinFrames.Location = new Point(75, 45);
+		new ToolTip().SetToolTip(spinFrames, "Add full frames to selection");
+		
+		lblFrames.Size = new Size(10, 20);
+		lblFrames.Location = new Point(115, 45);
+		lblFrames.Text = "f";
 		
 		gbTrimSel.Size = new Size(115, 70);
-		gbTrimSel.Location = new Point(10, 50);
+		gbTrimSel.Location = new Point(10, 70);
 		gbTrimSel.Text = "Trim";
 		gbTrimSel.Controls.AddRange(new Control[] {
 			lblSelStart,
-			spinSelStart,
 			lblSelEnd,
-			spinSelEnd});
+			btnSelStartMinus,
+			btnSelStartPlus,
+			btnSelEndMinus,
+			btnSelEndPlus});
 			
 		lblSelStart.Size = new Size(40, 20);
 		lblSelStart.Location = new Point(10, 20);
 		lblSelStart.Text = "Start";
 		
-		spinSelStart.Size = new Size(40, 20);
-		spinSelStart.Location = new Point(10, 40);
-		new ToolTip().SetToolTip(spinSelStart, "Trim selection start N frames left or right");
-		
 		lblSelEnd.Size = new Size(40, 20);
 		lblSelEnd.Location = new Point(65, 20);
 		lblSelEnd.Text = "End";
 		
-		spinSelEnd.Size = new Size(40, 20);
-		spinSelEnd.Location = new Point(65, 40);
-		new ToolTip().SetToolTip(spinSelEnd, "Trim selection end N frames left or right");
+		btnSelStartMinus.Size = new Size(13, 13);
+		btnSelStartMinus.Location = new Point(10, 40);
+		btnSelStartMinus.Click += new EventHandler(btnSelStartMinus_Click);
+		new ToolTip().SetToolTip(btnSelStartMinus, "Extend selection start");
 		
-		chkCountIn.Size = new Size(70, 20);
-		chkCountIn.Location = new Point(10, 150);
-		chkCountIn.Text = "Count-in";
-		chkCountIn.Click += new EventHandler(chkCountIn_Click);
-		new ToolTip().SetToolTip(chkCountIn, "Enable two count-in clicks before playback");
+		btnSelStartPlus.Size = new Size(13, 13);
+		btnSelStartPlus.Location = new Point(23, 40);
+		btnSelStartPlus.Click += new EventHandler(btnSelStartMinus_Click);
+		new ToolTip().SetToolTip(btnSelStartPlus, "Reduce selection start");
 		
-		lblZoom.Size = new Size(40, 15);
-		lblZoom.Location = new Point(27, 130);
-		lblZoom.Text = "Zoom";
+		btnSelEndMinus.Size = new Size(13, 13);
+		btnSelEndMinus.Location = new Point(65, 40);
+		btnSelEndMinus.Click += new EventHandler(btnSelStartMinus_Click);
+		new ToolTip().SetToolTip(btnSelEndMinus, "Reduce selection end");
+		
+		btnSelEndPlus.Size = new Size(13, 13);
+		btnSelEndPlus.Location = new Point(78, 40);
+		btnSelEndPlus.Click += new EventHandler(btnSelStartMinus_Click);
+		new ToolTip().SetToolTip(btnSelEndPlus, "Extend selection end");
+		
+		btnReset.Size = new Size(13, 13);
+		btnReset.Location = new Point(10, 150);
+		btnReset.Click += new EventHandler(btnReset_Click);
+		new ToolTip().SetToolTip(btnReset, "Reset selection");
+		
+		lblReset.Size = new Size(40, 15);
+		lblReset.Location = new Point(27, 150);
+		lblReset.Text = "Reset";
 		
 		btnZoom.Size = new Size(13, 13);
-		btnZoom.Location = new Point(10, 130);
+		btnZoom.Location = new Point(75, 150);
 		btnZoom.Click += new EventHandler(btnZoom_Click);
-		new ToolTip().SetToolTip(btnZoom, "Zoom to fav scale");
+		new ToolTip().SetToolTip(btnZoom, "Zoom to favorite scale");
 		
-		btnCommit.Size = new Size(13, 13);
-		btnCommit.Location = new Point(112, 130);
-		btnCommit.Click += new EventHandler(btnCommit_Click);
-		new ToolTip().SetToolTip(btnCommit, "Commit spin boxes values");
+		lblZoom.Size = new Size(40, 15);
+		lblZoom.Location = new Point(92, 150);
+		lblZoom.Text = "Zoom";
 		
 		return gbSel;
 	}
@@ -336,7 +364,7 @@ public class NavigateControl : UserControl {
 		gbNav.Controls.AddRange(new Control[] {
 			lblStep,
 			spinStep,
-			lblFrames,
+			lblStepFrames,
 			btnUp,
 			btnStepLeft,
 			btnLeft,
@@ -353,9 +381,9 @@ public class NavigateControl : UserControl {
 		spinStep.Location = new Point(55, 20);
 		new ToolTip().SetToolTip(spinStep, "Define step in frames for step right/left buttons");
 		
-		lblFrames.Size = new Size(20, 20);
-		lblFrames.Location = new Point(105, 20);
-		lblFrames.Text = "f";
+		lblStepFrames.Size = new Size(20, 20);
+		lblStepFrames.Location = new Point(105, 20);
+		lblStepFrames.Text = "f";
 		
 		btnUp.Size = new Size(20, 20);
 		btnUp.Location = new Point(55, 50);
@@ -535,6 +563,13 @@ public class NavigateControl : UserControl {
 	}
 	}
 	
+	void btnSelStartMinus_Click(object sender, EventArgs e) {
+	try {
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+	}
+	
 	void chkCountIn_Click(object sender, EventArgs e) {
 	try {
 	} catch (Exception ex) {
@@ -572,8 +607,8 @@ public class NavigateControl : UserControl {
 		TransportControl tc = Common.vegas.Transport;
 	
 		long beats = (long)spinBeats.Value;
-		long selStart = (long)spinSelStart.Value;
-		long selEnd = (long)spinSelEnd.Value;
+		long selStart = (long)spinFrames.Value;
+		long selEnd = 0;
 		
 		if (new Timecode() == tc.SelectionLength) {
 			tc.SelectionStart = tc.CursorPosition + Timecode.FromFrames(selStart);
@@ -582,6 +617,13 @@ public class NavigateControl : UserControl {
 			tc.SelectionStart = tc.SelectionStart + Timecode.FromFrames(selStart);
 			tc.SelectionLength = tc.SelectionLength + Timecode.FromFrames(selEnd - selStart);
 		}
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+	}
+	
+	void btnReset_Click(object sender, EventArgs e) {
+	try {
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -943,10 +985,9 @@ public class NavigateControl : UserControl {
 		}
 		
 		frameCount = (regionEvent.Start - prevRegionEvent.Start).FrameCount;
-		spinSelStart.Maximum = frameCount;
-		spinSelEnd.Minimum = -frameCount;
+		spinFrames.Maximum = frameCount;
 		
-		lblBeats.Text = "b (1f=" + frameCount + "b)";
+		lblFrameCount.Text = "1 beat = " + frameCount + " frames";
 		
 		// set cursor position preserving selection
 		TransportControl tc = Common.vegas.Transport;
