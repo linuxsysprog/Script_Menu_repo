@@ -63,15 +63,18 @@ public class NavigateControl : UserControl {
 	private double prevTrackBPM = 0.0;
 	private double trackBPM = 0.0;
 	
+	private List<RateRegion> rateRegions = new List<RateRegion>();
+	private List<RateRegion> prevRateRegions = new List<RateRegion>();
+	
 	public Track audioTrack = null;
 	public Track beepTrack = null;
+	
 	private double[] rates;
 	
 	private Timer timer = new Timer();
 	private int clickCount = 0;
 	
-	private List<RateRegion> rateRegions = new List<RateRegion>();
-	private List<RateRegion> prevRateRegions = new List<RateRegion>();
+	private long frameCount = 0;
 	
 	// audio group box
 	private GroupBox gbAudio = new GroupBox();
@@ -91,7 +94,6 @@ public class NavigateControl : UserControl {
 	private GroupBox gbSel = new GroupBox();
 	
 	private Label lblFrameCount = new Label();
-	private long frameCount = 0;
 	
 	private NumericUpDown spinBeats = new MyNumericUpDown();
 	private Label lblBeats = new Label();
@@ -110,11 +112,11 @@ public class NavigateControl : UserControl {
 	private Button btnSelEndMinus = new MyButton();
 	private Button btnSelEndPlus = new MyButton();
 	
-	private Button btnZoom = new MyButton();
-	private Label lblZoom = new Label();
-	
 	private Button btnReset = new MyButton();
 	private Label lblReset = new Label();
+	
+	private Button btnZoom = new MyButton();
+	private Label lblZoom = new Label();
 	
 	// nav group box
 	private GroupBox gbNav = new GroupBox();
@@ -588,6 +590,26 @@ public class NavigateControl : UserControl {
 	}
 	}
 	
+	void btnReset_Click(object sender, EventArgs e) {
+	try {
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+
+		TransportControl tc = Common.vegas.Transport;
+	
+		if (new Timecode() == tc.SelectionLength) {
+			return;
+		}
+		
+		tc.SelectionLength = new Timecode();
+		SetCursorPosition(tc.SelectionStart);
+	} catch (Exception ex) {
+		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+	}
+	
 	void btnZoom_Click(object sender, EventArgs e) {
 	try {
 		if (null == audioTrack) {
@@ -609,26 +631,6 @@ public class NavigateControl : UserControl {
 		tc.SelectionStart = selection.SelectionStart;
 		tc.SelectionLength = selection.SelectionLength;
 		
-		SetCursorPosition(tc.SelectionStart);
-	} catch (Exception ex) {
-		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-	}
-	}
-	
-	void btnReset_Click(object sender, EventArgs e) {
-	try {
-		if (null == audioTrack) {
-			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
-
-		TransportControl tc = Common.vegas.Transport;
-	
-		if (new Timecode() == tc.SelectionLength) {
-			return;
-		}
-		
-		tc.SelectionLength = new Timecode();
 		SetCursorPosition(tc.SelectionStart);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
