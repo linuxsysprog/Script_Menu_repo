@@ -586,22 +586,19 @@ public class NavigateControl : UserControl {
 
 		TransportControl tc = Common.vegas.Transport;
 		
-		// save 
-		Timecode cursorPosition = tc.CursorPosition;
-		Timecode selectionLength = tc.SelectionLength;
+		// save selection
+		Selection selection = new Selection(tc.SelectionStart, tc.SelectionLength);
 		
 		// zoom
 		tc.SelectionStart = new Timecode();
 		tc.SelectionLength = Timecode.FromFrames(110);
 		tc.ZoomSelection();
-		tc.SelectionLength = new Timecode();
 		
-		// restore
-		if (selectionLength != new Timecode()) {
-			tc.SelectionLength = selectionLength;
-		}
+		// restore selection
+		tc.SelectionStart = selection.SelectionStart;
+		tc.SelectionLength = selection.SelectionLength;
 		
-		SetCursorPosition(cursorPosition);
+		SetCursorPosition(tc.SelectionStart);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
@@ -916,8 +913,10 @@ public class NavigateControl : UserControl {
 		} else {
 			// invert selection
 			if (tc.SelectionLength != new Timecode()) {
-				tc.SelectionStart = tc.SelectionStart + tc.SelectionLength;
-				tc.SelectionLength = new Timecode() - tc.SelectionLength;
+				Selection selection = new Selection(tc.SelectionStart + tc.SelectionLength, new Timecode() - tc.SelectionLength);
+				tc.SelectionStart = selection.SelectionStart;
+				tc.SelectionLength = selection.SelectionLength;
+				SetCursorPosition(tc.SelectionStart);
 			}
 		}
 	} catch (Exception ex) {
