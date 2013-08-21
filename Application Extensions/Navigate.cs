@@ -1006,7 +1006,7 @@ public class NavigateControl : UserControl {
 			tc.SelectionStart = position;
 		}
 		
-		tc.ViewCursor(true);
+		tc.ViewCursor(false);
 		
 		// ensure continuous playback
 		if (tc.IsPlaying) {
