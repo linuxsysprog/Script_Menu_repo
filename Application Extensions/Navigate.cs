@@ -579,6 +579,11 @@ public class NavigateControl : UserControl {
 	
 	void btnZoom_Click(object sender, EventArgs e) {
 	try {
+		if (null == audioTrack) {
+			MessageBox.Show("Audio track not found", Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return;
+		}
+
 		TransportControl tc = Common.vegas.Transport;
 		
 		// save 
@@ -624,6 +629,14 @@ public class NavigateControl : UserControl {
 	
 	void btnReset_Click(object sender, EventArgs e) {
 	try {
+		TransportControl tc = Common.vegas.Transport;
+	
+		if (new Timecode() == tc.SelectionLength) {
+			return;
+		}
+		
+		tc.SelectionLength = new Timecode();
+		SetCursorPosition(tc.SelectionStart);
 	} catch (Exception ex) {
 		MessageBox.Show(ex.Message, Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
