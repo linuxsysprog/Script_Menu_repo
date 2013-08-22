@@ -832,15 +832,16 @@ x write batch slow down scripts
 	x document
 	$ wait for saving dialog to go away
 	- fix aspect ratio (PAR?)
-- write horizontal navigation plus my own play controls
-	- redesign
+x write horizontal navigation plus my own play controls
+	x redesign
+		? think of quantizing navigation
 		x split app ext up to Calculate Tempo and TC
 		x extract calc tempo into a stand-alone app ext
 		x zoom to fav scale
 		x simplify nav by assuming there are only 3 rates: 100%, 50% and 25%
 		x look for 1.1 not BPM
-		- create Navigate app ext
-			- the general principle for all controls is to preserve other controls' state
+		x create Navigate app ext
+			x the general principle for all controls is to preserve other controls' state
 			x all distances should be scaled for 50% and 25% rates
 			x implement tooltips
 			x create files&icons
@@ -848,20 +849,50 @@ x write batch slow down scripts
 				x Audio
 					x add L/Both/R radio buttons to choose which channels to play
 					x add mute audio/beeps checkboxes
+					x do not re-init on track change
+					x is there a bug with mute click
 				x Selection
+					x consult channel mapping and mute checkboxes on track change
+						x default mute click to mute
+					x add a button to reset selection
+					x move buttons around, add labels: Reset, Apply, Count-in, Zoom
+					x default beats to 1
+					x add -/+ apply buttons for trim start and end, get rid of one spinbox
+					x fix zoom/stop buttons
+						x review selection length across code
+					x implement reset
+					x implement -/+ buttons
+					x change stop not to scroll view
+					x kill selection
+						* easy to do on timeline
+					$ fix bug with spins and comboboxes even handlers crashing
+						x make a tiny Commit button
 					x trim both ends of sel
+						x keep end fixed when trimming start
+						? stop trim from wrapping around
+						x scale selection
+							x horizontally
+							x vertically
+						x preserve selection when moving cursor
+						x preserve selection when zooming
 						x make a nested groupbox
 						x use spin control
 							? display + for positive values
 								* use DomainUpDown
-							- limit range to 1 beat
+							x limit range to 1 beat
 							$ vertical orientation
 						x display beat size in frames
-					x count-in
-						- play two beeps then audio
-						- checkout Project.InsertTime(), Undo
-						- create temporal count-in audio/video events at the end of the project
+					? count-in
+						* play two beeps then audio
+						x checkout Project.InsertTime(), Undo
+							* works
+						? check out creating count-in on a separate track and muting other tracks
+						! create temporal count-in audio/video events at the end of the project
+							* doesn't work, no notification on stopped
+					x change zoom from checkbox to button
 				x Navigation
+					? fix bug with FindRegionEvent(): put cursor to the left off the first beat of the first track,
+						go down one track, the cursor will move to the last beat in the region
 					x introduce rate regions
 						x create RateRegion class
 						x extract core function from DumpTrack to common
@@ -873,17 +904,24 @@ x write batch slow down scripts
 					x align behavior with faster/slower
 					x create step left/right buttons
 					x create step size (frames) spinbox
-						- calculate step value
-					- implement auto home
+						x calculate step value
+					? implement auto home
+						x do timer-based button presses
+						x do 4 homes (consecutive clicks): x) first beat in RR x) first RR x) first track x) full init
+					x do double-clicks for up/down left/right
+						$ instead of double-click do push&hold
+					x do not wrap around rate
+					x track offset when switching tracks
+						x read-in track BPM
+						x count offset from nearest beat
 				x Transport Controls
-					- play button resets selection when pressed for the second time
-					- slower/faster buttons
-						- ensure continuous playback
-						- review adding one frame when indexing events array
-							- review next/prev beep
-						x remove not used parameters from GetNNNXXX()
-		- see how an app ext can process key presses
-		- update docs
+					! play button resets selection when pressed for the second time
+						x invert selection on stop
+					x ensure continuous playback for all navigation
+					x remove not used parameters from GetNNNXXX()
+		$ see how an app ext can process key presses
+		x update docs
+		/ test
 	x research
 		x cursor
 			x move
