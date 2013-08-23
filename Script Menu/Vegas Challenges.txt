@@ -495,7 +495,7 @@ x learn how-to test csc return value and conditionally start the program
 / document each script briefly in Subclip How-to.doc
 	x AddObject.cs
 	x Rulers2Objects.cs
-	- LayoutTrack.cs
+	! LayoutTrack.cs
 	x establish documentation format
 	x DumpTrack.cs
 	x AddRuler.cs
@@ -951,7 +951,7 @@ x write horizontal navigation plus my own play controls
 	! think how to get same piece at two different times in Left and Right screen
 	$ find out how-to move cursor back and forth in history or write a script
 	$ write an app ext to monitor cursor position and display the event under it
-? write LayoutTrack.cs
+! write LayoutTrack.cs (abandoned in favor of count-in feature in Navigate.cs)
 	x think which script to use as a model (SpreadBeeps.cs)
 	x create files and icons
 	- input
@@ -1014,6 +1014,9 @@ x write horizontal navigation plus my own play controls
 - see why FillRulers.cs reports things like these:
 148.000 148.000 0.000 F          11 B        9 B .
 192.000 192.000 0.000 S          5 T        4 T .
+x brush up and commit "01 - Example 1 (E diminished arpeggio)" project
+- create "02 - Example 2 (A minor arpeggio)" project
+	- update "Appendix H. A typical workflow" documentation section
 x check out internal preferences
 x check svn properties
 $ fix svn history
