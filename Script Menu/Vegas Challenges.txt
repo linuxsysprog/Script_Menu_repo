@@ -951,6 +951,8 @@ x write horizontal navigation plus my own play controls
 	! think how to get same piece at two different times in Left and Right screen
 	$ find out how-to move cursor back and forth in history or write a script
 	$ write an app ext to monitor cursor position and display the event under it
+	- a bug? when playing a track change will produce a jump
+		* workaround is to click pause prior to changing tracks
 ! write LayoutTrack.cs (abandoned in favor of count-in feature in Navigate.cs)
 	x think which script to use as a model (SpreadBeeps.cs)
 	x create files and icons
