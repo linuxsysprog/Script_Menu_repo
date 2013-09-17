@@ -946,6 +946,9 @@ public class NavigateControl : UserControl {
 				if (tc.SelectionLength != new Timecode()) {
 					tc.SelectionLength = Timecode.FromNanos((int)Math.Round(tc.SelectionLength.Nanos / 2.0));
 				}
+				
+				spinStep.Value /= 2;
+				spinFrames.Value /= 2;
 			}
 		} else {
 			if (srcRateRegionIndex < rateRegions.Count - 1) {
@@ -955,6 +958,9 @@ public class NavigateControl : UserControl {
 				if (tc.SelectionLength != new Timecode()) {
 					tc.SelectionLength = tc.SelectionLength + tc.SelectionLength;
 				}
+				
+				spinStep.Value += spinStep.Value;
+				spinFrames.Value += spinFrames.Value;
 			}
 		}
 		
