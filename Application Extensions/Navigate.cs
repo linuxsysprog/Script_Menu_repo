@@ -69,8 +69,6 @@ public class NavigateControl : UserControl {
 	public Track audioTrack = null;
 	public Track beepTrack = null;
 	
-	private double[] rates;
-	
 	private Timer timer = new Timer();
 	private int clickCount = 0;
 	
@@ -143,8 +141,6 @@ public class NavigateControl : UserControl {
 	private Button btnSlower = new Button();
 	
 	public NavigateControl() {
-		rates = new double[] { 100.0, 50.0, 25.0 };
-		
 		timer.Interval = 500;
 		timer.Tick += new EventHandler(timer_Tick);
 		
@@ -709,23 +705,14 @@ public class NavigateControl : UserControl {
 		// build rate regions
 		List<TrackEvent> beepTrackEvents = Common.TrackEventsToTrackEvents(projectTracks[beepTrackIndex].Events);
 		List<TrackEvent> rateRegionStartEvents = Common.FindEventsByRegex(beepTrackEvents, rateRegionStartEventRegex);
-		if (rateRegionStartEvents.Count != rates.Length) {
-			MessageBox.Show("Inconsistent number (" + rateRegionStartEvents.Count +
-				") of rate region start events. " + rates.Length + " expected.",
-				Common.NAV, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return;
-		}
 		
 		rateRegions.Clear();
-		
 		for (int i = 0; i < rateRegionStartEvents.Count; i++) {
 			Timecode start = rateRegionStartEvents[i].Start;
 			Timecode end;
 			List<TrackEvent> regionEvents;
-			double rate = rates[i];
 			
 			Selection selection;
-			
 			if (i < rateRegionStartEvents.Count - 1) {
 				end = rateRegionStartEvents[i + 1].Start;
 				selection = new Selection(rateRegionStartEvents[i].Start,
@@ -741,7 +728,7 @@ public class NavigateControl : UserControl {
 				regionEvents.Add(beepTrackEvents[beepTrackEvents.Count - 1]);
 			}
 		
-			RateRegion rateRegion = new RateRegion(start, end, regionEvents, rate);
+			RateRegion rateRegion = new RateRegion(start, end, regionEvents);
 			rateRegions.Add(rateRegion);
 		}
 		
@@ -1079,15 +1066,13 @@ public class RateRegion {
 	private Timecode start;
 	private Timecode end;
 	private List<TrackEvent> regionEvents;
-	private double rate;
 	
 	private Timecode offset = null;
 
-	public RateRegion(Timecode start, Timecode end, List<TrackEvent> regionEvents, double rate) {
+	public RateRegion(Timecode start, Timecode end, List<TrackEvent> regionEvents) {
 		this.start = start;
 		this.end = end;
 		this.regionEvents = regionEvents;
-		this.rate = rate;
 	}
 	
 	public Timecode Start {
@@ -1108,12 +1093,6 @@ public class RateRegion {
 		}
 	}
 	
-	public double Rate {
-		get {
-			return rate;
-		}
-	}
-	
 	public Timecode Offset {
 		get {
 			return offset;
@@ -1129,7 +1108,7 @@ public class RateRegion {
 	
 	public override string ToString() {
 		return "{start=" + start + ", end=" + end + "}\r\n" +
-		"{rate=" + rate + ", offset=" + offset + "}\r\n" +
+		"{offset=" + offset + "}\r\n" +
 		Common.TrackEventsToString(regionEvents);
 	}
 	
