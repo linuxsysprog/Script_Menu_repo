@@ -58,7 +58,7 @@ public class NavigateControl : UserControl {
 	private Color color = Color.Red;
 	
 	private Regex rateRegionStartEventRegex = new Regex("1\\.1");
-	private Regex BPMRegex = new Regex(" ([0-9\\.]+) BPM$");
+	private Regex BPMRegex = new Regex(" ([0-9\\.]+) BPM");
 	
 	private double prevTrackBPM = 0.0;
 	private double trackBPM = 0.0;
