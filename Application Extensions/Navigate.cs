@@ -139,8 +139,8 @@ public class NavigateControl : UserControl {
 	private Button btnPlay = new Button();
 	private Button btnPause = new Button();
 	private Button btnStop = new Button();
-	private Button btnSlower = new Button();
 	private Button btnFaster = new Button();
+	private Button btnSlower = new Button();
 	
 	public NavigateControl() {
 		rates = new double[] { 100.0, 50.0, 25.0 };
@@ -440,8 +440,8 @@ public class NavigateControl : UserControl {
 			btnPlay,
 			btnPause,
 			btnStop,
-			btnSlower,
-			btnFaster});
+			btnFaster,
+			btnSlower});
 			
 		btnPlay.Size = new Size(60, 20);
 		btnPlay.Location = new Point(10, 25);
@@ -461,17 +461,17 @@ public class NavigateControl : UserControl {
 		btnStop.Click += new EventHandler(btnStop_Click);
 		new ToolTip().SetToolTip(btnStop, "Stop");
 		
-		btnSlower.Size = new Size(60, 20);
-		btnSlower.Location = new Point(10, 55);
-		btnSlower.Text = "<<";
-		btnSlower.Click += new EventHandler(btnSlower_Click);
-		new ToolTip().SetToolTip(btnSlower, "Slower");
-		
-		btnFaster.Size = new Size(55, 20);
-		btnFaster.Location = new Point(70, 55);
-		btnFaster.Text = ">>";
+		btnFaster.Size = new Size(60, 20);
+		btnFaster.Location = new Point(10, 55);
+		btnFaster.Text = "<<";
 		btnFaster.Click += new EventHandler(btnSlower_Click);
 		new ToolTip().SetToolTip(btnFaster, "Faster");
+		
+		btnSlower.Size = new Size(55, 20);
+		btnSlower.Location = new Point(70, 55);
+		btnSlower.Text = ">>";
+		btnSlower.Click += new EventHandler(btnSlower_Click);
+		new ToolTip().SetToolTip(btnSlower, "Slower");
 		
 		return gbTC;
 	}
@@ -952,21 +952,21 @@ public class NavigateControl : UserControl {
 		
 		bool faster = (sender == btnFaster);
 		if (faster) {
-			if (srcRateRegionIndex < rateRegions.Count - 1) {
-				tarRateRegion = rateRegions[srcRateRegionIndex + 1];
-				offset = srcRateRegion.Offset + srcRateRegion.Offset;
-				
-				if (tc.SelectionLength != new Timecode()) {
-					tc.SelectionLength = tc.SelectionLength + tc.SelectionLength;
-				}
-			}
-		} else {
 			if (srcRateRegionIndex > 0) {
 				tarRateRegion = rateRegions[srcRateRegionIndex - 1];
 				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 2.0));
 				
 				if (tc.SelectionLength != new Timecode()) {
 					tc.SelectionLength = Timecode.FromNanos((int)Math.Round(tc.SelectionLength.Nanos / 2.0));
+				}
+			}
+		} else {
+			if (srcRateRegionIndex < rateRegions.Count - 1) {
+				tarRateRegion = rateRegions[srcRateRegionIndex + 1];
+				offset = srcRateRegion.Offset + srcRateRegion.Offset;
+				
+				if (tc.SelectionLength != new Timecode()) {
+					tc.SelectionLength = tc.SelectionLength + tc.SelectionLength;
 				}
 			}
 		}
