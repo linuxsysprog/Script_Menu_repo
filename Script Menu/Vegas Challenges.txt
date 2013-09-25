@@ -951,8 +951,33 @@ x write horizontal navigation plus my own play controls
 	! think how to get same piece at two different times in Left and Right screen
 	$ find out how-to move cursor back and forth in history or write a script
 	$ write an app ext to monitor cursor position and display the event under it
-	- a bug? when playing a track change will produce a jump
+	- a bug? when playing, a track change will produce a jump
 		* workaround is to click pause prior to changing tracks
+	x find optimal slow rate (currently 25%)
+		x create a new test project under "Vegas - Vegas"
+		x create some samples
+			x sync up AV
+			x rotate 180 deg
+			x slow down
+		x update navigation code for new rates
+			x rename faster/slower buttons
+			x scale frame/step values on rate change
+			? see if we can autodetect rates
+				* just divide/multiply by 2
+			x remove 3 rates limitation
+				x pull out rates code
+			x choose between:
+				x 100/50/25/10/5
+				x 100/50/10
+				x 100/50/25/12.5/6.25
+					* this one
+					x add rates to excel calc
+					x check how Transcribe!/AviSynth handle fractional rates
+						* both ok
+					! label 1x/2x/4x/8x/16x
+	? fix the bug with switching tracks in "02 - Example 2 (A minor arpeggio)"
+		* can't reproduce
+	x modify code to simplify BPM labels
 ! write LayoutTrack.cs (abandoned in favor of count-in feature in Navigate.cs)
 	x think which script to use as a model (SpreadBeeps.cs)
 	x create files and icons
@@ -1018,7 +1043,25 @@ x write horizontal navigation plus my own play controls
 192.000 192.000 0.000 S          5 T        4 T .
 x brush up and commit "01 - Example 1 (E diminished arpeggio)" project
 - create "02 - Example 2 (A minor arpeggio)" project
-	- update "Appendix H. A typical workflow" documentation section
+	x update "Appendix H. A typical workflow" documentation section
+	- fix project:
+		x sync up audio/video
+		x throw away x) Take2 x) splits
+		x add Take4 from Relentless website
+			x when normalizing, shouldn't have stretched video
+				* have fixed that
+			x create x) close-ups and x) beep track
+		- slow down tracks
+			- employ MainConcept Reference
+				- check if slow down scripts desync AV
+					- at 10s and 100s
+					- at 50% and 6.25%
+				- check if MCR desyncs AV
+					-> 100%
+					- 6.25%
+				- create a test project in "Vegas - Vegas"
+				- check Vegas locking up
+		- remove garbage from svn and recommit
 x check out internal preferences
 x check svn properties
 $ fix svn history
