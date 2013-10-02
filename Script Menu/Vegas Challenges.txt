@@ -1042,26 +1042,51 @@ x write horizontal navigation plus my own play controls
 148.000 148.000 0.000 F          11 B        9 B .
 192.000 192.000 0.000 S          5 T        4 T .
 x brush up and commit "01 - Example 1 (E diminished arpeggio)" project
-- create "02 - Example 2 (A minor arpeggio)" project
+x create "02 - Example 2 (A minor arpeggio)" project
 	x update "Appendix H. A typical workflow" documentation section
-	- fix project:
+	x fix project:
 		x sync up audio/video
 		x throw away x) Take2 x) splits
 		x add Take4 from Relentless website
 			x when normalizing, shouldn't have stretched video
 				* have fixed that
 			x create x) close-ups and x) beep track
-		- slow down tracks
-			- employ MainConcept Reference
-				- check if slow down scripts desync AV
-					- at 10s and 100s
-					- at 50% and 6.25%
-				- check if MCR desyncs AV
-					-> 100%
-					- 6.25%
-				- create a test project in "Vegas - Vegas"
-				- check Vegas locking up
-		- remove garbage from svn and recommit
+		x slow down tracks
+			? check if slow down scripts break AV sync
+				? by ?) 50% ?) 6.25%
+				? check at ?) 10s ?) 100s
+			! employ MainConcept Reference
+				x check if MCR breaks AV sync
+					* it freaking does
+					x create a test project in "Vegas - Vegas"
+				! check Vegas locking up
+			x render in Vegas using "Sony AVC/MVC" plugin
+				x check for AV desync
+					* no desync
+					x add to test project
+				x modify RenderAll.cs to convert a batch of AVIs to MP4s
+		? clean up project and recommit
+		x create render project
+			x double-check beep/audio tracks alignment
+		x create master project
+		$ test project
+			* Test Plan
+			$ Audio
+			$ Selection
+			$ Navigation
+				? saw 32f in Step textbox
+				? beat left/right buttons take me between the beats
+				? selection distorts when switching rate, sometimes
+				x Init (home position)
+				x Faster/Slower
+					x Take1 misaligned at 6.25%
+						x re$render
+					* 1 frame off
+						$ find out why
+			$ TC
+- create "03 - Example 3 (A minor arpeggios)" project
+- move paper-based Lesson Plans to Excel
+x improve lighting in the room
 x check out internal preferences
 x check svn properties
 $ fix svn history
