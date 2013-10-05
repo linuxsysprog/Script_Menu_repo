@@ -117,8 +117,8 @@ public class EntryPoint : Form {
 		} catch (Exception ex) {
 			throw new Exception("Invalid percentage");
 		}
-		if (f < 25.0 || f > 400.0) {
-			throw new Exception("Percentage should stay within 25.0% - 400.0% range");
+		if (f < 25.0 || f > 1600.0) {
+			throw new Exception("Percentage should stay within 25.0% - 1600.0% range");
 		}
 	}
 	
