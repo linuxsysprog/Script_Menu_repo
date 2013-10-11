@@ -1086,10 +1086,25 @@ x create "02 - Example 2 (A minor arpeggio)" project
 			$ TC
 x extend beep spread range up to 1600%
 	x update docs
-x create "03 - Example 3 (A minor arpeggios)" project
+- create "03 - Example 3 (A minor arpeggios)" project
 	x estimate time in number of sessions
 		x 1 2 (close-ups completed) 3 (beep and slowed down tracks completed) 4 (render project completed) 5 (done) 
+	- moratorium on Ex2,3 until plugged in
+		- make plugged-in setup for guitar
+			- level PC and guitar volumes
+	- add Take2
+	- check track levels (LR hands)
+	- rethink finger rolling
+	- write out alternative Seg2,3
+	x fix bug: incorrect offset when switching rate
+		x update docs
+		* made 100% 25% 6.25% rates standard
 - create "04 - Example 4" project
+	x add Take2
+	x 1 2 (beep tracks completed) 3 (slowed down tracks completed) 4 5 
+	- transcribe example
+		x add ghosted (3rd) stave; 3 states (staves) now include: pressed, released, ghosted
+- transcribe Ex1b
 - move paper-based Lesson Plans to Excel
 x improve lighting in the room
 x check out internal preferences
