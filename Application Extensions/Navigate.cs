@@ -941,26 +941,26 @@ public class NavigateControl : UserControl {
 		if (faster) {
 			if (srcRateRegionIndex > 0) {
 				tarRateRegion = rateRegions[srcRateRegionIndex - 1];
-				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 2.0));
+				offset = Timecode.FromNanos((int)Math.Round(srcRateRegion.Offset.Nanos / 4.0));
 				
 				if (tc.SelectionLength != new Timecode()) {
-					tc.SelectionLength = Timecode.FromNanos((int)Math.Round(tc.SelectionLength.Nanos / 2.0));
+					tc.SelectionLength = Timecode.FromNanos((int)Math.Round(tc.SelectionLength.Nanos / 4.0));
 				}
 				
-				spinStep.Value /= 2;
-				spinFrames.Value /= 2;
+				spinStep.Value /= 4;
+				spinFrames.Value /= 4;
 			}
 		} else {
 			if (srcRateRegionIndex < rateRegions.Count - 1) {
 				tarRateRegion = rateRegions[srcRateRegionIndex + 1];
-				offset = srcRateRegion.Offset + srcRateRegion.Offset;
+				offset = Timecode.FromNanos(srcRateRegion.Offset.Nanos * 4);
 				
 				if (tc.SelectionLength != new Timecode()) {
-					tc.SelectionLength = tc.SelectionLength + tc.SelectionLength;
+					tc.SelectionLength = Timecode.FromNanos(tc.SelectionLength.Nanos * 4);
 				}
 				
-				spinStep.Value += spinStep.Value;
-				spinFrames.Value += spinFrames.Value;
+				spinStep.Value *= 4;
+				spinFrames.Value *= 4;
 			}
 		}
 		
