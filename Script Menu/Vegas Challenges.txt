@@ -1042,7 +1042,7 @@ x write horizontal navigation plus my own play controls
 148.000 148.000 0.000 F          11 B        9 B .
 192.000 192.000 0.000 S          5 T        4 T .
 x brush up and commit "01 - Example 1 (E diminished arpeggio)" project
-- transcribe Ex1b
+x transcribe Ex1b
 x create "02 - Example 2 (A minor arpeggio)" project
 	x update "Appendix H. A typical workflow" documentation section
 	x fix project:
@@ -1126,22 +1126,25 @@ x create "04 - Example 4" project
 		x add ghosted (3rd) stave; 3 states (staves) now include: pressed, released, muted (not fully pressed/not fully released)
 			! split 3rd stave into Gho Pre and Gho Rel
 				* there are only 3 states (see above)
-- Ex1a,2,3
-	x rewrite tabs
-	- notate difficult places in multiple staves
-	x rewrite breakdown and exercises
+x Ex1a,2,3
 	/ rethink finger rolling (Ex2,3)
+	! notate difficult places in multiple staves (Ex2,3)
+	x rewrite tabs
+	x rewrite breakdown and exercises
 	! write out alternative Seg2,3 (Ex3)
+x move stuff from 1.txt to guitar wizardry file
+- create "05 - Example 5" project
+	* 1 (finished Take1 close-ups) 2 (finished all close-ups) 3 (slowed down tracks completed) 
 x make plugged-in setup for guitar
 	* moratorium on Ex2,3 until plugged in
 		$ level PC and guitar volumes
 	x reassess guitar technique
 		* moved altogether to guitar wizardry
+			x create guitar wisdom text file to keep ideas on guitar technique, method etc.
+				* read articles on guitar technique on Wikipedia
 		x compare and contrast plugged vs. unplugged
 ! move paper-based Lesson Plans to Excel
 	* opted for generic lesson plan
-x create guitar wisdom text file to keep ideas on guitar technique, method etc.
-	* read articles on guitar technique on Wikipedia
 x improve lighting in the room
 x check out internal preferences
 x check svn properties
