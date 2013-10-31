@@ -1133,8 +1133,12 @@ x Ex1a,2,3
 	x rewrite breakdown and exercises
 	! write out alternative Seg2,3 (Ex3)
 x move stuff from 1.txt to guitar wizardry file
-- create "05 - Example 5" project
-	* 1 (finished Take1 close-ups) 2 (finished all close-ups) 3 (slowed down tracks completed) 
+x create "05 - Example 5" project
+	* 1 (finished Take1 close-ups) 2 (finished all close-ups) 3 (slowed down tracks completed) 4 (render project completed) 5 (done) 
+x create "06 - Example 6 (Echo Lick notated with echo effect)" and "07 - Example 6 (notated without echo effect)" projects
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (rendering tracks) 4 (done) 
+- create "08 - Example 7" project
+	* 
 x make plugged-in setup for guitar
 	* moratorium on Ex2,3 until plugged in
 		$ level PC and guitar volumes
