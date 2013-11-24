@@ -1137,8 +1137,47 @@ x create "05 - Example 5" project
 	* 1 (finished Take1 close-ups) 2 (finished all close-ups) 3 (slowed down tracks completed) 4 (render project completed) 5 (done) 
 x create "06 - Example 6 (Echo Lick notated with echo effect)" and "07 - Example 6 (notated without echo effect)" projects
 	* 1 (close-ups) 2 (beep and slow down tracks) 3 (rendering tracks) 4 (done) 
-- create "08 - Example 7" project
-	* 
+x create "08 - Example 7" project
+	* 1 (close-ups) 2 (beep tracks) 3 (slow down tracks and render) 4 (done) 
+- create "09 - Example 8" project
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
+? all things Guitar Rig
+	! try to remap mic and phones jacks to line-in/line-out
+	- connect Zoom to mic input
+		x adjust input and output levels and write down their settings
+			* Levels->Microphone: 20, "Microphone Boost": 0.0 dB
+			* Zoom master volume: 10 (40)
+		- read on input/output impedances
+	- find out if it's possible to have an effects loop within Guitar Rig's stack
+	- read on amplifier modeling
+	x install ASIO
+		- find out difference in latency ???
+	- install VAC
+	- find and read the article on Windows optimization for real-time audio
+		- run the two diagnostic tools
+	- learn to do simple recording in Vegas
+	- research mouse as MIDI controller
+	- read Premier Guitar article that mentions Eric Johnson's setup
+- print articles from Yngwie's official website
+- guitar wizardry
+	x apply Normal style to all text
+	x headers. Fix case, apply Heading 2, hard-format main header
+	x insert copyright line
+	x insert TOC
+	x create a style for italics
+	x convert tabs to outlined lists, bullets and normal text
+		x join paragraphs
+		x add outer list
+		x add bullets
+		x add inner paragraphs
+		x apply sentence case to chunks of text, add full stops
+	x replace w/ with with
+	x replace / and -) with , and and/or
+	x fix oddities, general editing
+	x replace some LH/RH with right/left hand
+	x replace pima with finger names
+	x complete "Awareness"
+	- complete "Challenge"
 x make plugged-in setup for guitar
 	* moratorium on Ex2,3 until plugged in
 		$ level PC and guitar volumes
