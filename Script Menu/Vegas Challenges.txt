@@ -1139,8 +1139,14 @@ x create "06 - Example 6 (Echo Lick notated with echo effect)" and "07 - Example
 	* 1 (close-ups) 2 (beep and slow down tracks) 3 (rendering tracks) 4 (done) 
 x create "08 - Example 7" project
 	* 1 (close-ups) 2 (beep tracks) 3 (slow down tracks and render) 4 (done) 
-- create "09 - Example 8" project
+x create "09 - Example 8" project
 	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
+x create "10 - Example 9" project
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
+x create "11 - Example 10 (C harmonic minor)" project
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
+- create "12 - Example 11" project
+	* 
 ? all things Guitar Rig
 	! try to remap mic and phones jacks to line-in/line-out
 	- connect Zoom to mic input
