@@ -1145,8 +1145,8 @@ x create "10 - Example 9" project
 	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
 x create "11 - Example 10 (C harmonic minor)" project
 	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
-- create "12 - Example 11" project
-	* 
+x create "12 - Example 11" project
+	* 1 (close-ups and beep tracks) 2 (slow down tracks) 3 (render) 4 (done) 
 ? all things Guitar Rig
 	! try to remap mic and phones jacks to line-in/line-out
 	- connect Zoom to mic input
