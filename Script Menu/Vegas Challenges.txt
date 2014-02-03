@@ -1164,6 +1164,99 @@ x create "12 - Example 11" project
 	- learn to do simple recording in Vegas
 	- research mouse as MIDI controller
 	- read Premier Guitar article that mentions Eric Johnson's setup
+	- My Guitar Rig
+		- signal chain: Jackson->Yerasov->Eventide->Roland/ThinkPad->Behringer
+		- Jackson Performer PS-4 (Jackson)
+			- INTFs
+				- bridge passive humbucker output, 8.5 kohm
+		-  Yerasov PTERODRIVER PD-5 (Yerasov)
+			- INTFs
+				- INPUT, 1 Mohm
+				- OUTPUT-COMBO
+				- OUTPUT-MIXER
+			- CTRLs
+				- stomp switches
+					- CLEAN/LEAD
+					- LO/HI
+				- knobs
+					- GAIN
+						- CLEAN
+						- LEAD
+					- EQ
+						- BASS
+						- MIDDLE
+						- TREBLE
+					- VOLUME
+						- CLEAN
+						- LEAD
+		- Eventide TimeFactor (Eventide)
+			- INTFs
+				- Input Impedance 500K ohms, In Lvl Guitar/Line
+					- Input 1
+					- Input 2
+				- Output Impedance 470 ohms (Recommended Load Impedance 10K ohms or greater), Out Lvl Amp/Line
+					- Output 1
+					- Output 2
+			- CTRLs
+				- stomp switches
+					- Active
+					- Repeat
+					- Tap
+				- Encoder
+				- knobs
+					- Dry/Wet Mix
+					- A/B Dly Mix
+					- Dly Time A
+					- Dly Time B
+					- Fdbk A
+					- Fdbk B
+					- Xnob
+					- Depth
+					- Speed
+					- Filter
+		- Roland QUAD-CAPTURE USB 2.0 Audio Interface (Roland)
+			- INTFs, (0 dBu=0.775 Vrms), Head Room 14 dB
+				- (TRS phone jacks, balanced), Input Impedance 15 k ohms (balanced), Nominal Input Level -50 to +4 dBu
+					- INPUT 1, (supports high impedance, Hi-Z)
+					- INPUT 2
+				- (TRS phone jacks, balanced), Output Impedance 2 k ohms (balanced), Nominal Output Level: +0 dBu (balanced)
+					- OUTPUT 1
+					- OUTPUT 2
+				- (TRS phone jack), PHONES, Output Impedance 47 ohms, stereo
+			- CTRLs
+				- switches
+					- GROUND LIFT, NOR/LIFT
+					- Hi-Z (INPUT 1) ON/OFF
+				- pushbuttons
+					- AUTO-SENS
+					- DIRECT MONITOR-MONO
+				- knobs
+					- SENS 1
+					- SENS 2
+					- DIRECT MONITOR-PLAYBACK/INPUT MIX
+					- DIRECT MONITOR-OUTPUT
+		- Lenovo ThinkPad X200s (ThinkPad)
+			- QUAD-CAPTURE Control Panel
+				- PREAMP
+				- COMPRESSOR
+				- MIXER
+			- Sony Vegas
+		- Behringer VINTAGER AC108 (Behringer)
+			- Output stage power: 15 Watts RMS into 4 Ohms
+			- Loudspeaker: 8" vintage design guitar loudspeaker, Impedance 4 Ohms, Power rating 20 Watts
+			- INTFs
+				- Inst. Input
+				- CD Input, stereo
+				- Headphones, stereo
+			- CTRLs
+				- Gain
+					- Gain knob
+					- Gain push switch
+				- EQ
+					- Bass knob
+					- Treble knob
+					- Shift push switch
+				- Master volume knob
 - print articles from Yngwie's official website
 - guitar wizardry
 	x apply Normal style to all text
