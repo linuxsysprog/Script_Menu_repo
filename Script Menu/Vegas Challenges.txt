@@ -1165,98 +1165,154 @@ x create "12 - Example 11" project
 	- research mouse as MIDI controller
 	- read Premier Guitar article that mentions Eric Johnson's setup
 	- My Guitar Rig
-		- signal chain: Jackson->Yerasov->Eventide->Roland/ThinkPad->Behringer
+		- signal chain: Jackson->Yerasov->Eventide->Behringer->Octava->Roland/ThinkPad
 		- Jackson Performer PS-4 (Jackson)
 			- INTFs
-				- bridge passive humbucker output, 8.5 kohm
+				- bridge passive humbucker output, 8.5 kohm [1, Signal start]
 		-  Yerasov PTERODRIVER PD-5 (Yerasov)
 			- INTFs
-				- INPUT, 1 Mohm
-				- OUTPUT-COMBO
+				- INPUT, 1 Mohm [2]
+				- OUTPUT-COMBO [3]
 				- OUTPUT-MIXER
 			- CTRLs
 				- stomp switches
-					- CLEAN/LEAD
-					- LO/HI
+					- LO/HI [LO]
+					- CLEAN/LEAD [CLEAN]
 				- knobs
 					- GAIN
-						- CLEAN
+						- CLEAN [12 o'clock]
 						- LEAD
 					- EQ
-						- BASS
-						- MIDDLE
-						- TREBLE
+						- BASS [12 o'clock]
+						- MIDDLE [12 o'clock]
+						- TREBLE [12 o'clock]
 					- VOLUME
-						- CLEAN
+						- CLEAN [12 o'clock]
 						- LEAD
 		- Eventide TimeFactor (Eventide)
 			- INTFs
 				- Input Impedance 500K ohms, In Lvl Guitar/Line
-					- Input 1
+					- Input 1 [4, In Lvl Guitar]
 					- Input 2
 				- Output Impedance 470 ohms (Recommended Load Impedance 10K ohms or greater), Out Lvl Amp/Line
-					- Output 1
+					- Output 1 [5, Out Lvl Amp]
 					- Output 2
 			- CTRLs
 				- stomp switches
-					- Active
+					- Active [ORANGE LED]
 					- Repeat
 					- Tap
-				- Encoder
+				- Encoder [DigitalDelay]
+				- Tempo ON [120 BPM]
 				- knobs
-					- Dry/Wet Mix
-					- A/B Dly Mix
-					- Dly Time A
+					- Dry/Wet Mix [WET: 50]
+					- A/B Dly Mix [A10+B 0]
+					- Dly Time A [A: 1/4]
 					- Dly Time B
-					- Fdbk A
+					- Fdbk A [FB-A: 20] 
 					- Fdbk B
 					- Xnob
-					- Depth
+					- Depth [DMOD: 0]
 					- Speed
-					- Filter
-		- Roland QUAD-CAPTURE USB 2.0 Audio Interface (Roland)
-			- INTFs, (0 dBu=0.775 Vrms), Head Room 14 dB
-				- (TRS phone jacks, balanced), Input Impedance 15 k ohms (balanced), Nominal Input Level -50 to +4 dBu
-					- INPUT 1, (supports high impedance, Hi-Z)
-					- INPUT 2
-				- (TRS phone jacks, balanced), Output Impedance 2 k ohms (balanced), Nominal Output Level: +0 dBu (balanced)
-					- OUTPUT 1
-					- OUTPUT 2
-				- (TRS phone jack), PHONES, Output Impedance 47 ohms, stereo
-			- CTRLs
-				- switches
-					- GROUND LIFT, NOR/LIFT
-					- Hi-Z (INPUT 1) ON/OFF
-				- pushbuttons
-					- AUTO-SENS
-					- DIRECT MONITOR-MONO
-				- knobs
-					- SENS 1
-					- SENS 2
-					- DIRECT MONITOR-PLAYBACK/INPUT MIX
-					- DIRECT MONITOR-OUTPUT
-		- Lenovo ThinkPad X200s (ThinkPad)
-			- QUAD-CAPTURE Control Panel
-				- PREAMP
-				- COMPRESSOR
-				- MIXER
-			- Sony Vegas
+					- Filter [FLT: 0]
 		- Behringer VINTAGER AC108 (Behringer)
 			- Output stage power: 15 Watts RMS into 4 Ohms
 			- Loudspeaker: 8" vintage design guitar loudspeaker, Impedance 4 Ohms, Power rating 20 Watts
 			- INTFs
-				- Inst. Input
+				- Inst. Input [6]
 				- CD Input, stereo
 				- Headphones, stereo
 			- CTRLs
 				- Gain
 					- Gain knob
-					- Gain push switch
+					- Gain push switch [OFF]
 				- EQ
-					- Bass knob
-					- Treble knob
-					- Shift push switch
-				- Master volume knob
+					- Bass knob [12 o'clock]
+					- Treble knob [12 o'clock]
+					- Shift push switch [OFF]
+				- Master volume knob [12 o'clock]
+		- Octava MD 80 (Octava)
+			- INTFs
+				- Output, Output Impedance 200 ohms (Recommended Load Impedance 1000 ohms or greater) [7]
+		- Roland QUAD-CAPTURE USB 2.0 Audio Interface (Roland)
+			- INTFs, (0 dBu=0.775 Vrms), Head Room 14 dB
+				- XLR
+					- Input Impedance 4.8 k ohms (balanced), Nominal Input Level -60 to -6 dBu
+						- INPUT 1 [8]
+						- INPUT 2
+				- TRS
+					- Input Impedance 15 k ohms (?balanced?), Nominal Input Level -50 to +4 dBu
+						- INPUT 1, (supports high impedance, Hi-Z)
+						- INPUT 2
+					- Output Impedance 2 k ohms (balanced), Nominal Output Level: +0 dBu (balanced)
+						- OUTPUT 1
+						- OUTPUT 2
+					- Output Impedance 47 ohms (stereo)
+						- PHONES [9, Signal end]
+			- CTRLs
+				- switches
+					- GROUND LIFT, NOR/LIFT [NOR]
+					- PHANTOM, 48V/OFF [OFF]
+					- Hi-Z (INPUT 1), ON/OFF
+				- pushbuttons
+					- AUTO-SENS [OFF]
+					- DIRECT MONITOR-MONO [ON]
+				- knobs
+					- SENS 1 [27.0]
+					- SENS 2 [0.0]
+					- DIRECT MONITOR-PLAYBACK/INPUT MIX [mark 9]
+					- DIRECT MONITOR-OUTPUT [mark 9]
+		- Lenovo ThinkPad X200s (ThinkPad)
+			- Windows
+				- Sound->Playback: 1-2 QUAD-CAPTURE Default Device->Properties->Levels: 62% (31)
+				- Sound->Recording: 1-2 QUAD-CAPTURE Default Device->Properties
+					- Listen->Listen to this device: uncheck
+					- Levels: 100%
+			- QUAD-CAPTURE Control Panel
+				- PREAMP
+					- AUTO SENS [OFF]
+					- INPUT 1
+						- LO-CUT [OFF]
+						- PHASE [OFF]
+						- SENS [27.0]
+					- INPUT 2
+						- SENS [0.0]
+				- COMPRESSOR
+					- INPUT 1
+						- BYPASS [ON]
+					- INPUT 2
+						- BYPASS [ON]
+				- MIXER
+					- INPUT 1 [-6.0]
+					- INPUT 2 [-INF]
+					- COAX (3/4) [-INF]
+			- Sony Vegas
+				- Recorded Files->Show after every recording session: uncheck
+				- Options->Preferencies->Audio Devices
+					- Audio device type: QUAD-CAPTURE
+						- Default stereo and front playback device: 1-2/1-2(2)
+						- Default audio recording device: 1-2
+				- Audio Track
+					- UnFXAudio
+					- Vol: 5.0 dB
+		x study Eventide's features:
+			/ tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS)
+				x relative delay times
+				$ find out about "tapping on tempo increments bpm" thing
+			x looper
+		/ define default values for each link:
+			* assess different configurations in terms of noise/volume (levels)/tone (EQ)/clean vs. distorted/compression
+			/ gains
+			- EQs
+			/ volumes (normalize all levels)
+			/ other
+		x setup Roland control panel
+		/ setup Vegas
+			$ setup metronome
+			$ MIDI sync to Eventide
+			$ learn about Audio Busses
+		- setup software tuner
+		- build a new acronis image
 - print articles from Yngwie's official website
 - guitar wizardry
 	x apply Normal style to all text
