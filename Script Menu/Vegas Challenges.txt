@@ -1296,22 +1296,31 @@ x create "12 - Example 11" project
 					- UnFXAudio
 					- Vol: 5.0 dB
 		x study Eventide's features:
-			/ tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS)
-				x relative delay times
-				$ find out about "tapping on tempo increments bpm" thing
+			x tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS)
+				x relative delay times (mS)
+				x find out about "tapping on tempo increments bpm" thing
+					* solved, it is just continuous tapping
 			x looper
-		/ define default values for each link:
-			* assess different configurations in terms of noise/volume (levels)/tone (EQ)/clean vs. distorted/compression
-			/ gains
-			- EQs
-			/ volumes (normalize all levels)
-			/ other
-		x setup Roland control panel
+		x define default sensible values for each link:
+			$ assess different configurations in terms of noise/volume (levels)/tone (EQ)/clean vs. distorted/compression
+			x gains
+			x EQs
+			x volumes (levels)
+			x other
 		/ setup Vegas
-			$ setup metronome
+			$ setup Vegas metronome
 			$ MIDI sync to Eventide
 			$ learn about Audio Busses
-		- setup software tuner
+			- create recording template
+		- install Roland drivers and control panel
+			- create a shortcut
+		- install factorlib software
+		- install&configure:
+			- metronome
+			- timer
+			- tuner
+			- Digital Level Meter by Paul Marshall
+		- configure default values for each link
 		- build a new acronis image
 - print articles from Yngwie's official website
 - guitar wizardry
