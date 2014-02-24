@@ -1169,7 +1169,7 @@ x create "12 - Example 11" project
 		- Jackson Performer PS-4 (Jackson)
 			- INTFs
 				- bridge passive humbucker output, 8.5 kohm [1, Signal start]
-		-  Yerasov PTERODRIVER PD-5 (Yerasov)
+		- Yerasov PTERODRIVER PD-5 (Yerasov)
 			- INTFs
 				- INPUT, 1 Mohm [2]
 				- OUTPUT-COMBO [3]
@@ -1287,7 +1287,6 @@ x create "12 - Example 11" project
 					- INPUT 2 [-INF]
 					- COAX (3/4) [-INF]
 			- Sony Vegas
-				- Recorded Files->Show after every recording session: uncheck
 				- Options->Preferencies->Audio Devices
 					- Audio device type: QUAD-CAPTURE
 						- Default stereo and front playback device: 1-2/1-2(2)
@@ -1295,6 +1294,8 @@ x create "12 - Example 11" project
 				- Audio Track
 					- UnFXAudio
 					- Vol: 5.0 dB
+					- select mono 1-2 as input
+				- Recorded Files->Show after every recording session: uncheck
 		x study Eventide's features:
 			x tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS)
 				x relative delay times (mS)
@@ -1307,21 +1308,26 @@ x create "12 - Example 11" project
 			x EQs
 			x volumes (levels)
 			x other
-		/ setup Vegas
+		x setup Vegas
 			$ setup Vegas metronome
 			$ MIDI sync to Eventide
 			$ learn about Audio Busses
-			- create recording template
-		- install Roland drivers and control panel
-			- create a shortcut
-		- install factorlib software
-		- install&configure:
-			- metronome
-			- timer
-			- tuner
-			- Digital Level Meter by Paul Marshall
-		- configure default values for each link
-		- build a new acronis image
+			x create recording template
+		x install Roland drivers and control panel
+			x create a shortcut
+		x install factorlib software
+		x install&configure:
+			x timer
+			x metronome
+			x tuner
+			x Digital Level Meter by Paul Marshall
+		x configure default values for each link
+		x build a new acronis image
+x create Nuances.xls
+	x watch and make notes x) Sergey Rudnev's two videos covering vibrato and bends x) Guthrie Govan's videos on vibrato and bends
+	x extract and classify nuances from Ex1-Ex11
+- create "01 - Example 13 Demon Driver" project
+	* 
 - print articles from Yngwie's official website
 - guitar wizardry
 	x apply Normal style to all text
