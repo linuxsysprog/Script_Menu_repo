@@ -1326,8 +1326,83 @@ x create "12 - Example 11" project
 x create Nuances.xls
 	x watch and make notes x) Sergey Rudnev's two videos covering vibrato and bends x) Guthrie Govan's videos on vibrato and bends
 	x extract and classify nuances from Ex1-Ex11
-- create "01 - Example 13 Demon Driver" project
-	* 
+x create "01 - Example 13 Demon Driver" project
+	* 1 (close-ups) 2 (close-ups) 3 (close-ups) 4 (beep tracks) 5 (beep tracks) 6 (slow down tracks, half a day) 7 (render)
+		8 (render) 9 (render) 
+	? create Transcription.tmpl.xls
+	- transcribe project. Plan
+		* 1 (Plan, pass 1) 2 (pass 5) 3 (pass 7) 4 (pass 7) 5 (pass 10) 6 (pass 11) 7 (pass 13) 8 (pass 13) 9 (pass 13) 10 (pass 13)
+			11 (pass 13) 12 (pass 13) 13 (pass 14) 14 (pass 15) 15 (pass 16) 16 (pass 16) 17 (pass 16) 18 (pass 16) 
+		- determine
+			- name "01 - Example 13 Demon Driver"
+			- length 30 bars
+			- tempo 135 BPM
+			- time signature 4/4
+			- common subdivision(s) 6
+				- notes/s 13
+			- key signature(s) Bm, C#m
+			- structure
+				* start length name
+				- 1.1  1.0 Drums intro
+				- 2.1  4.2 Verse1
+				- 6.3  5.2 Verse2
+				- 12.1 7.3 Gtr solo
+				- 19.4 4.2 Verse3
+				- 24.2 6.2 Vrs4 + end
+		- transcribe takes first, then verses, then guitar solo
+			* transcribe "the core" first
+				- note
+					- pitch (string/fret number)
+					- duration
+				- LH
+					- finger number
+					- movement
+						- fret -) hammer on -) tap
+						- lift -) pull off
+				- RH
+					- up stroke
+					- down stroke
+			- Take1
+				- pass 1, L
+				- pass 2, R
+			- Take2
+				- pass 3, L, compare with Take1L
+				- pass 4, R, compare with Take1R
+			- Verse1
+				- pass 5, L, compare with Take1L
+				- pass 6, R, compare with Take2R
+			- Verse2
+				- pass 7, L, compare with Verse1, transcribe differences
+				- pass 8, R, compare with Verse1, transcribe differences
+			- Verse3
+				- pass 9, L, compare with Verse1, transcribe differences
+				- pass 10, R, compare with Verse1, transcribe differences
+			- Vrs4 + end
+				- pass 11, L, compare with Verse2, transcribe differences
+				- pass 12, R, compare with Verse2, transcribe differences
+			- Gtr solo
+				- pass 13, L
+				- pass 14, L, double-check notes falling on down beats
+				- pass 15, R
+		- compile sections into final manuscript
+			- pass 16
+		- compare everything with Guitar College transcription
+		* revise nuances
+			- LH
+				- slides
+				- (position shifts)
+				- vibrato
+				- bends
+				- tremolo arm
+			- RH
+				- (picking position)
+				- palm muting
+				- pick staccato
+- add features, fix bugs
+	- think about subdivision-level navigation
+		- add subdivision beep tracks
+		- add divide/multiply by 2/3 buttons
+	- fix bug with switching rates
 - print articles from Yngwie's official website
 - guitar wizardry
 	x apply Normal style to all text
