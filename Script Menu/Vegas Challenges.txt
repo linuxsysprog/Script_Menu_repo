@@ -1332,7 +1332,8 @@ x create "01 - Example 13 Demon Driver" project
 	? create Transcription.tmpl.xls
 	- transcribe project. Plan
 		* 1 (Plan, pass 1) 2 (pass 5) 3 (pass 7) 4 (pass 7) 5 (pass 10) 6 (pass 11) 7 (pass 13) 8 (pass 13) 9 (pass 13) 10 (pass 13)
-			11 (pass 13) 12 (pass 13) 13 (pass 14) 14 (pass 15) 15 (pass 16) 16 (pass 16) 17 (pass 16) 18 (pass 16) 
+			11 (pass 13) 12 (pass 13) 13 (pass 14) 14 (pass 15) 15 (pass 16) 16 (pass 16) 17 (pass 16) 18 (pass 16) 19 (pass 16) 20 (16)
+			21 (pass 17) 22 (pass 17) 
 		- determine
 			- name "01 - Example 13 Demon Driver"
 			- length 30 bars
@@ -1387,17 +1388,21 @@ x create "01 - Example 13 Demon Driver" project
 		- compile sections into final manuscript
 			- pass 16
 		- compare everything with Guitar College transcription
+			- pass 17
 		* revise nuances
 			- LH
-				- slides
-				- (position shifts)
-				- vibrato
+				? slides
+				? (position shifts)
+				? vibrato
 				- bends
-				- tremolo arm
+					* push/pull
+					- pass 18
+				? tremolo arm
 			- RH
-				- (picking position)
-				- palm muting
-				- pick staccato
+				? (picking position)
+				? palm muting
+				? pick staccato
+				? pickup selector switch
 - add features, fix bugs
 	- think about subdivision-level navigation
 		- add subdivision beep tracks
