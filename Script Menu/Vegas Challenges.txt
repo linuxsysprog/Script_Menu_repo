@@ -1403,7 +1403,9 @@ x create "01 - Example 13 Demon Driver" project
 				$ palm muting
 				$ pick staccato
 				$ pickup selector switch
-- create "02 - Example 14 Rising Force" project
+x create "02 - Example 14 Rising Force" project
+	* 1 (close-ups) 2 (beep tracks) 3 (beep tracks and slow down tracks) 4 (render) 5 (done) 
+	- transcribe project. Plan
 - add features, fix bugs
 	- think about subdivision-level navigation
 		- add subdivision beep tracks
