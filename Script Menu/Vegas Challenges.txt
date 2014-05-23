@@ -1354,7 +1354,7 @@ x create "01 - Example 13 Demon Driver" project
 			* transcribe "the core" first
 				- note
 					- pitch (string/fret number)
-					- duration
+					- position/duration
 				- LH
 					- finger number
 					- movement
@@ -1404,8 +1404,30 @@ x create "01 - Example 13 Demon Driver" project
 				$ pick staccato
 				$ pickup selector switch
 x create "02 - Example 14 Rising Force" project
-	* 1 (close-ups) 2 (beep tracks) 3 (beep tracks and slow down tracks) 4 (render) 5 (done) 
-	- transcribe project. Plan
+	* 1 (close-ups) 2 (beep trks) 3 (slow down trks) 4 (render) 5 (done) 6 (plan, pass 1) 7 (pass 1) 8 (pass 3) 9 (pass 4) 10 (pass 5)
+	11 (pass 8) 12 (pass 9) 13 (pass 9) 
+	- attributes
+		- length: 10 bars/18 s
+		- tempo: 130 BPM
+		- time signature: 4/4
+		- subdivisions: 8, 6, 4
+		- notes/s: 17
+		- key signature: Em
+	- core
+		- pass 1, Take1L (string, fret, finger, position/duration)
+		- pass 2, Take1R (up, down, LH: fret/lift/hammer on/pull off/release/tap)
+		- pass 3, Take2L
+		- pass 4, Take2R
+	- nuances
+		- pass 5, VB
+		- pass 6, slides
+		- pass 7, RH accents
+		$ pass N, LH articulation (barre notes isolation)
+		$ pass N, RH P.M., pick staccato
+	- pass 8, compare with GC tabs
+	- pass 9, compile final manuscript
+- create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
+	* 
 - add features, fix bugs
 	- think about subdivision-level navigation
 		- add subdivision beep tracks
