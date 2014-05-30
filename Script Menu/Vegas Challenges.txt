@@ -1427,7 +1427,7 @@ x create "02 - Example 14 Rising Force" project
 	- pass 8, compare with GC tabs
 	- pass 9, compile final manuscript
 - create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
-	* 
+	* 1 (close-ups) 2 (close-ups) 3 (beep tracks) 4 (beep tracks) 5 (slow down tracks) 6 (render) 7 (render) 8 (render) 9 (done) 
 - add features, fix bugs
 	- think about subdivision-level navigation
 		- add subdivision beep tracks
