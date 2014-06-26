@@ -1426,11 +1426,11 @@ x create "02 - Example 14 Rising Force" project
 		$ pass N, RH P.M., pick staccato
 	- pass 8, compare with GC tabs
 	- pass 9, compile final manuscript
-- create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
+x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
 	* 1 (close-ups) 2 (close-ups) 3 (beep trks) 4 (beep tks) 5 (slow down trks) 6 (render) 7 (render) 8 (render) 9 (done) 10 (plan, 1)
 	11 (pass 4) 12 (pass 4) 13 (pass 5) 14 (pass 5) 15 (pass 6/7) 16 (pass 6/7) 17 (pass 8) 18 (pass 10) 19 (pass 10) 20 (pass 12)
-	21 (pass 13) 22 (pass 13) 23 (pass 14) 
-	- properties
+	21 (pass 13) 22 (pass 13) 23 (pass 14) 24 (pass 17) 25 (pass 18) 26 (pass 18) 27 (pass 18) 28 (pass 18) 29 (pass 19) 
+	- statistics
 		- length: 1:04/32 bars
 		- tempo: 125 BPM
 		- time signature: 4/4
@@ -1483,8 +1483,9 @@ x create "02 - Example 14 Rising Force" project
 		x pass 14, RH accents (i.e. wrist stroke)
 		$ pass 15, LH articulation (string muting, i.e. isolating barre notes..)
 		$ pass 16, RH P.M., pick staccato, x) rakes, tremolo arm
-	- pass 17, referencing, compare with GC tabs
-	- pass 18, final interpretation, compile final manuscript
+	x pass 17, referencing, compare with GC tabs
+	x pass 18, (final interpretation), compile final manuscript
+	x pass 19, final check
 - add features, fix bugs
 	- think about subdivision-level navigation
 		- add subdivision beep tracks
