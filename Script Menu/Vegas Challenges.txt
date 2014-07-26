@@ -1323,6 +1323,29 @@ x create "12 - Example 11" project
 			x Digital Level Meter by Paul Marshall
 		x configure default values for each link
 		x build a new acronis image
+	- make a new Acronis image w/ everything installed
+		x books
+			x Senior
+				x extract TOC into a txt file w/ handy outliner
+				x compile a detailed TOC
+					x enumerate plug-ins
+						x not all plug-ins have pictures, search for keyword "free", mark with []
+					x add subsection titles to TOC
+					x add box titles to TOC
+					$ re-adjust plug-in names
+					x shift page numbers
+					x add missing page numbers
+			x Huber
+				x download TOC and tutorial files
+			x Petelin
+				x NOOP
+		- move practice log to Excel
+		- install
+			- plug-ins (with documentation) from Senior's book
+			- BFD2
+			- ReValver
+		- close items in "X200s Software Installation and Configuration Plan"
+			- merge two files into one residing on X200s
 x create Nuances.xls
 	x watch and make notes x) Sergey Rudnev's two videos covering vibrato and bends x) Guthrie Govan's videos on vibrato and bends
 	x extract and classify nuances from Ex1-Ex11
