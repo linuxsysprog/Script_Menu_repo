@@ -1324,7 +1324,11 @@ x create "12 - Example 11" project
 		x configure default values for each link
 		x build a new acronis image
 	- make a new Acronis image w/ everything installed
-		- do a dry run
+		x close items in "X200s Software Installation and Configuration Plan"
+			x merge two files into one residing on X200s; add contents from Raine&Horne
+			x find and merge birthday files into one
+				x add to excel calendar
+		x do a dry run
 		x books
 			x Senior
 				x extract TOC into a txt file w/ handy outliner
@@ -1341,16 +1345,8 @@ x create "12 - Example 11" project
 			x Petelin
 				x NOOP
 		x move practice log to Excel
-		- install
-			- plug-ins (with documentation) from Senior's book
-			- BFD2
-			- ReValver
-		- close items in "X200s Software Installation and Configuration Plan"
-			- merge two files into one residing on X200s
-			x find and merge birthday files into one
-				x add to excel calendar
-		- fix backups
-			- open Aussie_X200s archive in Acronis
+		x fix backups
+			x open Aussie_X200s archive in Acronis
 x create Nuances.xls
 	x watch and make notes x) Sergey Rudnev's two videos covering vibrato and bends x) Guthrie Govan's videos on vibrato and bends
 	x extract and classify nuances from Ex1-Ex11
