@@ -1323,7 +1323,7 @@ x create "12 - Example 11" project
 			x Digital Level Meter by Paul Marshall
 		x configure default values for each link
 		x build a new acronis image
-	- make a new Acronis image w/ everything installed
+	x make a new Acronis image w/ everything installed
 		x close items in "X200s Software Installation and Configuration Plan"
 			x merge two files into one residing on X200s; add contents from Raine&Horne
 			x find and merge birthday files into one
@@ -1510,6 +1510,51 @@ x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
 	x pass 17, referencing, compare with GC tabs
 	x pass 18, (final interpretation), compile final manuscript
 	x pass 19, final check
+- develop Arrange process
+	x extract TOC from Petelin book
+		x beautify TOC
+	x compile statistics from printed score and Vegas project ("03 - Example 15 Trilogy Suite (B harmonic minor)")
+		- statistics
+			- name
+			- instrument(s)
+			- tempo(s)
+			- time signature(s)
+			- key signature(s)
+			- length [measure], [s]
+			- subdivisions
+			- notes/s
+			- structure (Arranger Track)
+				- section name
+					- phrase (lick)
+					- start [measure], [beat]
+					- length [measure], [beat]
+				- start [measure]
+				- length [measure]
+			- repeats
+			- variations
+			- note-level statistics (Marker Track)
+				- note position
+				- note duration
+				- note velocity (accents)
+				- slurs
+				- notes with attack vs. legato notes
+				- vb
+				- slides
+				- sweep picking, flams, tapping
+				- pm, pick staccato, rakes, ghost notes, tremolo arm
+				- let ring
+	x (Petelin book) skim-read a few first lines of each paragraph from: 
+		x От авторов
+		x Введение
+		x intro to each chapter
+		x Заключение
+	x compile a list of relevant sections of Petelin book
+		x map statistics to Cubase features
+	- develop the process
+		- compile a list of steps
+	- create Arrange.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
+- develop Record process
+- develop Mix process
 - add features, fix bugs
 	- think about subdivision-level navigation
 		- add subdivision beep tracks
