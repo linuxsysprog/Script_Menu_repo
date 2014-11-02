@@ -1510,7 +1510,7 @@ x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
 	x pass 17, referencing, compare with GC tabs
 	x pass 18, (final interpretation), compile final manuscript
 	x pass 19, final check
-- develop Arrange process
+x develop Arrange process
 	x extract TOC from Petelin book
 		x beautify TOC
 	x compile statistics from printed score and Vegas project ("03 - Example 15 Trilogy Suite (B harmonic minor)")
@@ -1525,11 +1525,11 @@ x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
 			- notes/s
 			- structure (Arranger Track)
 				- section name
-					- phrase (lick)
-					- start [measure], [beat]
-					- length [measure], [beat]
-				- start [measure]
-				- length [measure]
+				- section start [measure]
+				- section length [measure]
+					- phrase (lick) name
+					- phrase start [measure], [beat]
+					- phrase length [measure], [beat]
 			- repeats
 			- variations
 			- note-level statistics (Marker Track)
@@ -1550,10 +1550,35 @@ x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
 		x Заключение
 	x compile a list of relevant sections of Petelin book
 		x map statistics to Cubase features
-	- develop the process
-		- compile a list of steps
-	- create Arrange.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
+	x develop the process
+		x compile a list of steps
+	x create Arrange.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
+		x reset Cubase
+		x save, Cleanup and commit project
 - develop Record process
+	- Huber book
+		x extract TOC
+			x add missing bits manually
+			! check against 8ed TOC
+			x beautify TOC
+		x outline the book in your head
+			x read full intro to each chapter
+		- compile a list of relevant subsections
+			- read first few lines of first few paragraphs of each subsection and add Record tag to TOC if it is relevant
+		- skim-read tagged sections
+			- read first few lines of each paragraph
+	- Petelin book
+		- skim-read the book (read first few lines of each paragraph) of:
+			- intro to each chapter
+		- compile a list of relevant sections, add Record tag to TOC
+		- develop the process
+			- skim-read tagged sections
+				- compile a list of steps
+	- create Record.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
+		- reset Cubase
+		- fork off Arrange.tmpl.cpr project
+		- implement steps
+		- save, Cleanup and commit project
 - develop Mix process
 - add features, fix bugs
 	- think about subdivision-level navigation
