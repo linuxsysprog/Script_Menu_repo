@@ -1555,25 +1555,51 @@ x develop Arrange process
 	x create Arrange.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
 		x reset Cubase
 		x save, Cleanup and commit project
-- develop Record process
-	- Huber book
+- R&D Record process
+	x Huber book (compile master topic list)
 		x extract TOC
 			x add missing bits manually
 			! check against 8ed TOC
 			x beautify TOC
-		x outline the book in your head
+		x quickly outline the book in your head
 			x read full intro to each chapter
-		- compile a list of relevant subsections
-			- read first few lines of first few paragraphs of each subsection and add Record tag to TOC if it is relevant
-		- skim-read tagged sections
-			- read first few lines of each paragraph
+		x compile a list of relevant subsections
+			x read first few lines of the first few paragraphs of EACH (whoaa) subsection and add Record tag to TOC if it is relevant
+		x read in full tagged subsections
+		x find related titles, create cross-references
+		? create subbook TOC
+	- a set of test waveforms, draw/generate/record/combine
+		* add up = sum up = combine = group = mix = merge; record = sample
+		* use Cubase Sample Editor, Cool Edit Pro, Notepad++ ascii2Hex, WinMerge
+		x save under "Vegas - Vegas\21. Test waveforms"
+		- outline a set of topics and study "Cool Edit Pro" and "Cubase Sample Editor", tag with Waveform
+		- listen/meter(peak/rms)/statistics/oscilloscope/spectrum analyzer
+	- latences test rig, build cables
 	- Petelin book
-		- skim-read the book (read first few lines of each paragraph) of:
-			- intro to each chapter
-		- compile a list of relevant sections, add Record tag to TOC
-		- develop the process
-			- skim-read tagged sections
-				- compile a list of steps
+		- research and link to master topics
+	- Manual.pdf
+		x TOCify
+		- research and link to master topics
+	- "Cubase Help"
+		- research and link to master topics
+	- coolpro2.chm
+		- TOCify
+	- "QUAD-CAPTURE manual"
+		- research and link to master topics
+	- "QUAD-CAPTURE driver README"
+		- research and link to master topics
+	- "Outboard gear manuals"
+		x find/download
+		- add to "My Guitar Rig" list
+		- add reset procedures
+		- research and link to master topics
+	- develop the process
+		- do a series of tests
+			- measure in-the-box latencies in each monitoring mode
+				* try to slow down CPU when researching ASIO Direct Monitoring
+			- measure outboard gear gains
+			- test meter mapping modes
+		- compile a list of steps
 	- create Record.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
 		- reset Cubase
 		- fork off Arrange.tmpl.cpr project
