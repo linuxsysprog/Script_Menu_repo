@@ -1,1708 +1,1711 @@
-$Id$
-
-1. Take the last frame of a video event. Copy and paste it multiple times
-   at the end of the event. Thus freezing the last frame for a certain time
-   when playing back.
-
-2. Make a Video Progressions type of effect. The screen is split horizontally with
-   left/right hand in upper/lower (or vice-versa) half of the screen.
-
-3. Study Takes, 50%, 25% slow down.
-
-4. Study Track left hand/cookie cutter
-
-5. Idea with frames, start every file name with a frame number, then possibly,
-   measure number
-
-6. Takes/Moving cookie cutter
-
-
----
-TODO:
-
-- Find a way to do typeof().
-- Find a way to compile and link without Vegas.
-- Convert Common to a singleton
----
-- Write a script to generate a series of beeps at a specified tempo.
-  Input tempo (period) from a selection.
-  Calculate the number of beeps from the length of the "input" track.
-- Revise error messages from UtilTrack.GetInputAudioTrack()
-- Write a dialog asking "The tempo is ...Continue?"  OK/Cancel
-
-
-
---- 28 November 2011
-
-x install x) Vegas x) API guides x) examples x) books x) compilers etc..
-  x learn how-to link *.cs modules
-x install x) svn ?) IDE
-x go through the crash course on C#
-x work through 13.1 Creating a Simple Windows Form
-/ have a look at Vegas API FAQ
-x download C# reference/.NET reference
-x have a look at what's in insightful folder
-x start re-writing the four scripts FINISHED!! 27 December 2011
-  x write a dialog window
-    x write a dockable Vegas window for AddRuler command
-	  x base the window on DockableControl.DLL
-	  x run UserControl example stand-alone
-	  x embed UserControl example into dockable Vegas window
-	  ? write a batch file to recursively delete *.EXE and *.DLL files
-	  ! write a test script to build our own dialog window
-	  x build Add Ruler dialog window and test it with the test script
-	    x jot dialog layout
-		x create Location border
-		x create Top/Bottom radio buttons
-		  x underscores (keyboard shortcuts)
-		  x initialize
-		  ? focus
-		x create Number drop-down
-		  x Study MSDN ComboBox example
-		  $ right align items in the combo box
-		  x bind combo box to Location group box
-		  x check value on lost focus
-		  $ fix ruler number validation when manipulating Location
-		! implement TabIndex
-		x think about Section/Measure/Beat
-		x create Notes text field
-		xcreate Add/Fill Gaps buttons
-		  ? check out ENTER or ESC keys
-		x create message box
-	  x embed dialog into Vegas dockable window
-	  x set x) caption x) size !) position !)remove "hello world" label
-	  $ make it docked by default
-  x read through Section 2: Tracks and Events
-    x create Common.cs out of how-to
-	? learn to use CustomDataContainer
-  x add libraries x) Audio.cs x) Video.cs x) Common.cs
-  x AddRuler.cs
-    x show "exactly one video track dialog" before the form
-    x find all Video tracks
-	x find all Audio tracks
-	x make sure only one track is selected and it is a video track
-	  x find all selected tracks
-	  x display an error message box
-	x let's operate List<AudioTrack> and List<VideoTrack>
-		x write the four (horsemen) functions:
-		  x List<AudioTrack> to List<Track>
-		  x List<Track> to List<AudioTrack>
-		  x List<VideoTrack> to List<Track>
-		  x List<Track> to List<VideoTrack>
-	x add the ruler
-	  x using Vegas check that one 32nd note is 0.0625s
-	  x let's work with frames for video tracks and with milliseconds for audio tracks
-	  x insert an event at the current cursor position, 1 frame long, with PNG picture as its media and with Notes: and Number: as its take names
-	    $ make Add Ruler dialog non modal
-	  x convert Location&Number into basename
-	    x learn how-to format a number
-	  x check if there already exist, at the current cursor position, events and if so display a dialog window, with Ok/Cancel buttons, to continue or cancel
-	    x handle singular/plural
-		! remove .000 from frame number
-		  x rephrase the message
-	    ! write a function to return a list of all events on the current track
-		x write a function to find an events by specifying their position
-		x learn to compare events position-wise
-	  x find out the differnece in directories between Extensions and Scripts
-	  x remove HOME_DIR in favor of vegas.InstallationDirectory
-	  x substitute new Media() with ->) vegas.OpenFile or x) use MediaPool's AddMedia()/Find() methods
-	  x convert Application Extension to regular script
-	    ?) assign icon x) trim size x) locate the dialog at the center of the parent window
-		x) remove Max/Min buttons x) add window title x) handle ESC/Enter (Add) keys
-	  x introduce Globals.cs, keep vegas instance there
-	    x http://www.dotnetperls.com/global-variable
-  x make a constant for "Add Ruler" string
-  x DumpTrack.cs
-    x create all necessary files, icons, etc..
-	x write event neutral (or video only) DumpTrack.cs first
-	  x check for tracks
-	  x dump all event's take's Name fields
-	    x use regex to remove XXX and trim the string of spaces
-		x get basename of the filename
-    x narrow down the search with a selection
-	  x write Normalize() method
-	  x write a method to select a subset of events if current selection length > 0
-	x back up everything
-  x FillGaps.cs
-    x Check for x) exactly one track selected x) track is video x) at least two events on the track
-	x iterate over 1.. N-1 events
-	x trim N event's End to be equal N+1 event's Start on a condition
-	  x that N.End < N+1.Start
-	x display a MessageBox with how many events were touched
-  x AddBeep.cs
-    x create all files, icons, etc..
-    x copy the dialog window off AddRuler
-	  x get rid of UserControl class
-	x re-engineer dialog window
-	  x) remove x) Location part x) Fill Gaps button x) move everything up, trim window's height
-	    x) change Number drop-down with two Measure&Beat text boxes x) center Add button
-	x implement validation of all fields
-	x add the beep
-  x fix the bug with empty Notes
-    x make sure DumpTrack handles event created manually
-x back up everything
-x write AddObject.cs
-  x create all file/icons, copy GUI off AddBeep.cs
-  x learn how-to add text events to the timeline (see FAQ/example)
-  x learn how-to list Video Media Generator's presets
-  x write GUI
-    x) remove Beat: x) rename Measure: to Frame Size: x) change Measure text box into Frame Size combo box
-	  x) change Notes: into Object: x) remove Notes: text box x) add the rest of lables/combo boxes
-      x) create three drop-downs x) Object: x) Preset: x) Frame Size:
-	x populate drop-downs by filtering the strings
-	  x create sample presets
-	  x write Preset class
-	  x populate 1st drop-down
-	  x make sure to include presets that start from a number and pass Preset() contstructor
-	  x remove duplicates
-	  x make sure items are sorted in drop-down boxes
-	  x populate 2nd drop-down
-	  x populate 3rd drop-down
-	  x 3rd box depends on 2nd, 2nd on 1st
-	x trim drop-downs size
-	x check Sony Text plug-in for null
-  x insert text event
-  x re-create presets from Untitled.mpg
-    x move top ruler 15 pixels down
-	  x resolve the problem with frame_r.4.png not matching ruler_top_01.png
-	  x create frame_r.4.png
-	  x edit all 12 top rulers
-	x create a text file in svn with all custom presets' settings (for most important presets only)
-	x create a demo project to show off AddObject
-	$ fix the bug with input not being validated when Enter is pressed over cbNumber
-	x fix DumpTrack: take name is different (stock name) for events created with AddObject. This is probably
-	  due to text media
-	x move DLLExample into Temp
-    x think how-to accomodate different frame sizes
-	  x create a demo project in 720x576 resolution
-	x create a production set of presets just for one 320x240 resolution
-	  x add 26 Notes presets ([A], [B] etc.)
-	  x add 200 Measure presets
-    x) Notes x) Rate x) Tempo x) Measure
-	  x Match: x)font name x) font size x) font style x) color x) position
-	x chart down x) frame_g.4.png and x) frame_r.4.png
-    x add Filename preset
-	$ use phantom script to create batches of presets
-  x find out where Vegas stores generator presets
-  x learn how-to back up/restore presets when moving from one PC to another (http://forums.creativecow.net/archivethread/24/755317)
-  ! move messages like "Please make sure you have exactly one video track selected" into Common.cs
-  ? sort Measure Presets numerically
-  x back up
-  - rewrite script for compatibility with Vegas 11
-x write CalcTempo.cs app extension
-  x monitors current selection and calculates tempo
-  x provide a "Double time" tickbox
-  x add source/config files, icons, etc..
-  x write GUI
-  x figure out how-to assign an icon
-  x learn how-to monitor selection from an application extension
-    x we can only monitor markers/regions
-  x learn how-to make a text box read-only
-  x get Tempo region, display an error if not found
-  x calculate tempo
-    x round off the number
-    x mind Double Time check box
-  x put all pieces together in app ext
-    x re-calculate tempo when x) Double Time x) Monitor Regions is ticked
-	x avoid "Tempo region not found" message boxes at Vegas start time
-	  x add "Monitor Tempo Region" check box
-	  x add "Calculate Tempo" button
-	    x calculate tempo based on selection
-  x back up
-x write GenBeeps.cs (assign Ctrl+Shift+B key)
-  x create all files and icons
-  x write basic GUI without handlers/validation
-	x strip down AddBeep GUI
-    x borrow parts from AddBeep, AddRuler etc..
-	x adjust How many beeps height
-	x add Beats per Measure box
-	x adjust tab order
-	x double check mnemonics
-    x add handlers
-	x solve the problem with validating input when submitting forms
-	  / read "Handling and Raising Events"
-	    ? Next: "How to: Implement Events in Your Class"
-	  x do form validation on submit
-	    x find how-to select text
-	  x fix x) GenBeeps x) AddRuler and x) AddBeep forms
-	  ? consolidate all scripts in a tabbed form
-	x implement validation
-  x input: x) tempo x) number of beeps x) beats per measure x) start from Measure.Beat
-  x generate beeps
-    x insert Number of beeps at Tempo interval
-	  x create a list of beep positions
-	  x check for pre-existing events
-	  x insert beeps with dumb data
-	x implement Measure.Beat label
-	x implement three modes
-	  x accomodate validateForm() function
-	  x change btnGenerate_Click() to implement 3 modes
-		  x tempo and number
-		  x tempo and selection (find out number)
-		  x selection and number (find out tempo)
-	  x change GUI
-	    x move number text box next to tempo text box
-		x add a radio button
-	  x create a dialog window with a text box
-  x back up
-  / selection seems to work differently in DumpTrack and GenBeeps (Tempo and Selection)
-  ? join "calculated tempo" and similar dialogs with report dialogs to save on key presses
-x write TrackOutline.cs
-  x make the script media-neutral
-    x rename the script to TO (Track Outline)
-	! match target track type to the source track type
-  x create all files and icons (borrow from AddBeep)
-  x input: two tracks should be selected, one should be empty and another should have at least one event
-  x implement selection (see DumpTrack)
-  x find events with a take that matches ^N.1 pattern for audio and ^1 X pattern for video
-    x find out if a take carries audio or video
-  x create an event with empty media, with one take whose name is concatination of source event take names
-     print 1 T (1.1) first
-    x compose label
-	x create an event
-	x report
-    x find out how-to create events/takes w/o media
-	  x write AddEmptyEvent()
-	! see if we need to attach XXXX suffix for DumpTrack to recognise our events
-	x add to demo project x) create a new demo project
-	x for audio for measure events show only measure number
-	x for video for measure events..think..same
-  x back up
-  - remove .1 from Notes
-x write Beeps2Rulers.cs
-  x input: two tracks should be selected, one audio (source), the other video (target)
-  x script should work with partial tracks (selection)
-  x script won't need a dialog window
-  x create all files and icons
-  x implement "target empty, source at least one event" check
-  x insert frames at beeps' positions in seconds
-    x re-create all takes names in the target event (using empty media)
-	  x extract common code dealing with take names from TrackOutline.cs into Common.ch
-	  ? move getTakeNames() back to where it belongs
-  x report
-  x add (active) to Dumptrack.cs
-  x study how quantization works
-	x the picture appears when the cursor reaches slot's start
-	x the picture disappeares when the cursor goes beyond slot's end
-	x the slot is rendered with the first media the system can find
-	x what an overlapped video event look like with different media?
-	  x they mask each other. The one that has owned its position wins.
-	x one 32nd note at 240 bpm is about 0.8 of a frame
-	x let 16th notes at 240 bpm be our reference
-	x write a function to insert a frame into the nearest frame slot. Write to log
-	  x) if the slot is taken, do not insert in the same slot more than once, but mention in the log
-	  x to find the nearest time slot: x) get the position value in absolute frames
-	    x) round it off
-	  x write to log frame status (fast/slow) and the offset
-  ! think how to accomodate insert function for frames
-  x create demo project
-  x in the log mention not only event index, but event's full name
-    x move getFullName() to Common.cs
-  x back up
-? write a script to add N measures to the right/left
-x write Rulers2Rulers.cs, a script to insert top rulers given bottom rulers
-  ? move AddVideoEvent() to Common.cs, extend it to add top rulers
-  x in Beeps2Rulers.cs, change audio label to video label (^N X), so the track could be further processed
-  x create files and icons
-  x input: exactly two video tracks should be selected
-  x deal with selection
-  x insert top rulers
-    x carry on all takes from the source event
-  x report
-  x add to Qunatization demo project
-  x back up
-x write FillRulers.cs, a script to fill top/bottom ruler tracks with subdivision
-  x create all files and icons
-  x input: exactly one video track (selection)
-  x fill the rulers in
-    x check the Nth event for being top or bottom
-	x refactor
-	x calculate nRulers, step and offset
-	? move AddVideoEvent() from beeps2rulers/rulers2rulers to Common.cs
-	x introduce Common.QuantizedEvent class
-	x first off, go thru all events and make sure all are labeled correctly
-	x check for double insertion
-	x fill the rulers in
-  x report
-  x add to the demo project
-  ? back up
-? write Rulers2Notes.cs, a script to insert Notes objects given a ruler track
-  ? input: TBD
-  ? back up
-x write Rulers2Objects.cs, a script to insert Measure objects given a ruler track
-  x input: x) exactly two video tracks x) he target track should be empty, the source has at least one
-      event x) check for events that lack 1 (T|B) pattern
-  x model the script after RR
-  x replace individual BAT with BuildAll.BAT
-  x create all files and icons
-  x insert objects
-    x find out the maximum range of measures, check if it's enough
-  x create a big new Show all objects demo
-  x back up
-x see if its possible to have more than one preview window, each showing a different video
-  x create a demo project with two videos ?) try to build a layout where RH1 RH2 LH1 LH2
-  x read through "Multicamera Editing"
-  x see how to switch between audio while playback
-	x write an addition to CalcTempo.cs to mute/solo tracks
-	  / see if we can process key presses from within an app ext
-	  x draft in MyScript.cs
-	  x put all CT widgets into a group box
-	  x Add "Mute/Solo Audio Tracks" group box
-		  x add "Activate" checkbox
-		  x add "Mute All" and "Solo All" check boxes
-		  x Add "Playing Track: " text
-		  x add "Solo &Next" button
-		  x go over all mnemonics
-		  x solve the problem with vegas crash
-			/ read through the forum article
-			x study UndoBlock and x) using statement
-	  x implement event handlers
-		x scrap Activate (vegas has centralized Undo)
-		$ update Mute All, Solo All, Playing Track upon track state change
-		x update Playing Track:
-		x back up
-	  x when there's only one audio track we still need to update Playing Track:
-	  x reset GUI form on closing current project
-	  x add Play Previous button; filter by ^Audio
-	x add mute video tracks
-		x add mute video tracks group, rearrange groups
-		x implement event handlers
-		  x) mute all x) solo all x) Left Prev/Next x) Right Prev/Next
-		x add Right Playing Track
-		  x amend GUI
-		    x Playing TrackS!!!
-			x move L R track numbers down closer to the buttons
-				x increase height of x) the form x) groupbox x) move the four buttons x) lock l&r tickbox down 
-				x set both numbers to 99 on white bg x) move numbers down/center x) move LPrev, RPrev to PlayNext's
-					height
-	x add Lock LVideo with RVideo
-		x bulk mute/unsolo peer tracks also
-		x deal with prev buttons
-		x update Playing Tracks
-		x check with other returns
-		$ write a handler for lock l&r checkbox
-			x extract FindTracksByRegex()
-	x add Lock with Audio checkbox
-		x add GUI element
-		x implement event handler
-			x include mute/solo
-		? do the other direction
-	x add Pan Audio Left Right/Audio Restore
-		x find out if we can pan programmatically
-		x add Split Audio checkbox
-		x implement handler
-			x check for exactly one LVideo and one RVideo unmuted (nonadjacent)
-			x mute all audio tracks x) but two x) pan tracks
-				x extract FindPeerAudioTrack()
-			x implement "unsplit"
-			x update split audio checkbox
-	x move Playing audio Track number down next to Play Prev button
-	x clean out debug statements
-	x back up
-	x have a look at Selectively Prerender Video
-x write a script to match two videos time-wise
-  x read about synchronizing event by moving/splitting
-  ! add alternative media to "Show all objects demo 2" create ?) beep, x) outline and x) tempo tracks
-	! extract each track, write to xvid/mp3, !!!) normalize audio, remove avi/png/text media files from media pool
-  x see how Split() works with audio and video events
-x write SliceTrack.cs
-  x create all files and icons
-  x model the script after TrackOutline.cs. The script is media-neutral
-  x input: two tracks should be selected, source and target
-    x write FindEventsByEvent()
-	x implement the rest of the checks
-  x write FindMeasureStartEvents()
-    x find&replace all instances of inline code: x) TO !) B2R !)R2R
-  x do the split
-    x study the return value of Split()
-  x copy all take names
-  x report
-  x solve the problem with ever adding labels
-    x remove empty takes
-  x demo the script
-  x back up
-  ! fix the problem with empty media in the second half event
-x write MatchTrack.cs
-  x model the script after SliceTrack.cs. The script is media-neutral
-  x create all files and icons
-  x check input:
-    x exactly two tracks of any type should be selected, source and target
-    x source track (selection) should have at least one (measure start) event to continue
-	x make sure that for each source event there's exatly one namesake target event
-	  x a namesake event has the same ^N (T|B) or ^N.N take
-  x go over all measure start source events and adjust Start and Length of all target events accordingly
-    x employ fill gaps technique
-  x accomodate media
-  x report
-  x create a new demo project
-  x add to the bigger demo project
-    x build (copy) beep tracks for x) AudioTrack1 x) AudioTrack3
-	x slice/match tracks
-	x render the new tracks
-	x solve the problem with 640 vs. 320 frame width
-  x back up
-x write SpreadBeeps.cs
-	x think which script to use as a model (SliceTrack.cs). The script is audio only.
-		The script supports selections (partial tracks)
-	x create all files and icons
-	x input:
-		x check 1. Exactly one audio track should be selected
-		x check 2. At least two native events should exist to continue
-			x write Common.FindNativeEvents()
-	x write GUI to prompt for percentage
-		x add Cancel button
-		x validate form
-	x spread out events
-	x report
-	x clear out debug statements
-	x add to "Funky Su - Guitar Jam.veg" x) 100% and x) 200% ruler tracks x) 200% beep track
-		x recreate VideoTrack1 (all tracks) x) 100%, x) 200% and x) 400%
-			x let's try to embed ruler track
-				x don't embed Tempo&Rate&Filename
-			! find original video/audio/beep tracks
-				! !!! couldn't find - always keep original video/audio/beep tracks !!!
-		x compare how ruler and beep tracks align at different speeds
-			x streach everything starting from 1.1
-		x xsc audio tracks
-		x deal with Rate and Tempo tracks
-		x render down tracks
-			x learn network rendering
-	x back up (Japanese Phantom scripts as well)
-x add "events found" to DumpTrack.cs
-- add partial tracks (selection) to Fill Gaps
-! troubleshoot manifold
-? write BuildTOC.cs
-	- generate an html outline of a project
-		- implement nesting, absolute and relative time/length and numbering of each subsection
-	- same idea for the transcription subproject
-		- the source of information here will be the textual contents of all markers
-	- write a *.cs part to generate a an html file with project structure
-	- write a perl script to read the file, calculate times and numbers and build a nice TOC
-x add copyright headers to all source files x) show copyright in all window headers
-x add $Id$ to source files, adjust headers
-x split source code and projects (My_Music) repositories
-  x move Vegas Challenges.txt into source code repo, add $Id
-  $ convert Subclip How-to.doc to DocBook and -) move it under source control
-? compile everything into one big binary
-x consolidate everything in Vegas Challenges folder on drive D:
-/ re-create the four icons
-x Check what's in
-\\192.168.0.1\(H) My Book\Aussie-Backup-September-2009\Aussie\My_Music\Zakk_Wylde_-_Pentatonic_Hardcore\SVNRepository
-x learn how-to print debugging information
-x remove Hello World View from the Extensions submenu
-- fix the icon for Add Ruler View (for any app ext)
-x learn how-to test csc return value and conditionally start the program
-/ document each script briefly in Subclip How-to.doc
-	x AddObject.cs
-	x Rulers2Objects.cs
-	! LayoutTrack.cs
-	x establish documentation format
-	x DumpTrack.cs
-	x AddRuler.cs
-	x AddBeep.cs
-	x GenBeeps.cs
-	x Beeps2Rulers.cs
-	x Rulers2Rulers.cs
-	x SpreadBeeps.cs
-	x FillRulers.cs
-	x TrackOutline.cs
-	x SliceTrack.cs
-	x MatchTrack.cs
-	x CalcTempo.cs
-	x Mute/Solo Au Tracks
-	x Mute/Solo Vid Tracks
-	- order items according to workflow
-/ move the project to NTSC DV/Nokia phone
-	* there's gonna be the following sources: NTSC DVD, PC with a webcam; and targets: NTSC DVD, PC, Nokia E71
-		x find them all and jot down their audio/video characteristics in a text file
-	x create a "10. Sources and targets" project under "Vegas - Vegas"
-	x change extension in toggle_vob.pl from avi to mpg
-	x record/playback some samples
-		x see if all devices can produce/consume 29.970 fps (Yes, we can!!)
-		x for Nokia E71
-			* http://nokia-e71-phone.blogspot.ru/
-			* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html
-			* http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/
-			? update firmware x) backup phone
-			x unpack MPEG4-SP
-				* http://eugenia.queru.com/2009/12/11/editing-kodak-digicam-video-files-on-a-pc/
-				* ffmpeg -i "Bychok 320x240 15.000.mp4" -f avi -vcodec rawvideo -acodec pcm_s16le "Bychok 320x240 15.000.avi"
-		x for webcam
-			x solve the problem with dropping frames (VirtualDub rules!!)
-	x write a simple rendering script
-		x run "Render Audio Tracks.cs"
-		? run "Batch Render.cs"
-	x create a test still image (two sources with different frame size, one target)
-		x GIMP, learn how-to
-			x draw an x) ellipse x) line ?see(*)) text
-			x move and copy objects
-			x create a ?) 1-bit image x) with transparent background
-		x pick good bitmap fonts
-			x my personal fav is cmd's Raster Fonts (Terminal) 16x12 (saying hi to my old PC XT!!)
-	(*) a new paradigm "Sony Titles & Text idyot lesom.."
-		x find Sinclair ascii table
-		x create ascii.bmp
-			* http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
-			* ASCII printable characters: 20hex to 7Ehex (95 in total)
-  0123456789ABCDEF
-2  !"#$%&'()*+,-./
-3 0123456789:;<=>?
-4 @ABCDEFGHIJKLMNO
-5 PQRSTUVWXYZ[\]^_
-6 `abcdefghijklmno
-7 pqrstuvwxyz{|}~
-		x create a still with a test pattern x) 320x240 x) 720x480
-			x the images should include: x) border x) cross x) circle x) diagonal line
-		/ compare "good and bad" scaling
-			x dot for dot vs. not
-			- check scaling with -) Pan/Crop -) Position/Rotation (includes zooming)
-		x create a HUD sketch  x) 320x240 x) 720x480 x) 1440x480
-		?see(*) study text generator and add some sample text to the test image
-		? find Power Puff Girls colors (let's use Sinclair colors, no let's use Norton colors)
-		/ redesign HUD: x) rulers x) text objects -) port blinds 
-		x rip a frame from each video source
-	x "marry up" all sources and targets
-		x normalize video tracks
-			x intra-frame
-			x fps
-				? do a crash course in Twixtor, follow YouTube tutorial "twixtor vegas frame rates & deinterlacing"
-				x write an excel calculator to tie up together
-					/ ms, fps, bpm, note length (16th, 24th, 32nd) and pitch (Hz and semitones) and more..
-				? generate still image sequences with frame numbers at 29.97/30fps
-					x use Timecode FX
-				x do a "drop frame/duplicate frame" test
-		x normalize audio tracks
-	x create stills with the grid x) 320x240 x) 720x480 x) 1440x480
-	/ create test compilations for all targets
-		x enumerate items
-ascii_chart.bmp
-VTS_01_1 5,289 1 2..56.476 0.033.720x480.png
-VTS_01_1 5,000 500 2..46.833 16.683.avi
-Bychok 320x240 15.000 81.000 5.400.png
-Bychok 320x240 15.000.avi
-grid.720x480.png
-hud_sketch.720x480.png
-test.720x480.png
-6. 30fps into 29.97fps 90s 2697.3f.avi
-		/ burn a DVD with single titles
-			x normalize items x) create titles
-				* titles are Uncompressed AVIs w/ square pixels rendered in Best quality; let DVD Architect do what's
-					needed to create a DVD
-			x buy a DVD-RW blank
-			x do a crash course in DVD Architect
-			x author and prepare DVD
-			x burn DVD
-			/ test on two DVD players, fix problems:
-ascii_chart.bmp cropped top and left. Could be also bottom and right.
-grid.720x480.png cropped at each side
-test.720x480.png cropped (right), top and bottom.
-hud_sketch.720x480.png cropped at each side
-				x compare VTS_01_1 5,289 1 2..56.476 0.033.720x480.avi with grid.720x480.avi
-					x Light Alloy *) all equal
-					x DVD Architect settings *) all equal
-				- burn plain AVIs onto a DVD-ROM
-				- burn a combination of VTS_01_1 5,289 1 2..56.476 0.033.720x480.avi and grid.720x480.avi
-				- check for transparency
-				- try to change PAR in source PNG files
-		x burn a DVD with splits
-			x create stills with port boundaries and centers
-			x jot down a plan
-				* Grid spacing
-					x fix grid calc
-					x create a 720x480 still with 18/12 (1/40) grid
-				/ estimate magnification in Yngwie close-ups
-					? add pan/zoom calc
-				x Yngwie x) Left hand x) Right hand
-				x Bychok close-up
-				x split views
-					x YL/Y
-					x Y/YR
-					x YL/YR
-					x Y/BC
-			x burn DVD
-		x Nokia phone
-			x create a 320x240 still with 8/6 (1/40) grid
-			x normalize VTS_01_1 5,000 500 2..46.833 16.683.avi
-			x render titles (all with HUD)
-				x Y
-				x YL
-				x YR
-				x YR 0.5
-				x B
-				x BC
-				x Y/B
-				x YL/BC
-				x YL/Y 0.5
-				! YL/YR
-			$ investigate a few pixels horizontal discrepancy after copying event attributes
-				* has something to do with 720x480->640x480 normalization
-		/ PC
-			x create a 1440x480 still with 36(18)/12 (1/40) grid
-			x normalize bychok
-			x render titles 
-				x Teacher
-				x Teacher.Left hand
-				x Teacher.Left hand.50
-				x Teacher.Right hand
-				x Teacher.Right hand.50
-				x Student
-				x Student.Close-up
-				x Student.Close-up.50
-			? re-render to a less demanding bitrate
-			x build sample project
-				x add titles
-				x add HUD track
-				x add no signal track
-					x create "No Signal" still
-			/ solve the problem with rendering
-				* vegas freezes after rendering is complete
-				* vegas stops in the middle of rendering
-				x lower bitrate from 20M to 2K
-					* still hangs
-				x render into MPEG-2 NTSC program stream
-					* still hangs
-			- solve the problem with Vegas freezing with lots of AVC tracks
-				- do trial renders
-	? compensate for different PAR
-	x demo Draft/Best quality for computer-generated graphics
-	x demo pan/zoom/rotate
-	! see how-to set !) project defaults x) render defaults
-	x study "Panning and Cropping Video Events"
-	/ study "Keyframe Animation"
-x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD
-	x redo ruler PNGs in three resolutions
-x fix and document (x) document bug) AddObject.cs and Rulers2Objects.cs
-	x study Bitmap class
-		x load image
-		x traverse
-		x change
-		x write out
-		x study (Un)LockBits methods
-		? create image in memory
-		? how-to manipulate parts of image
-		x see how-to create a transparent image
-	x write TextGenerator class
-		x write getCharBitmap() method
-			! study IntPtr.Add() method x) find out how-to increment IntPtr
-		! see how-to copy between pointers
-		x write insertChar() method
-		x write CopyCharBitmap() method
-		x write InsertString() method
-		x write methods to insert filename, notes, tempo, rate
-		x do the rest of ascii and digit charts
-		x make rate right-aligned
-		x create new grids for char and digit charts
-		x fill in init section in subconstructors
-		x add getters for length fields
-		x subclass TextGenerator
-		x load all resource in constructor
-		x rename InsertXXX methods to AddXXX, get rid of Bitmap argument
-		x capitalize method names
-		x create factory method
-		x make sure subclasses cannot be instantiated
-		x write InsertMeasure() method
-			x pad with zeros
-		x extend CopyCharBitmap() to x) other resolutions x) digits
-		x review access modifiers
-		x test class
-	x write GUI
-		x create a form with 5 fields
-			x strip down AddObject.cs
-			x add Project Path field
-		x do Clear All button
-		x autoselect on Tab
-		x do saving history to AddObject.cs.config
-			x read in XML file
-				* http://msdn.microsoft.com/en-us/library/t058x2df.aspx
-			x traverse XML object
-			x write out XML file
-		x write getNextFilename() function
-			* http://www.dotnetperls.com/directory-getfiles
-	x put it all together into AddObject.cs
-		x write Video.AddObject() method
-			x unMaintain aspect ratio
-	$ fix "run AddRuler.cs first" bug
-	x update Rulers2Objects.cs
-		? extract load config to common
-		x extract getNextFilename() to common
-x demo time stretch methods, build matrix:
-	x compare New length vs. % vs. Audio: 00:00:00.000
-	x beep/Yngwie
-	x ėlastique Pro
-	x Classic Music 3
-	x Transcribe! 8.31.0
-	x 105% 90% 75% 50% 25% BPM
-	x build and render demo project
-		x insert section markers
-	x render for Nokia
-x build a big bad demo with the scripts that are ready to use
-	x plan project
-	x decide on naming conventions
-		x originals: Take1
-		x temps: Take1~
-		x hands: Take1L
-		x matched: Take1LM
-		x splits: Split1, Split.L12
-		x slowed downs: Take1L.75, Split.L12.75
-		? laid outs: Split.L12.75.2Mid (2-beat chunk, cut at the middle)
-		? hudded: Tuke1LM, Splut.L12
-		? beeped: Bake1LM, Splib.L12
-		? hudded&beeped: Buke1LM, Splub.L12
-		? resolutions: 320x240, 720x480, 1440x480
-	x think of uniform track levels/normalized events across project and renders
-	x find old fullest demo
-	x document the process in "A typical workflow" section of Subclip How-to.doc
-	 x fix dependancy on D:\Temp\New folder (5) and commit project
-	x compare results frame-by-frame:
-		x keep hud, stretch video, transcribe audio, spread beeps
-		x stretch video, transcribe audio, spread beeps, create hud
-		* audio ok, video not ok: see "Frame-by-frame comparison.jpg" and "Frame-by-frame comparison 2.jpg"
-		* conclusion: always reHUD
-			* well, although stretching first and rehudding second will produce better results, it is much more work..
-	x compare results frame-by-frame:
-		x match track, slow down track
-		! slow down track, match track
-			* broken
-		! conclusion: always match first, slow down second
-		x why SliceTrack sometimes creates fade offsets?
-			* Options->unQuickfade Audio Edits
-		x why event turns pink with a number in a red box?
-			* synchronization offset
-		x see how-to set default stretch method
-	x record Take4
-		x find tuning segment x) determine pitch *) wrong
-x write a quick unFX audio script
-    x create all files and icons etc.., define svn Id property
-		x create documentation stub
-	x wrap it all up
-	x expand script to a "tidy up" script
-		* unLoop, unMaintain, Disable; unLoop, Normalize, unFX
-		x VideoEvent.MaintainAspectRatio
-		x VideoEvent.VideoResampleMode
-	x call it from RenderAll.cs before rendering
-x write RenderAll.cs
-	x leave this to LayoutTrack.cs
-		x cut into 0.5, 1 and 2 measure chunks
-		x imlement 0 and 0.5 offsets
-		x implement pre- and post- gaps
-	$ make this one an app extension with an option to interrupt rendering
-		* i.e. background rendering
-	x have a look at
-		x SimpleRender.cs
-		x Render Audio Tracks.cs
-		x Batch Render.cs
-    x create all files and icons etc.., define svn Id property
-		x create documentation stub
-	x create cluster class
-	x list all clusters
-		x list video tracks which have at least one native event whose name starts from Split or Take
-		x extract filenames from event labels
-	x extract muteAllTracks() and soloAllTracks() to common
-		x capitalize method names
-	x unFX all audio tracks before rendering
-	x move MyTextBox to common
-	x create form
-	x have two options x) render continuous tracks x) render "regions"
-	x add Renderer textbox
-	x write Render() method
-		x produce log
-	x show the user a quick render summary before proceeding
-	x ask the user for the output folder
-	x show total files/length estimation
-	? align output with DumpTrack
-	x do not include beep track with full tracks render
-	x block GUI during rendering
-	x document
-		- add a clause about BPM
-	x implement selective rendering
-	x test
-x write batch slow down scripts
-	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg
-	x write a reusable find() function
-	x extract_wav.pl
-		x install script
-		x check retval from ffmpeg
-	x extract_avi.pl
-	x transcribe_wav.pl
-	x assume_avi.pl
-	x audio_dub.pl
-		x normalize to 29.97
-	x check logs
-	x test all
-	x document
-	$ wait for saving dialog to go away
-	- fix aspect ratio (PAR?)
-x write horizontal navigation plus my own play controls
-	x redesign
-		? think of quantizing navigation
-		x split app ext up to Calculate Tempo and TC
-		x extract calc tempo into a stand-alone app ext
-		x zoom to fav scale
-		x simplify nav by assuming there are only 3 rates: 100%, 50% and 25%
-		x look for 1.1 not BPM
-		x create Navigate app ext
-			x the general principle for all controls is to preserve other controls' state
-			x all distances should be scaled for 50% and 25% rates
-			x implement tooltips
-			x create files&icons
-			x write GUI
-				x Audio
-					x add L/Both/R radio buttons to choose which channels to play
-					x add mute audio/beeps checkboxes
-					x do not re-init on track change
-					x is there a bug with mute click
-				x Selection
-					x consult channel mapping and mute checkboxes on track change
-						x default mute click to mute
-					x add a button to reset selection
-					x move buttons around, add labels: Reset, Apply, Count-in, Zoom
-					x default beats to 1
-					x add -/+ apply buttons for trim start and end, get rid of one spinbox
-					x fix zoom/stop buttons
-						x review selection length across code
-					x implement reset
-					x implement -/+ buttons
-					x change stop not to scroll view
-					x kill selection
-						* easy to do on timeline
-					$ fix bug with spins and comboboxes even handlers crashing
-						x make a tiny Commit button
-					x trim both ends of sel
-						x keep end fixed when trimming start
-						? stop trim from wrapping around
-						x scale selection
-							x horizontally
-							x vertically
-						x preserve selection when moving cursor
-						x preserve selection when zooming
-						x make a nested groupbox
-						x use spin control
-							? display + for positive values
-								* use DomainUpDown
-							x limit range to 1 beat
-							$ vertical orientation
-						x display beat size in frames
-					? count-in
-						* play two beeps then audio
-						x checkout Project.InsertTime(), Undo
-							* works
-						? check out creating count-in on a separate track and muting other tracks
-						! create temporal count-in audio/video events at the end of the project
-							* doesn't work, no notification on stopped
-					x change zoom from checkbox to button
-				x Navigation
-					? fix bug with FindRegionEvent(): put cursor to the left off the first beat of the first track,
-						go down one track, the cursor will move to the last beat in the region
-					x introduce rate regions
-						x create RateRegion class
-						x extract core function from DumpTrack to common
-						x reorder code in btnUp_Click()
-						x build regions
-						x add offset parameter
-					x merge FindSpecialBeepLeft w/ FindEventLeft and for the right.
-					x wrap-around is broken
-					x align behavior with faster/slower
-					x create step left/right buttons
-					x create step size (frames) spinbox
-						x calculate step value
-					? implement auto home
-						x do timer-based button presses
-						x do 4 homes (consecutive clicks): x) first beat in RR x) first RR x) first track x) full init
-					x do double-clicks for up/down left/right
-						$ instead of double-click do push&hold
-					x do not wrap around rate
-					x track offset when switching tracks
-						x read-in track BPM
-						x count offset from nearest beat
-				x Transport Controls
-					! play button resets selection when pressed for the second time
-						x invert selection on stop
-					x ensure continuous playback for all navigation
-					x remove not used parameters from GetNNNXXX()
-		$ see how an app ext can process key presses
-		x update docs
-		/ test
-	x research
-		x cursor
-			x move
-		x scrolling
-		x zoom
-		x selection
-		x play controls
-		x how to not jump back after playing back selection
-	x write GUI
-		* Transport Controls
-		x design play controls
-			x chunk length in beats
-			x selection start end frame trim
-			x rate
-			x next/prev beat
-				x remove count-in beats
-				x limit wrap around to beeps with the same rate
-			x play/pause/stop
-	x play button
-		x should check TC state (isPlaying etc..)
-		x stroboscopic playback
-			! manipulate playback rate programmatically
-	x stop button
-		x if not playing go to home position - 1st track, beat 1.1
-	x center cursor
-	x see how we can switch over (move cursor) between copies
-	! think how to get same piece at two different times in Left and Right screen
-	$ find out how-to move cursor back and forth in history or write a script
-	$ write an app ext to monitor cursor position and display the event under it
-	- a bug? when playing, a track change will produce a jump
-		* workaround is to click pause prior to changing tracks
-	x find optimal slow rate (currently 25%)
-		x create a new test project under "Vegas - Vegas"
-		x create some samples
-			x sync up AV
-			x rotate 180 deg
-			x slow down
-		x update navigation code for new rates
-			x rename faster/slower buttons
-			x scale frame/step values on rate change
-			? see if we can autodetect rates
-				* just divide/multiply by 2
-			x remove 3 rates limitation
-				x pull out rates code
-			x choose between:
-				x 100/50/25/10/5
-				x 100/50/10
-				x 100/50/25/12.5/6.25
-					* this one
-					x add rates to excel calc
-					x check how Transcribe!/AviSynth handle fractional rates
-						* both ok
-					! label 1x/2x/4x/8x/16x
-	? fix the bug with switching tracks in "02 - Example 2 (A minor arpeggio)"
-		* can't reproduce
-	x modify code to simplify BPM labels
-! write LayoutTrack.cs (abandoned in favor of count-in feature in Navigate.cs)
-	x think which script to use as a model (SpreadBeeps.cs)
-	x create files and icons
-	- input
-		x two tracks, one audio and the other audio/video
-		x check the selection to have enough events
-		x check the selection to be in increments of chunk size
-		x check that there's something to cut
-			x video needs quantization
-		x implement "enough extra space" check
-			x calculatethe number of chunks x) iterate over chunks
-			x calculate the size of the laid out chunk
-			x calculate extra space
-			x make sure there not a single event in the extra space
-		x implement selection
-	x write GUI (model after GenBeeps.cs)
-		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4)
-		x cut at the middle (for chunk size > 1)
-			x update checkbox
-		x Include Head x) Include Tail
-	- for in/out count generate real rulers
-	- remove debug prints
-  x establish one project directory, one version of ffmpeg, keep only source FLV files,
-    under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer
-	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews"
-      x compare x) slow down / ?) speed up quality with Transcribe!/Cool Edit
-	x see how we can use Transcribe!'s superior stretch algorithm
-  x see how we can the following:
-	x manually
-		x audio
-		  x slow down Right-click, Properties, Time stretch, double New length
-		  x speed up Right-click, Properties, Time stretch, half New length
-		x video
-		  x slow down Right-click, Properties, half Playback rate; double event's length (with the mouse)
-		  x speed up Right-click, Properties, double Playback rate; half event's length (with the mouse)
-	x programatically
-		x audio
-		  x slow down audioEvent.Length = audioEvent.Length + audioEvent.Length; audioEvent.AdjustPlaybackRate(0.5, true);
-		  x speed up audioEvent.Length = Timecode.FromNanos((int)Math.Round(audioEvent.Length.Nanos / 2.0)); audioEvent.AdjustPlaybackRate(2.0, true);
-		x video
-		  x slow down See audio
-		  x speed up See audio
-    x see what happens to the event positions
-	x mind alternative media and playback rates
-	x learn to make copies of bunches of (partials) audio and video tracks ?) vertically and x) horizontally
-		x see how "Insert Time" works
-	x draft a layout
-		x LMargin LBeep Body RBeep RMargin
-		x see how-to make a "still frame" (event copy/paste or manipulate event's media)
-		x manually layout tracks 
-			x build a layout with x) full measure x) 1/2 measure x) full measure with offset x) 1/2 measure with offset
-		x lay out one full measure given 124 ruler/video/audio/beep tracks
-			/ think how-to properly split audio and video tracks
-			x move Quantization demo project into a separate folder
-			/ render down ruler track, compare with pre-rendered track
-				$ find out why the rendered track is lagging 2 frames behind
-					x move ruler track 2 frames left for now
-	- add to demo
-	! "Funky Su - Guitar Jam": move beep.1.wav etc under project folder
-- is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)?
-- see why FillRulers.cs reports things like these:
-148.000 148.000 0.000 F          11 B        9 B .
-192.000 192.000 0.000 S          5 T        4 T .
-x brush up and commit "01 - Example 1 (E diminished arpeggio)" project
-x transcribe Ex1b
-x create "02 - Example 2 (A minor arpeggio)" project
-	x update "Appendix H. A typical workflow" documentation section
-	x fix project:
-		x sync up audio/video
-		x throw away x) Take2 x) splits
-		x add Take4 from Relentless website
-			x when normalizing, shouldn't have stretched video
-				* have fixed that
-			x create x) close-ups and x) beep track
-		x slow down tracks
-			? check if slow down scripts break AV sync
-				? by ?) 50% ?) 6.25%
-				? check at ?) 10s ?) 100s
-			! employ MainConcept Reference
-				x check if MCR breaks AV sync
-					* it freaking does
-					x create a test project in "Vegas - Vegas"
-				! check Vegas locking up
-			x render in Vegas using "Sony AVC/MVC" plugin
-				x check for AV desync
-					* no desync
-					x add to test project
-				x modify RenderAll.cs to convert a batch of AVIs to MP4s
-		? clean up project and recommit
-		x create render project
-			x double-check beep/audio tracks alignment
-		x create master project
-		$ test project
-			* Test Plan
-			$ Audio
-			$ Selection
-			$ Navigation
-				? saw 32f in Step textbox
-				? beat left/right buttons take me between the beats
-				? selection distorts when switching rate, sometimes
-				x Init (home position)
-				x Faster/Slower
-					x Take1 misaligned at 6.25%
-						x re$render
-					* 1 frame off
-						$ find out why
-			$ TC
-x extend beep spread range up to 1600%
-	x update docs
-x create "03 - Example 3 (A minor arpeggios)" project
-	x estimate time in number of sessions
-		x 1 2 (close-ups completed) 3 (beep and slowed down tracks completed) 4 (render project completed) 5 (done) 
-	x add Take2
-	x fix bug w/ track levels between LR hands
-	x fix bug: incorrect offset when switching rate
-		x update docs
-		* made 100% 25% 6.25% rates standard
-x create "04 - Example 4" project
-	x progress (in number of 45-90min sessions): 1 2 (beep tracks completed) 3 (slowed down tracks completed) 4 5 
-	x add Take2
-	x transcribe example
-		x create Finale.mus
-		* start with Take1, 6.25% rate
-		x left hand
-			x notate frets and fingers in std tab
-				x do middle shred section
-				x do x) beginning and x) ending
-		x right hand
-			x notate pick strokes
-				! try by ear first
-					* too long and hard
-		x check LRH
-			x against Take2,3
-			x check against 25% rate
-		x check against published scores
-		$ Finale Challenges
-			* abandon Finale for pencil&paper
-			x learn how-to enter frets and fingers
-				x learn how-to edit frets
-				x enter double digit fret numbers
-			x how-to playback selectively
-			x learn to copy multiple notes
-			x learn how-to enter hammers and pulls
-			$ lower pitch by half a step during playback
-			$ automatically build std notation staff
-		x add ghosted (3rd) stave; 3 states (staves) now include: pressed, released, muted (not fully pressed/not fully released)
-			! split 3rd stave into Gho Pre and Gho Rel
-				* there are only 3 states (see above)
-x Ex1a,2,3
-	/ rethink finger rolling (Ex2,3)
-	! notate difficult places in multiple staves (Ex2,3)
-	x rewrite tabs
-	x rewrite breakdown and exercises
-	! write out alternative Seg2,3 (Ex3)
-x move stuff from 1.txt to guitar wizardry file
-x create "05 - Example 5" project
-	* 1 (finished Take1 close-ups) 2 (finished all close-ups) 3 (slowed down tracks completed) 4 (render project completed) 5 (done) 
-x create "06 - Example 6 (Echo Lick notated with echo effect)" and "07 - Example 6 (notated without echo effect)" projects
-	* 1 (close-ups) 2 (beep and slow down tracks) 3 (rendering tracks) 4 (done) 
-x create "08 - Example 7" project
-	* 1 (close-ups) 2 (beep tracks) 3 (slow down tracks and render) 4 (done) 
-x create "09 - Example 8" project
-	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
-x create "10 - Example 9" project
-	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
-x create "11 - Example 10 (C harmonic minor)" project
-	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done) 
-x create "12 - Example 11" project
-	* 1 (close-ups and beep tracks) 2 (slow down tracks) 3 (render) 4 (done) 
-? all things Guitar Rig
-	! try to remap mic and phones jacks to line-in/line-out
-	- connect Zoom to mic input
-		x adjust input and output levels and write down their settings
-			* Levels->Microphone: 20, "Microphone Boost": 0.0 dB
-			* Zoom master volume: 10 (40)
-		- read on input/output impedances
-	- find out if it's possible to have an effects loop within Guitar Rig's stack
-	- read on amplifier modeling
-	x install ASIO
-		- find out difference in latency ???
-	- install VAC
-	- find and read the article on Windows optimization for real-time audio
-		- run the two diagnostic tools
-	- learn to do simple recording in Vegas
-	- research mouse as MIDI controller
-	- read Premier Guitar article that mentions Eric Johnson's setup
-	- My Guitar Rig
-		- signal chain: Jackson->Yerasov->Eventide->Behringer->Octava->Roland/ThinkPad
-		- Jackson Performer PS-4 (Jackson)
-			- INTFs
-				- bridge passive humbucker output, 8.5 kohm [1, Signal start]
-		- Yerasov PTERODRIVER PD-5 (Yerasov)
-			- INTFs
-				- INPUT, 1 Mohm [2]
-				- OUTPUT-COMBO [3]
-				- OUTPUT-MIXER
-			- CTRLs
-				- stomp switches
-					- LO/HI [LO]
-					- CLEAN/LEAD [CLEAN]
-				- knobs
-					- GAIN
-						- CLEAN [12 o'clock]
-						- LEAD
-					- EQ
-						- BASS [12 o'clock]
-						- MIDDLE [12 o'clock]
-						- TREBLE [12 o'clock]
-					- VOLUME
-						- CLEAN [12 o'clock]
-						- LEAD
-		- Eventide TimeFactor (Eventide)
-			- INTFs
-				- Input Impedance 500K ohms, In Lvl Guitar/Line
-					- Input 1 [4, In Lvl Guitar]
-					- Input 2
-				- Output Impedance 470 ohms (Recommended Load Impedance 10K ohms or greater), Out Lvl Amp/Line
-					- Output 1 [5, Out Lvl Amp]
-					- Output 2
-			- CTRLs
-				- stomp switches
-					- Active [ORANGE LED]
-					- Repeat
-					- Tap
-				- Encoder [DigitalDelay]
-				- Tempo ON [120 BPM]
-				- knobs
-					- Dry/Wet Mix [WET: 50]
-					- A/B Dly Mix [A10+B 0]
-					- Dly Time A [A: 1/4]
-					- Dly Time B
-					- Fdbk A [FB-A: 20] 
-					- Fdbk B
-					- Xnob
-					- Depth [DMOD: 0]
-					- Speed
-					- Filter [FLT: 0]
-		- Behringer VINTAGER AC108 (Behringer)
-			- Output stage power: 15 Watts RMS into 4 Ohms
-			- Loudspeaker: 8" vintage design guitar loudspeaker, Impedance 4 Ohms, Power rating 20 Watts
-			- INTFs
-				- Inst. Input [6]
-				- CD Input, stereo
-				- Headphones, stereo
-			- CTRLs
-				- Gain
-					- Gain knob
-					- Gain push switch [OFF]
-				- EQ
-					- Bass knob [12 o'clock]
-					- Treble knob [12 o'clock]
-					- Shift push switch [OFF]
-				- Master volume knob [12 o'clock]
-		- Octava MD 80 (Octava)
-			- INTFs
-				- Output, Output Impedance 200 ohms (Recommended Load Impedance 1000 ohms or greater) [7]
-		- Roland QUAD-CAPTURE USB 2.0 Audio Interface (Roland)
-			- INTFs, (0 dBu=0.775 Vrms), Head Room 14 dB
-				- XLR
-					- Input Impedance 4.8 k ohms (balanced), Nominal Input Level -60 to -6 dBu
-						- INPUT 1 [8]
-						- INPUT 2
-				- TRS
-					- Input Impedance 15 k ohms (?balanced?), Nominal Input Level -50 to +4 dBu
-						- INPUT 1, (supports high impedance, Hi-Z)
-						- INPUT 2
-					- Output Impedance 2 k ohms (balanced), Nominal Output Level: +0 dBu (balanced)
-						- OUTPUT 1
-						- OUTPUT 2
-					- Output Impedance 47 ohms (stereo)
-						- PHONES [9, Signal end]
-			- CTRLs
-				- switches
-					- GROUND LIFT, NOR/LIFT [NOR]
-					- PHANTOM, 48V/OFF [OFF]
-					- Hi-Z (INPUT 1), ON/OFF
-				- pushbuttons
-					- AUTO-SENS [OFF]
-					- DIRECT MONITOR-MONO [ON]
-				- knobs
-					- SENS 1 [27.0]
-					- SENS 2 [0.0]
-					- DIRECT MONITOR-PLAYBACK/INPUT MIX [mark 9]
-					- DIRECT MONITOR-OUTPUT [mark 9]
-		- Lenovo ThinkPad X200s (ThinkPad)
-			- Windows
-				- Sound->Playback: 1-2 QUAD-CAPTURE Default Device->Properties->Levels: 62% (31)
-				- Sound->Recording: 1-2 QUAD-CAPTURE Default Device->Properties
-					- Listen->Listen to this device: uncheck
-					- Levels: 100%
-			- QUAD-CAPTURE Control Panel
-				- PREAMP
-					- AUTO SENS [OFF]
-					- INPUT 1
-						- LO-CUT [OFF]
-						- PHASE [OFF]
-						- SENS [27.0]
-					- INPUT 2
-						- SENS [0.0]
-				- COMPRESSOR
-					- INPUT 1
-						- BYPASS [ON]
-					- INPUT 2
-						- BYPASS [ON]
-				- MIXER
-					- INPUT 1 [-6.0]
-					- INPUT 2 [-INF]
-					- COAX (3/4) [-INF]
-			- Sony Vegas
-				- Options->Preferencies->Audio Devices
-					- Audio device type: QUAD-CAPTURE
-						- Default stereo and front playback device: 1-2/1-2(2)
-						- Default audio recording device: 1-2
-				- Audio Track
-					- UnFXAudio
-					- Vol: 5.0 dB
-					- select mono 1-2 as input
-				- Recorded Files->Show after every recording session: uncheck
-		x study Eventide's features:
-			x tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS)
-				x relative delay times (mS)
-				x find out about "tapping on tempo increments bpm" thing
-					* solved, it is just continuous tapping
-			x looper
-		x define default sensible values for each link:
-			$ assess different configurations in terms of noise/volume (levels)/tone (EQ)/clean vs. distorted/compression
-			x gains
-			x EQs
-			x volumes (levels)
-			x other
-		x setup Vegas
-			$ setup Vegas metronome
-			$ MIDI sync to Eventide
-			$ learn about Audio Busses
-			x create recording template
-		x install Roland drivers and control panel
-			x create a shortcut
-		x install factorlib software
-		x install&configure:
-			x timer
-			x metronome
-			x tuner
-			x Digital Level Meter by Paul Marshall
-		x configure default values for each link
-		x build a new acronis image
-	x make a new Acronis image w/ everything installed
-		x close items in "X200s Software Installation and Configuration Plan"
-			x merge two files into one residing on X200s; add contents from Raine&Horne
-			x find and merge birthday files into one
-				x add to excel calendar
-		x do a dry run
-		x books
-			x Senior
-				x extract TOC into a txt file w/ handy outliner
-				x compile a detailed TOC
-					x enumerate plug-ins
-						x not all plug-ins have pictures, search for keyword "free", mark with []
-					x add subsection titles to TOC
-					x add box titles to TOC
-					$ re-adjust plug-in names
-					x shift page numbers
-					x add missing page numbers
-			x Huber
-				x download TOC and tutorial files
-			x Petelin
-				x NOOP
-		x move practice log to Excel
-		x fix backups
-			x open Aussie_X200s archive in Acronis
-x create Nuances.xls
-	x watch and make notes x) Sergey Rudnev's two videos covering vibrato and bends x) Guthrie Govan's videos on vibrato and bends
-	x extract and classify nuances from Ex1-Ex11
-x create "01 - Example 13 Demon Driver" project
-	* 1 (close-ups) 2 (close-ups) 3 (close-ups) 4 (beep tracks) 5 (beep tracks) 6 (slow down tracks, half a day) 7 (render)
-		8 (render) 9 (render) 
-	? create Transcription.tmpl.xls
-	- transcribe project. Plan
-		* 1 (Plan, pass 1) 2 (pass 5) 3 (pass 7) 4 (pass 7) 5 (pass 10) 6 (pass 11) 7 (pass 13) 8 (pass 13) 9 (pass 13) 10 (pass 13)
-			11 (pass 13) 12 (pass 13) 13 (pass 14) 14 (pass 15) 15 (pass 16) 16 (pass 16) 17 (pass 16) 18 (pass 16) 19 (pass 16) 20 (16)
-			21 (pass 17) 22 (pass 17) 23 (pass 17) 24 (pass 17) 25 (pass 18) 
-		- determine
-			- name "01 - Example 13 Demon Driver"
-			- length 30 bars
-			- tempo 135 BPM
-			- time signature 4/4
-			- common subdivision(s) 6
-				- notes/s 13
-			- key signature(s) Bm, C#m
-			- structure
-				* start length name
-				- 1.1  1.0 Drums intro
-				- 2.1  4.2 Verse1
-				- 6.3  5.2 Verse2
-				- 12.1 7.3 Gtr solo
-				- 19.4 4.2 Verse3
-				- 24.2 6.2 Vrs4 + end
-		- transcribe takes first, then verses, then guitar solo
-			* transcribe "the core" first
-				- note
-					- pitch (string/fret number)
-					- position/duration
-				- LH
-					- finger number
-					- movement
-						- fret -) hammer on -) tap
-						- lift -) pull off
-				- RH
-					- up stroke
-					- down stroke
-			- Take1
-				- pass 1, L
-				- pass 2, R
-			- Take2
-				- pass 3, L, compare with Take1L
-				- pass 4, R, compare with Take1R
-			- Verse1
-				- pass 5, L, compare with Take1L
-				- pass 6, R, compare with Take2R
-			- Verse2
-				- pass 7, L, compare with Verse1, transcribe differences
-				- pass 8, R, compare with Verse1, transcribe differences
-			- Verse3
-				- pass 9, L, compare with Verse1, transcribe differences
-				- pass 10, R, compare with Verse1, transcribe differences
-			- Vrs4 + end
-				- pass 11, L, compare with Verse2, transcribe differences
-				- pass 12, R, compare with Verse2, transcribe differences
-			- Gtr solo
-				- pass 13, L
-				- pass 14, L, double-check notes falling on down beats
-				- pass 15, R
-		- compile sections into final manuscript
-			- pass 16
-		- compare everything with Guitar College transcription
-			- pass 17
-		* revise nuances
-			- LH
-				$ slides
-					$ (position shifts)
-				- bends
-					- vibrato
-						* classify, push/pull, etc.
-						- pass 18
-				$ tremolo arm
-			- RH
-				$ (picking position)
-				$ palm muting
-				$ pick staccato
-				$ pickup selector switch
-x create "02 - Example 14 Rising Force" project
-	* 1 (close-ups) 2 (beep trks) 3 (slow down trks) 4 (render) 5 (done) 6 (plan, pass 1) 7 (pass 1) 8 (pass 3) 9 (pass 4) 10 (pass 5)
-	11 (pass 8) 12 (pass 9) 13 (pass 9) 
-	- attributes
-		- length: 10 bars/18 s
-		- tempo: 130 BPM
-		- time signature: 4/4
-		- subdivisions: 8, 6, 4
-		- notes/s: 17
-		- key signature: Em
-	- core
-		- pass 1, Take1L (string, fret, finger, position/duration)
-		- pass 2, Take1R (up, down, LH: fret/lift/hammer on/pull off/release/tap)
-		- pass 3, Take2L
-		- pass 4, Take2R
-	- nuances
-		- pass 5, VB
-		- pass 6, slides
-		- pass 7, RH accents
-		$ pass N, LH articulation (barre notes isolation)
-		$ pass N, RH P.M., pick staccato
-	- pass 8, compare with GC tabs
-	- pass 9, compile final manuscript
-x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project
-	* 1 (close-ups) 2 (close-ups) 3 (beep trks) 4 (beep tks) 5 (slow down trks) 6 (render) 7 (render) 8 (render) 9 (done) 10 (plan, 1)
-	11 (pass 4) 12 (pass 4) 13 (pass 5) 14 (pass 5) 15 (pass 6/7) 16 (pass 6/7) 17 (pass 8) 18 (pass 10) 19 (pass 10) 20 (pass 12)
-	21 (pass 13) 22 (pass 13) 23 (pass 14) 24 (pass 17) 25 (pass 18) 26 (pass 18) 27 (pass 18) 28 (pass 18) 29 (pass 19) 
-	- statistics
-		- length: 1:04/32 bars
-		- tempo: 125 BPM
-		- time signature: 4/4
-		- subdivisions: 6, 9
-		- notes/s: 13, 19
-		- key signature: Bm??
-		- structure:
-			Intro    1.1 7.2
-			Verse    8.3 11.0
-			Chorus1 19.3 6.2
-			Chorus2 26.1 7.0
-			        33.1
-	x core
-		LH pass: string, fret, finger, note position/duration
-		RH pass: up, down, (), pick scratches
-			(refine LH):
-				fret for picking (either idling or ringing)
-				lift for picking (either idling or ringing)
-				hammer ringing string
-				vigorously hammer idling string
-				pull string sideways and release (either idling or ringing)
-				release ringing string
-		x pass 1, Take1L
-		x pass 2, Take2L, compare w/ Take1L
-		x pass 3, Take2R
-		x Intro
-			x pass 4, L, (compare w/ Take2L)
-			x pass 5, R, (compare w/ Take2R)
-				x pass 5.0.1, use audio cues (listen), notate scratchy pick attacks with dots
-				x pass 5.0.2, use AV cues (listen and watch), notate well and poorly pronounced strokes, use () for poor
-			$ pass 5.1, double-check downbeat notes
-		x Verse
-			x pass 6, L
-			x pass 7, R
-				? pass 7.1, pick scratches
-				? pass 7.2, well-off/poor strokes
-		x Chorus1
-			x pass 8, L
-			x pass 9, R
-		x Chorus2
-			x pass 10, L, compare w/ L Chorus1
-			x pass 11, R, compare w/ R Chorus1
-				x pass 11.1, video, notate pick strokes including ()
-				x pass 11.2, no video, notate pick scratches w/ dots
-	x nuances
-		x pass 12, VB
-			LH pass: technique, pattern
-		x pass 13, slides
-			LH pass: position shifts, slide-ON|OFF (beginning and end of note), slide direction UP|DOWN, undef
-		x pass 14, RH accents (i.e. wrist stroke)
-		$ pass 15, LH articulation (string muting, i.e. isolating barre notes..)
-		$ pass 16, RH P.M., pick staccato, x) rakes, tremolo arm
-	x pass 17, referencing, compare with GC tabs
-	x pass 18, (final interpretation), compile final manuscript
-	x pass 19, final check
-x develop Arrange process
-	x extract TOC from Petelin book
-		x beautify TOC
-	x compile statistics from printed score and Vegas project ("03 - Example 15 Trilogy Suite (B harmonic minor)")
-		- statistics
-			- name
-			- instrument(s)
-			- tempo(s)
-			- time signature(s)
-			- key signature(s)
-			- length [measure], [s]
-			- subdivisions
-			- notes/s
-			- structure (Arranger Track)
-				- section name
-				- section start [measure]
-				- section length [measure]
-					- phrase (lick) name
-					- phrase start [measure], [beat]
-					- phrase length [measure], [beat]
-			- repeats
-			- variations
-			- note-level statistics (Marker Track)
-				- note position
-				- note duration
-				- note velocity (accents)
-				- slurs
-				- notes with attack vs. legato notes
-				- vb
-				- slides
-				- sweep picking, flams, tapping
-				- pm, pick staccato, rakes, ghost notes, tremolo arm
-				- let ring
-	x (Petelin book) skim-read a few first lines of each paragraph from: 
-		x От авторов
-		x Введение
-		x intro to each chapter
-		x Заключение
-	x compile a list of relevant sections of Petelin book
-		x map statistics to Cubase features
-	x develop the process
-		x compile a list of steps
-	x create Arrange.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
-		x reset Cubase
-		x save, Cleanup and commit project
-- R&D Record process
-	x Huber book (compile master topic list)
-		x extract TOC
-			x add missing bits manually
-			! check against 8ed TOC
-			x beautify TOC
-		x quickly outline the book in your head
-			x read full intro to each chapter
-		x compile a list of relevant subsections
-			x read first few lines of the first few paragraphs of EACH (whoaa) subsection and add Record tag to TOC if it is relevant
-		x read in full tagged subsections
-		x find related titles, create cross-references
-		? create subbook TOC
-	- a set of test waveforms, draw/generate/record/combine
-		* add up = sum up = combine = group = mix = merge; record = sample
-		* use Cubase Sample Editor, Cool Edit Pro, Notepad++ ascii2Hex, WinMerge
-		x save under "Vegas - Vegas\21. Test waveforms"
-		- outline a set of topics and study "Cool Edit Pro" and "Cubase Sample Editor", tag with Waveform
-		- listen/meter(peak/rms)/statistics/oscilloscope/spectrum analyzer
-	- latences test rig, build cables
-	- Petelin book
-		- research and link to master topics
-	- Manual.pdf
-		x TOCify
-		- research and link to master topics
-	- "Cubase Help"
-		- research and link to master topics
-	- coolpro2.chm
-		- TOCify
-	- "QUAD-CAPTURE manual"
-		- research and link to master topics
-	- "QUAD-CAPTURE driver README"
-		- research and link to master topics
-	- "Outboard gear manuals"
-		x find/download
-		- add to "My Guitar Rig" list
-		- add reset procedures
-		- research and link to master topics
-	- develop the process
-		- do a series of tests
-			- measure in-the-box latencies in each monitoring mode
-				* try to slow down CPU when researching ASIO Direct Monitoring
-			- measure outboard gear gains
-			- test meter mapping modes
-		- compile a list of steps
-	- create Record.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video"
-		- reset Cubase
-		- fork off Arrange.tmpl.cpr project
-		- implement steps
-		- save, Cleanup and commit project
-- develop Mix process
-- add features, fix bugs
-	- think about subdivision-level navigation
-		- add subdivision beep tracks
-		- add divide/multiply by 2/3 buttons
-	- fix bug with switching rates
-- print articles from Yngwie's official website
-- guitar wizardry
-	x apply Normal style to all text
-	x headers. Fix case, apply Heading 2, hard-format main header
-	x insert copyright line
-	x insert TOC
-	x create a style for italics
-	x convert tabs to outlined lists, bullets and normal text
-		x join paragraphs
-		x add outer list
-		x add bullets
-		x add inner paragraphs
-		x apply sentence case to chunks of text, add full stops
-	x replace w/ with with
-	x replace / and -) with , and and/or
-	x fix oddities, general editing
-	x replace some LH/RH with right/left hand
-	x replace pima with finger names
-	x complete "Awareness"
-	- complete "Challenge"
-x make plugged-in setup for guitar
-	* moratorium on Ex2,3 until plugged in
-		$ level PC and guitar volumes
-	x reassess guitar technique
-		* moved altogether to guitar wizardry
-			x create guitar wisdom text file to keep ideas on guitar technique, method etc.
-				* read articles on guitar technique on Wikipedia
-		x compare and contrast plugged vs. unplugged
-! move paper-based Lesson Plans to Excel
-	* opted for generic lesson plan
-x improve lighting in the room
-x check out internal preferences
-x check svn properties
-$ fix svn history
-$ fix svn source code timestamp
-- start "Yngwie Malmsteen - REH Video" transcription subproject
-	- see if there's an off the shelf solution to insert markers at scene breaks
-	- install vegas saurus scripts and check it out
-? check Yadif Deinterlace for Sony Vegas
-x learn to do cross-references in Word
-x add Up button to Explorer
-	* http://www.techrepublic.com/blog/window-on-windows/add-the-up-button-to-the-explorer-command-bar-in-windows-7/3877
-
-Phone Enlightments
-
-x AddBeep: takes can hold Notes, beat, measure. Then I can press T to circle thru them
-? write AddFrameBeeps script for Clauderen
-
----
-Measures & &Beats
-
-1.1.000
-
-Gr&id Spacing
-
-&Ruler Marks
-
-Me&asures
-&Quarter Notes
-Q&uarter Note Triplets
-
----
-Vegas icon format: 16 X 16 pixels, 32-bit color depth with an alpha channel for transparency. Font: Arial Narrow Condensed, Size: 13, (v) Hinting () Force auto-hinter () Antialiasing
----
-NETWORK RENDERING HOW-TO
-x check windows binding order
-x check firewall on both machines: services.msc
-x restore config files
-	192.168.0.2 (owner computer) D:\Program Files\Sony\Vegas Pro 8.0
-	192.168.0.1 (render host) C:\Program Files\Sony\Vegas Pro 8.0
-	NetRenderClient.config
-	NetRenderService.config
-x remove recursively
-	(owner computer) C:\Documents and Settings\Andrey\Local Settings\Application Data\Sony\Vegas Pro
-	(render host) C:\Documents and Settings\Remote\Local Settings\Application Data\Sony\Vegas Pro
-	(render host) C:\Documents and Settings\Andrey\Local Settings\Application Data\Sony\Vegas Pro
-x install Divx codec on the render host
-x install AddRuler scripts/resources on the render host
-	C:\Program Files\Sony\Vegas Pro 8.0
-	copy Application Extensions
-	copy Script Menu\*
-	add csc.exe to path: C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-	Script Menu\BuildAll.BAT
-	Application Extensions\CalcTempo.bat
-	copy Presets\{0FE8789D-0C47-442A-AFB0-0DAF97669317}\*
-		create elmo preset, search/export/edit/import registry keys
-x check serial number on the render host
-x render a clip on owner computer/render host
-	x 00:02:04.300 clip, video only, xvid: 4:09 local, 0:44 remote (5.7 times faster)
-x do a simple remote render
-	x 0:46
-x try 2 instances of the render service (distributed rendering)
-	x 1:25
-	? check for double encoding
-- 
+$Id$ 
+ 
+1. Take the last frame of a video event. Copy and paste it multiple times 
+   at the end of the event. Thus freezing the last frame for a certain time 
+   when playing back. 
+ 
+2. Make a Video Progressions type of effect. The screen is split horizontally with 
+   left/right hand in upper/lower (or vice-versa) half of the screen. 
+ 
+3. Study Takes, 50%, 25% slow down. 
+ 
+4. Study Track left hand/cookie cutter 
+ 
+5. Idea with frames, start every file name with a frame number, then possibly, 
+   measure number 
+ 
+6. Takes/Moving cookie cutter 
+ 
+ 
+--- 
+TODO: 
+ 
+- Find a way to do typeof(). 
+- Find a way to compile and link without Vegas. 
+- Convert Common to a singleton 
+--- 
+- Write a script to generate a series of beeps at a specified tempo. 
+  Input tempo (period) from a selection. 
+  Calculate the number of beeps from the length of the "input" track. 
+- Revise error messages from UtilTrack.GetInputAudioTrack() 
+- Write a dialog asking "The tempo is ...Continue?"  OK/Cancel 
+ 
+ 
+ 
+--- 28 November 2011 
+ 
+x install x) Vegas x) API guides x) examples x) books x) compilers etc.. 
+  x learn how-to link *.cs modules 
+x install x) svn ?) IDE 
+x go through the crash course on C# 
+x work through 13.1 Creating a Simple Windows Form 
+/ have a look at Vegas API FAQ 
+x download C# reference/.NET reference 
+x have a look at what's in insightful folder 
+x start re-writing the four scripts FINISHED!! 27 December 2011 
+  x write a dialog window 
+    x write a dockable Vegas window for AddRuler command 
+	  x base the window on DockableControl.DLL 
+	  x run UserControl example stand-alone 
+	  x embed UserControl example into dockable Vegas window 
+	  ? write a batch file to recursively delete *.EXE and *.DLL files 
+	  ! write a test script to build our own dialog window 
+	  x build Add Ruler dialog window and test it with the test script 
+	    x jot dialog layout 
+		x create Location border 
+		x create Top/Bottom radio buttons 
+		  x underscores (keyboard shortcuts) 
+		  x initialize 
+		  ? focus 
+		x create Number drop-down 
+		  x Study MSDN ComboBox example 
+		  $ right align items in the combo box 
+		  x bind combo box to Location group box 
+		  x check value on lost focus 
+		  $ fix ruler number validation when manipulating Location 
+		! implement TabIndex 
+		x think about Section/Measure/Beat 
+		x create Notes text field 
+		xcreate Add/Fill Gaps buttons 
+		  ? check out ENTER or ESC keys 
+		x create message box 
+	  x embed dialog into Vegas dockable window 
+	  x set x) caption x) size !) position !)remove "hello world" label 
+	  $ make it docked by default 
+  x read through Section 2: Tracks and Events 
+    x create Common.cs out of how-to 
+	? learn to use CustomDataContainer 
+  x add libraries x) Audio.cs x) Video.cs x) Common.cs 
+  x AddRuler.cs 
+    x show "exactly one video track dialog" before the form 
+    x find all Video tracks 
+	x find all Audio tracks 
+	x make sure only one track is selected and it is a video track 
+	  x find all selected tracks 
+	  x display an error message box 
+	x let's operate List<AudioTrack> and List<VideoTrack> 
+		x write the four (horsemen) functions: 
+		  x List<AudioTrack> to List<Track> 
+		  x List<Track> to List<AudioTrack> 
+		  x List<VideoTrack> to List<Track> 
+		  x List<Track> to List<VideoTrack> 
+	x add the ruler 
+	  x using Vegas check that one 32nd note is 0.0625s 
+	  x let's work with frames for video tracks and with milliseconds for audio tracks 
+	  x insert an event at the current cursor position, 1 frame long, with PNG picture as its media and with Notes: and Number: as its take names 
+	    $ make Add Ruler dialog non modal 
+	  x convert Location&Number into basename 
+	    x learn how-to format a number 
+	  x check if there already exist, at the current cursor position, events and if so display a dialog window, with Ok/Cancel buttons, to continue or cancel 
+	    x handle singular/plural 
+		! remove .000 from frame number 
+		  x rephrase the message 
+	    ! write a function to return a list of all events on the current track 
+		x write a function to find an events by specifying their position 
+		x learn to compare events position-wise 
+	  x find out the differnece in directories between Extensions and Scripts 
+	  x remove HOME_DIR in favor of vegas.InstallationDirectory 
+	  x substitute new Media() with ->) vegas.OpenFile or x) use MediaPool's AddMedia()/Find() methods 
+	  x convert Application Extension to regular script 
+	    ?) assign icon x) trim size x) locate the dialog at the center of the parent window 
+		x) remove Max/Min buttons x) add window title x) handle ESC/Enter (Add) keys 
+	  x introduce Globals.cs, keep vegas instance there 
+	    x http://www.dotnetperls.com/global-variable 
+  x make a constant for "Add Ruler" string 
+  x DumpTrack.cs 
+    x create all necessary files, icons, etc.. 
+	x write event neutral (or video only) DumpTrack.cs first 
+	  x check for tracks 
+	  x dump all event's take's Name fields 
+	    x use regex to remove XXX and trim the string of spaces 
+		x get basename of the filename 
+    x narrow down the search with a selection 
+	  x write Normalize() method 
+	  x write a method to select a subset of events if current selection length > 0 
+	x back up everything 
+  x FillGaps.cs 
+    x Check for x) exactly one track selected x) track is video x) at least two events on the track 
+	x iterate over 1.. N-1 events 
+	x trim N event's End to be equal N+1 event's Start on a condition 
+	  x that N.End < N+1.Start 
+	x display a MessageBox with how many events were touched 
+  x AddBeep.cs 
+    x create all files, icons, etc.. 
+    x copy the dialog window off AddRuler 
+	  x get rid of UserControl class 
+	x re-engineer dialog window 
+	  x) remove x) Location part x) Fill Gaps button x) move everything up, trim window's height 
+	    x) change Number drop-down with two Measure&Beat text boxes x) center Add button 
+	x implement validation of all fields 
+	x add the beep 
+  x fix the bug with empty Notes 
+    x make sure DumpTrack handles event created manually 
+x back up everything 
+x write AddObject.cs 
+  x create all file/icons, copy GUI off AddBeep.cs 
+  x learn how-to add text events to the timeline (see FAQ/example) 
+  x learn how-to list Video Media Generator's presets 
+  x write GUI 
+    x) remove Beat: x) rename Measure: to Frame Size: x) change Measure text box into Frame Size combo box 
+	  x) change Notes: into Object: x) remove Notes: text box x) add the rest of lables/combo boxes 
+      x) create three drop-downs x) Object: x) Preset: x) Frame Size: 
+	x populate drop-downs by filtering the strings 
+	  x create sample presets 
+	  x write Preset class 
+	  x populate 1st drop-down 
+	  x make sure to include presets that start from a number and pass Preset() contstructor 
+	  x remove duplicates 
+	  x make sure items are sorted in drop-down boxes 
+	  x populate 2nd drop-down 
+	  x populate 3rd drop-down 
+	  x 3rd box depends on 2nd, 2nd on 1st 
+	x trim drop-downs size 
+	x check Sony Text plug-in for null 
+  x insert text event 
+  x re-create presets from Untitled.mpg 
+    x move top ruler 15 pixels down 
+	  x resolve the problem with frame_r.4.png not matching ruler_top_01.png 
+	  x create frame_r.4.png 
+	  x edit all 12 top rulers 
+	x create a text file in svn with all custom presets' settings (for most important presets only) 
+	x create a demo project to show off AddObject 
+	$ fix the bug with input not being validated when Enter is pressed over cbNumber 
+	x fix DumpTrack: take name is different (stock name) for events created with AddObject. This is probably 
+	  due to text media 
+	x move DLLExample into Temp 
+    x think how-to accomodate different frame sizes 
+	  x create a demo project in 720x576 resolution 
+	x create a production set of presets just for one 320x240 resolution 
+	  x add 26 Notes presets ([A], [B] etc.) 
+	  x add 200 Measure presets 
+    x) Notes x) Rate x) Tempo x) Measure 
+	  x Match: x)font name x) font size x) font style x) color x) position 
+	x chart down x) frame_g.4.png and x) frame_r.4.png 
+    x add Filename preset 
+	$ use phantom script to create batches of presets 
+  x find out where Vegas stores generator presets 
+  x learn how-to back up/restore presets when moving from one PC to another (http://forums.creativecow.net/archivethread/24/755317) 
+  ! move messages like "Please make sure you have exactly one video track selected" into Common.cs 
+  ? sort Measure Presets numerically 
+  x back up 
+  - rewrite script for compatibility with Vegas 11 
+x write CalcTempo.cs app extension 
+  x monitors current selection and calculates tempo 
+  x provide a "Double time" tickbox 
+  x add source/config files, icons, etc.. 
+  x write GUI 
+  x figure out how-to assign an icon 
+  x learn how-to monitor selection from an application extension 
+    x we can only monitor markers/regions 
+  x learn how-to make a text box read-only 
+  x get Tempo region, display an error if not found 
+  x calculate tempo 
+    x round off the number 
+    x mind Double Time check box 
+  x put all pieces together in app ext 
+    x re-calculate tempo when x) Double Time x) Monitor Regions is ticked 
+	x avoid "Tempo region not found" message boxes at Vegas start time 
+	  x add "Monitor Tempo Region" check box 
+	  x add "Calculate Tempo" button 
+	    x calculate tempo based on selection 
+  x back up 
+x write GenBeeps.cs (assign Ctrl+Shift+B key) 
+  x create all files and icons 
+  x write basic GUI without handlers/validation 
+	x strip down AddBeep GUI 
+    x borrow parts from AddBeep, AddRuler etc.. 
+	x adjust How many beeps height 
+	x add Beats per Measure box 
+	x adjust tab order 
+	x double check mnemonics 
+    x add handlers 
+	x solve the problem with validating input when submitting forms 
+	  / read "Handling and Raising Events" 
+	    ? Next: "How to: Implement Events in Your Class" 
+	  x do form validation on submit 
+	    x find how-to select text 
+	  x fix x) GenBeeps x) AddRuler and x) AddBeep forms 
+	  ? consolidate all scripts in a tabbed form 
+	x implement validation 
+  x input: x) tempo x) number of beeps x) beats per measure x) start from Measure.Beat 
+  x generate beeps 
+    x insert Number of beeps at Tempo interval 
+	  x create a list of beep positions 
+	  x check for pre-existing events 
+	  x insert beeps with dumb data 
+	x implement Measure.Beat label 
+	x implement three modes 
+	  x accomodate validateForm() function 
+	  x change btnGenerate_Click() to implement 3 modes 
+		  x tempo and number 
+		  x tempo and selection (find out number) 
+		  x selection and number (find out tempo) 
+	  x change GUI 
+	    x move number text box next to tempo text box 
+		x add a radio button 
+	  x create a dialog window with a text box 
+  x back up 
+  / selection seems to work differently in DumpTrack and GenBeeps (Tempo and Selection) 
+  ? join "calculated tempo" and similar dialogs with report dialogs to save on key presses 
+x write TrackOutline.cs 
+  x make the script media-neutral 
+    x rename the script to TO (Track Outline) 
+	! match target track type to the source track type 
+  x create all files and icons (borrow from AddBeep) 
+  x input: two tracks should be selected, one should be empty and another should have at least one event 
+  x implement selection (see DumpTrack) 
+  x find events with a take that matches ^N.1 pattern for audio and ^1 X pattern for video 
+    x find out if a take carries audio or video 
+  x create an event with empty media, with one take whose name is concatination of source event take names 
+     print 1 T (1.1) first 
+    x compose label 
+	x create an event 
+	x report 
+    x find out how-to create events/takes w/o media 
+	  x write AddEmptyEvent() 
+	! see if we need to attach XXXX suffix for DumpTrack to recognise our events 
+	x add to demo project x) create a new demo project 
+	x for audio for measure events show only measure number 
+	x for video for measure events..think..same 
+  x back up 
+  - remove .1 from Notes 
+x write Beeps2Rulers.cs 
+  x input: two tracks should be selected, one audio (source), the other video (target) 
+  x script should work with partial tracks (selection) 
+  x script won't need a dialog window 
+  x create all files and icons 
+  x implement "target empty, source at least one event" check 
+  x insert frames at beeps' positions in seconds 
+    x re-create all takes names in the target event (using empty media) 
+	  x extract common code dealing with take names from TrackOutline.cs into Common.ch 
+	  ? move getTakeNames() back to where it belongs 
+  x report 
+  x add (active) to Dumptrack.cs 
+  x study how quantization works 
+	x the picture appears when the cursor reaches slot's start 
+	x the picture disappeares when the cursor goes beyond slot's end 
+	x the slot is rendered with the first media the system can find 
+	x what an overlapped video event look like with different media? 
+	  x they mask each other. The one that has owned its position wins. 
+	x one 32nd note at 240 bpm is about 0.8 of a frame 
+	x let 16th notes at 240 bpm be our reference 
+	x write a function to insert a frame into the nearest frame slot. Write to log 
+	  x) if the slot is taken, do not insert in the same slot more than once, but mention in the log 
+	  x to find the nearest time slot: x) get the position value in absolute frames 
+	    x) round it off 
+	  x write to log frame status (fast/slow) and the offset 
+  ! think how to accomodate insert function for frames 
+  x create demo project 
+  x in the log mention not only event index, but event's full name 
+    x move getFullName() to Common.cs 
+  x back up 
+? write a script to add N measures to the right/left 
+x write Rulers2Rulers.cs, a script to insert top rulers given bottom rulers 
+  ? move AddVideoEvent() to Common.cs, extend it to add top rulers 
+  x in Beeps2Rulers.cs, change audio label to video label (^N X), so the track could be further processed 
+  x create files and icons 
+  x input: exactly two video tracks should be selected 
+  x deal with selection 
+  x insert top rulers 
+    x carry on all takes from the source event 
+  x report 
+  x add to Qunatization demo project 
+  x back up 
+x write FillRulers.cs, a script to fill top/bottom ruler tracks with subdivision 
+  x create all files and icons 
+  x input: exactly one video track (selection) 
+  x fill the rulers in 
+    x check the Nth event for being top or bottom 
+	x refactor 
+	x calculate nRulers, step and offset 
+	? move AddVideoEvent() from beeps2rulers/rulers2rulers to Common.cs 
+	x introduce Common.QuantizedEvent class 
+	x first off, go thru all events and make sure all are labeled correctly 
+	x check for double insertion 
+	x fill the rulers in 
+  x report 
+  x add to the demo project 
+  ? back up 
+? write Rulers2Notes.cs, a script to insert Notes objects given a ruler track 
+  ? input: TBD 
+  ? back up 
+x write Rulers2Objects.cs, a script to insert Measure objects given a ruler track 
+  x input: x) exactly two video tracks x) he target track should be empty, the source has at least one 
+      event x) check for events that lack 1 (T|B) pattern 
+  x model the script after RR 
+  x replace individual BAT with BuildAll.BAT 
+  x create all files and icons 
+  x insert objects 
+    x find out the maximum range of measures, check if it's enough 
+  x create a big new Show all objects demo 
+  x back up 
+x see if its possible to have more than one preview window, each showing a different video 
+  x create a demo project with two videos ?) try to build a layout where RH1 RH2 LH1 LH2 
+  x read through "Multicamera Editing" 
+  x see how to switch between audio while playback 
+	x write an addition to CalcTempo.cs to mute/solo tracks 
+	  / see if we can process key presses from within an app ext 
+	  x draft in MyScript.cs 
+	  x put all CT widgets into a group box 
+	  x Add "Mute/Solo Audio Tracks" group box 
+		  x add "Activate" checkbox 
+		  x add "Mute All" and "Solo All" check boxes 
+		  x Add "Playing Track: " text 
+		  x add "Solo &Next" button 
+		  x go over all mnemonics 
+		  x solve the problem with vegas crash 
+			/ read through the forum article 
+			x study UndoBlock and x) using statement 
+	  x implement event handlers 
+		x scrap Activate (vegas has centralized Undo) 
+		$ update Mute All, Solo All, Playing Track upon track state change 
+		x update Playing Track: 
+		x back up 
+	  x when there's only one audio track we still need to update Playing Track: 
+	  x reset GUI form on closing current project 
+	  x add Play Previous button; filter by ^Audio 
+	x add mute video tracks 
+		x add mute video tracks group, rearrange groups 
+		x implement event handlers 
+		  x) mute all x) solo all x) Left Prev/Next x) Right Prev/Next 
+		x add Right Playing Track 
+		  x amend GUI 
+		    x Playing TrackS!!! 
+			x move L R track numbers down closer to the buttons 
+				x increase height of x) the form x) groupbox x) move the four buttons x) lock l&r tickbox down  
+				x set both numbers to 99 on white bg x) move numbers down/center x) move LPrev, RPrev to PlayNext's 
+					height 
+	x add Lock LVideo with RVideo 
+		x bulk mute/unsolo peer tracks also 
+		x deal with prev buttons 
+		x update Playing Tracks 
+		x check with other returns 
+		$ write a handler for lock l&r checkbox 
+			x extract FindTracksByRegex() 
+	x add Lock with Audio checkbox 
+		x add GUI element 
+		x implement event handler 
+			x include mute/solo 
+		? do the other direction 
+	x add Pan Audio Left Right/Audio Restore 
+		x find out if we can pan programmatically 
+		x add Split Audio checkbox 
+		x implement handler 
+			x check for exactly one LVideo and one RVideo unmuted (nonadjacent) 
+			x mute all audio tracks x) but two x) pan tracks 
+				x extract FindPeerAudioTrack() 
+			x implement "unsplit" 
+			x update split audio checkbox 
+	x move Playing audio Track number down next to Play Prev button 
+	x clean out debug statements 
+	x back up 
+	x have a look at Selectively Prerender Video 
+x write a script to match two videos time-wise 
+  x read about synchronizing event by moving/splitting 
+  ! add alternative media to "Show all objects demo 2" create ?) beep, x) outline and x) tempo tracks 
+	! extract each track, write to xvid/mp3, !!!) normalize audio, remove avi/png/text media files from media pool 
+  x see how Split() works with audio and video events 
+x write SliceTrack.cs 
+  x create all files and icons 
+  x model the script after TrackOutline.cs. The script is media-neutral 
+  x input: two tracks should be selected, source and target 
+    x write FindEventsByEvent() 
+	x implement the rest of the checks 
+  x write FindMeasureStartEvents() 
+    x find&replace all instances of inline code: x) TO !) B2R !)R2R 
+  x do the split 
+    x study the return value of Split() 
+  x copy all take names 
+  x report 
+  x solve the problem with ever adding labels 
+    x remove empty takes 
+  x demo the script 
+  x back up 
+  ! fix the problem with empty media in the second half event 
+x write MatchTrack.cs 
+  x model the script after SliceTrack.cs. The script is media-neutral 
+  x create all files and icons 
+  x check input: 
+    x exactly two tracks of any type should be selected, source and target 
+    x source track (selection) should have at least one (measure start) event to continue 
+	x make sure that for each source event there's exatly one namesake target event 
+	  x a namesake event has the same ^N (T|B) or ^N.N take 
+  x go over all measure start source events and adjust Start and Length of all target events accordingly 
+    x employ fill gaps technique 
+  x accomodate media 
+  x report 
+  x create a new demo project 
+  x add to the bigger demo project 
+    x build (copy) beep tracks for x) AudioTrack1 x) AudioTrack3 
+	x slice/match tracks 
+	x render the new tracks 
+	x solve the problem with 640 vs. 320 frame width 
+  x back up 
+x write SpreadBeeps.cs 
+	x think which script to use as a model (SliceTrack.cs). The script is audio only. 
+		The script supports selections (partial tracks) 
+	x create all files and icons 
+	x input: 
+		x check 1. Exactly one audio track should be selected 
+		x check 2. At least two native events should exist to continue 
+			x write Common.FindNativeEvents() 
+	x write GUI to prompt for percentage 
+		x add Cancel button 
+		x validate form 
+	x spread out events 
+	x report 
+	x clear out debug statements 
+	x add to "Funky Su - Guitar Jam.veg" x) 100% and x) 200% ruler tracks x) 200% beep track 
+		x recreate VideoTrack1 (all tracks) x) 100%, x) 200% and x) 400% 
+			x let's try to embed ruler track 
+				x don't embed Tempo&Rate&Filename 
+			! find original video/audio/beep tracks 
+				! !!! couldn't find - always keep original video/audio/beep tracks !!! 
+		x compare how ruler and beep tracks align at different speeds 
+			x streach everything starting from 1.1 
+		x xsc audio tracks 
+		x deal with Rate and Tempo tracks 
+		x render down tracks 
+			x learn network rendering 
+	x back up (Japanese Phantom scripts as well) 
+x add "events found" to DumpTrack.cs 
+- add partial tracks (selection) to Fill Gaps 
+! troubleshoot manifold 
+? write BuildTOC.cs 
+	- generate an html outline of a project 
+		- implement nesting, absolute and relative time/length and numbering of each subsection 
+	- same idea for the transcription subproject 
+		- the source of information here will be the textual contents of all markers 
+	- write a *.cs part to generate a an html file with project structure 
+	- write a perl script to read the file, calculate times and numbers and build a nice TOC 
+x add copyright headers to all source files x) show copyright in all window headers 
+x add $Id$ to source files, adjust headers 
+x split source code and projects (My_Music) repositories 
+  x move Vegas Challenges.txt into source code repo, add $Id 
+  $ convert Subclip How-to.doc to DocBook and -) move it under source control 
+? compile everything into one big binary 
+x consolidate everything in Vegas Challenges folder on drive D: 
+/ re-create the four icons 
+x Check what's in 
+\\192.168.0.1\(H) My Book\Aussie-Backup-September-2009\Aussie\My_Music\Zakk_Wylde_-_Pentatonic_Hardcore\SVNRepository 
+x learn how-to print debugging information 
+x remove Hello World View from the Extensions submenu 
+- fix the icon for Add Ruler View (for any app ext) 
+x learn how-to test csc return value and conditionally start the program 
+/ document each script briefly in Subclip How-to.doc 
+	x AddObject.cs 
+	x Rulers2Objects.cs 
+	! LayoutTrack.cs 
+	x establish documentation format 
+	x DumpTrack.cs 
+	x AddRuler.cs 
+	x AddBeep.cs 
+	x GenBeeps.cs 
+	x Beeps2Rulers.cs 
+	x Rulers2Rulers.cs 
+	x SpreadBeeps.cs 
+	x FillRulers.cs 
+	x TrackOutline.cs 
+	x SliceTrack.cs 
+	x MatchTrack.cs 
+	x CalcTempo.cs 
+	x Mute/Solo Au Tracks 
+	x Mute/Solo Vid Tracks 
+	- order items according to workflow 
+/ move the project to NTSC DV/Nokia phone 
+	* there's gonna be the following sources: NTSC DVD, PC with a webcam; and targets: NTSC DVD, PC, Nokia E71 
+		x find them all and jot down their audio/video characteristics in a text file 
+	x create a "10. Sources and targets" project under "Vegas - Vegas" 
+	x change extension in toggle_vob.pl from avi to mpg 
+	x record/playback some samples 
+		x see if all devices can produce/consume 29.970 fps (Yes, we can!!) 
+		x for Nokia E71 
+			* http://nokia-e71-phone.blogspot.ru/ 
+			* http://jason-antonacci.blogspot.ru/2012/02/nokia-secrets-for-handbrake.html 
+			* http://www.techiechips.com/convert-movies-video-files-for-nokia-e71-e61-e61i/ 
+			? update firmware x) backup phone 
+			x unpack MPEG4-SP 
+				* http://eugenia.queru.com/2009/12/11/editing-kodak-digicam-video-files-on-a-pc/ 
+				* ffmpeg -i "Bychok 320x240 15.000.mp4" -f avi -vcodec rawvideo -acodec pcm_s16le "Bychok 320x240 15.000.avi" 
+		x for webcam 
+			x solve the problem with dropping frames (VirtualDub rules!!) 
+	x write a simple rendering script 
+		x run "Render Audio Tracks.cs" 
+		? run "Batch Render.cs" 
+	x create a test still image (two sources with different frame size, one target) 
+		x GIMP, learn how-to 
+			x draw an x) ellipse x) line ?see(*)) text 
+			x move and copy objects 
+			x create a ?) 1-bit image x) with transparent background 
+		x pick good bitmap fonts 
+			x my personal fav is cmd's Raster Fonts (Terminal) 16x12 (saying hi to my old PC XT!!) 
+	(*) a new paradigm "Sony Titles & Text idyot lesom.." 
+		x find Sinclair ascii table 
+		x create ascii.bmp 
+			* http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters 
+			* ASCII printable characters: 20hex to 7Ehex (95 in total) 
+  0123456789ABCDEF 
+2  !"#$%&'()*+,-./ 
+3 0123456789:;<=>? 
+4 @ABCDEFGHIJKLMNO 
+5 PQRSTUVWXYZ[\]^_ 
+6 `abcdefghijklmno 
+7 pqrstuvwxyz{|}~ 
+		x create a still with a test pattern x) 320x240 x) 720x480 
+			x the images should include: x) border x) cross x) circle x) diagonal line 
+		/ compare "good and bad" scaling 
+			x dot for dot vs. not 
+			- check scaling with -) Pan/Crop -) Position/Rotation (includes zooming) 
+		x create a HUD sketch  x) 320x240 x) 720x480 x) 1440x480 
+		?see(*) study text generator and add some sample text to the test image 
+		? find Power Puff Girls colors (let's use Sinclair colors, no let's use Norton colors) 
+		/ redesign HUD: x) rulers x) text objects -) port blinds  
+		x rip a frame from each video source 
+	x "marry up" all sources and targets 
+		x normalize video tracks 
+			x intra-frame 
+			x fps 
+				? do a crash course in Twixtor, follow YouTube tutorial "twixtor vegas frame rates & deinterlacing" 
+				x write an excel calculator to tie up together 
+					/ ms, fps, bpm, note length (16th, 24th, 32nd) and pitch (Hz and semitones) and more.. 
+				? generate still image sequences with frame numbers at 29.97/30fps 
+					x use Timecode FX 
+				x do a "drop frame/duplicate frame" test 
+		x normalize audio tracks 
+	x create stills with the grid x) 320x240 x) 720x480 x) 1440x480 
+	/ create test compilations for all targets 
+		x enumerate items 
+ascii_chart.bmp 
+VTS_01_1 5,289 1 2..56.476 0.033.720x480.png 
+VTS_01_1 5,000 500 2..46.833 16.683.avi 
+Bychok 320x240 15.000 81.000 5.400.png 
+Bychok 320x240 15.000.avi 
+grid.720x480.png 
+hud_sketch.720x480.png 
+test.720x480.png 
+6. 30fps into 29.97fps 90s 2697.3f.avi 
+		/ burn a DVD with single titles 
+			x normalize items x) create titles 
+				* titles are Uncompressed AVIs w/ square pixels rendered in Best quality; let DVD Architect do what's 
+					needed to create a DVD 
+			x buy a DVD-RW blank 
+			x do a crash course in DVD Architect 
+			x author and prepare DVD 
+			x burn DVD 
+			/ test on two DVD players, fix problems: 
+ascii_chart.bmp cropped top and left. Could be also bottom and right. 
+grid.720x480.png cropped at each side 
+test.720x480.png cropped (right), top and bottom. 
+hud_sketch.720x480.png cropped at each side 
+				x compare VTS_01_1 5,289 1 2..56.476 0.033.720x480.avi with grid.720x480.avi 
+					x Light Alloy *) all equal 
+					x DVD Architect settings *) all equal 
+				- burn plain AVIs onto a DVD-ROM 
+				- burn a combination of VTS_01_1 5,289 1 2..56.476 0.033.720x480.avi and grid.720x480.avi 
+				- check for transparency 
+				- try to change PAR in source PNG files 
+		x burn a DVD with splits 
+			x create stills with port boundaries and centers 
+			x jot down a plan 
+				* Grid spacing 
+					x fix grid calc 
+					x create a 720x480 still with 18/12 (1/40) grid 
+				/ estimate magnification in Yngwie close-ups 
+					? add pan/zoom calc 
+				x Yngwie x) Left hand x) Right hand 
+				x Bychok close-up 
+				x split views 
+					x YL/Y 
+					x Y/YR 
+					x YL/YR 
+					x Y/BC 
+			x burn DVD 
+		x Nokia phone 
+			x create a 320x240 still with 8/6 (1/40) grid 
+			x normalize VTS_01_1 5,000 500 2..46.833 16.683.avi 
+			x render titles (all with HUD) 
+				x Y 
+				x YL 
+				x YR 
+				x YR 0.5 
+				x B 
+				x BC 
+				x Y/B 
+				x YL/BC 
+				x YL/Y 0.5 
+				! YL/YR 
+			$ investigate a few pixels horizontal discrepancy after copying event attributes 
+				* has something to do with 720x480->640x480 normalization 
+		/ PC 
+			x create a 1440x480 still with 36(18)/12 (1/40) grid 
+			x normalize bychok 
+			x render titles  
+				x Teacher 
+				x Teacher.Left hand 
+				x Teacher.Left hand.50 
+				x Teacher.Right hand 
+				x Teacher.Right hand.50 
+				x Student 
+				x Student.Close-up 
+				x Student.Close-up.50 
+			? re-render to a less demanding bitrate 
+			x build sample project 
+				x add titles 
+				x add HUD track 
+				x add no signal track 
+					x create "No Signal" still 
+			/ solve the problem with rendering 
+				* vegas freezes after rendering is complete 
+				* vegas stops in the middle of rendering 
+				x lower bitrate from 20M to 2K 
+					* still hangs 
+				x render into MPEG-2 NTSC program stream 
+					* still hangs 
+			- solve the problem with Vegas freezing with lots of AVC tracks 
+				- do trial renders 
+	? compensate for different PAR 
+	x demo Draft/Best quality for computer-generated graphics 
+	x demo pan/zoom/rotate 
+	! see how-to set !) project defaults x) render defaults 
+	x study "Panning and Cropping Video Events" 
+	/ study "Keyframe Animation" 
+x update AddRuler.cs, Beeps2Rulers.cs, FillRulers.cs, Rulers2Rulers.cs for the newly redesigned HUD 
+	x redo ruler PNGs in three resolutions 
+x fix and document (x) document bug) AddObject.cs and Rulers2Objects.cs 
+	x study Bitmap class 
+		x load image 
+		x traverse 
+		x change 
+		x write out 
+		x study (Un)LockBits methods 
+		? create image in memory 
+		? how-to manipulate parts of image 
+		x see how-to create a transparent image 
+	x write TextGenerator class 
+		x write getCharBitmap() method 
+			! study IntPtr.Add() method x) find out how-to increment IntPtr 
+		! see how-to copy between pointers 
+		x write insertChar() method 
+		x write CopyCharBitmap() method 
+		x write InsertString() method 
+		x write methods to insert filename, notes, tempo, rate 
+		x do the rest of ascii and digit charts 
+		x make rate right-aligned 
+		x create new grids for char and digit charts 
+		x fill in init section in subconstructors 
+		x add getters for length fields 
+		x subclass TextGenerator 
+		x load all resource in constructor 
+		x rename InsertXXX methods to AddXXX, get rid of Bitmap argument 
+		x capitalize method names 
+		x create factory method 
+		x make sure subclasses cannot be instantiated 
+		x write InsertMeasure() method 
+			x pad with zeros 
+		x extend CopyCharBitmap() to x) other resolutions x) digits 
+		x review access modifiers 
+		x test class 
+	x write GUI 
+		x create a form with 5 fields 
+			x strip down AddObject.cs 
+			x add Project Path field 
+		x do Clear All button 
+		x autoselect on Tab 
+		x do saving history to AddObject.cs.config 
+			x read in XML file 
+				* http://msdn.microsoft.com/en-us/library/t058x2df.aspx 
+			x traverse XML object 
+			x write out XML file 
+		x write getNextFilename() function 
+			* http://www.dotnetperls.com/directory-getfiles 
+	x put it all together into AddObject.cs 
+		x write Video.AddObject() method 
+			x unMaintain aspect ratio 
+	$ fix "run AddRuler.cs first" bug 
+	x update Rulers2Objects.cs 
+		? extract load config to common 
+		x extract getNextFilename() to common 
+x demo time stretch methods, build matrix: 
+	x compare New length vs. % vs. Audio: 00:00:00.000 
+	x beep/Yngwie 
+	x ėlastique Pro 
+	x Classic Music 3 
+	x Transcribe! 8.31.0 
+	x 105% 90% 75% 50% 25% BPM 
+	x build and render demo project 
+		x insert section markers 
+	x render for Nokia 
+x build a big bad demo with the scripts that are ready to use 
+	x plan project 
+	x decide on naming conventions 
+		x originals: Take1 
+		x temps: Take1~ 
+		x hands: Take1L 
+		x matched: Take1LM 
+		x splits: Split1, Split.L12 
+		x slowed downs: Take1L.75, Split.L12.75 
+		? laid outs: Split.L12.75.2Mid (2-beat chunk, cut at the middle) 
+		? hudded: Tuke1LM, Splut.L12 
+		? beeped: Bake1LM, Splib.L12 
+		? hudded&beeped: Buke1LM, Splub.L12 
+		? resolutions: 320x240, 720x480, 1440x480 
+	x think of uniform track levels/normalized events across project and renders 
+	x find old fullest demo 
+	x document the process in "A typical workflow" section of Subclip How-to.doc 
+	 x fix dependancy on D:\Temp\New folder (5) and commit project 
+	x compare results frame-by-frame: 
+		x keep hud, stretch video, transcribe audio, spread beeps 
+		x stretch video, transcribe audio, spread beeps, create hud 
+		* audio ok, video not ok: see "Frame-by-frame comparison.jpg" and "Frame-by-frame comparison 2.jpg" 
+		* conclusion: always reHUD 
+			* well, although stretching first and rehudding second will produce better results, it is much more work.. 
+	x compare results frame-by-frame: 
+		x match track, slow down track 
+		! slow down track, match track 
+			* broken 
+		! conclusion: always match first, slow down second 
+		x why SliceTrack sometimes creates fade offsets? 
+			* Options->unQuickfade Audio Edits 
+		x why event turns pink with a number in a red box? 
+			* synchronization offset 
+		x see how-to set default stretch method 
+	x record Take4 
+		x find tuning segment x) determine pitch *) wrong 
+x write a quick unFX audio script 
+    x create all files and icons etc.., define svn Id property 
+		x create documentation stub 
+	x wrap it all up 
+	x expand script to a "tidy up" script 
+		* unLoop, unMaintain, Disable; unLoop, Normalize, unFX 
+		x VideoEvent.MaintainAspectRatio 
+		x VideoEvent.VideoResampleMode 
+	x call it from RenderAll.cs before rendering 
+x write RenderAll.cs 
+	x leave this to LayoutTrack.cs 
+		x cut into 0.5, 1 and 2 measure chunks 
+		x imlement 0 and 0.5 offsets 
+		x implement pre- and post- gaps 
+	$ make this one an app extension with an option to interrupt rendering 
+		* i.e. background rendering 
+	x have a look at 
+		x SimpleRender.cs 
+		x Render Audio Tracks.cs 
+		x Batch Render.cs 
+    x create all files and icons etc.., define svn Id property 
+		x create documentation stub 
+	x create cluster class 
+	x list all clusters 
+		x list video tracks which have at least one native event whose name starts from Split or Take 
+		x extract filenames from event labels 
+	x extract muteAllTracks() and soloAllTracks() to common 
+		x capitalize method names 
+	x unFX all audio tracks before rendering 
+	x move MyTextBox to common 
+	x create form 
+	x have two options x) render continuous tracks x) render "regions" 
+	x add Renderer textbox 
+	x write Render() method 
+		x produce log 
+	x show the user a quick render summary before proceeding 
+	x ask the user for the output folder 
+	x show total files/length estimation 
+	? align output with DumpTrack 
+	x do not include beep track with full tracks render 
+	x block GUI during rendering 
+	x document 
+		- add a clause about BPM 
+	x implement selective rendering 
+	x test 
+x write batch slow down scripts 
+	* the scripts will utilize Transcribe!, Phantom, Avisynth, VirtualDub and ffmpeg 
+	x write a reusable find() function 
+	x extract_wav.pl 
+		x install script 
+		x check retval from ffmpeg 
+	x extract_avi.pl 
+	x transcribe_wav.pl 
+	x assume_avi.pl 
+	x audio_dub.pl 
+		x normalize to 29.97 
+	x check logs 
+	x test all 
+	x document 
+	$ wait for saving dialog to go away 
+	- fix aspect ratio (PAR?) 
+x write horizontal navigation plus my own play controls 
+	x redesign 
+		? think of quantizing navigation 
+		x split app ext up to Calculate Tempo and TC 
+		x extract calc tempo into a stand-alone app ext 
+		x zoom to fav scale 
+		x simplify nav by assuming there are only 3 rates: 100%, 50% and 25% 
+		x look for 1.1 not BPM 
+		x create Navigate app ext 
+			x the general principle for all controls is to preserve other controls' state 
+			x all distances should be scaled for 50% and 25% rates 
+			x implement tooltips 
+			x create files&icons 
+			x write GUI 
+				x Audio 
+					x add L/Both/R radio buttons to choose which channels to play 
+					x add mute audio/beeps checkboxes 
+					x do not re-init on track change 
+					x is there a bug with mute click 
+				x Selection 
+					x consult channel mapping and mute checkboxes on track change 
+						x default mute click to mute 
+					x add a button to reset selection 
+					x move buttons around, add labels: Reset, Apply, Count-in, Zoom 
+					x default beats to 1 
+					x add -/+ apply buttons for trim start and end, get rid of one spinbox 
+					x fix zoom/stop buttons 
+						x review selection length across code 
+					x implement reset 
+					x implement -/+ buttons 
+					x change stop not to scroll view 
+					x kill selection 
+						* easy to do on timeline 
+					$ fix bug with spins and comboboxes even handlers crashing 
+						x make a tiny Commit button 
+					x trim both ends of sel 
+						x keep end fixed when trimming start 
+						? stop trim from wrapping around 
+						x scale selection 
+							x horizontally 
+							x vertically 
+						x preserve selection when moving cursor 
+						x preserve selection when zooming 
+						x make a nested groupbox 
+						x use spin control 
+							? display + for positive values 
+								* use DomainUpDown 
+							x limit range to 1 beat 
+							$ vertical orientation 
+						x display beat size in frames 
+					? count-in 
+						* play two beeps then audio 
+						x checkout Project.InsertTime(), Undo 
+							* works 
+						? check out creating count-in on a separate track and muting other tracks 
+						! create temporal count-in audio/video events at the end of the project 
+							* doesn't work, no notification on stopped 
+					x change zoom from checkbox to button 
+				x Navigation 
+					? fix bug with FindRegionEvent(): put cursor to the left off the first beat of the first track, 
+						go down one track, the cursor will move to the last beat in the region 
+					x introduce rate regions 
+						x create RateRegion class 
+						x extract core function from DumpTrack to common 
+						x reorder code in btnUp_Click() 
+						x build regions 
+						x add offset parameter 
+					x merge FindSpecialBeepLeft w/ FindEventLeft and for the right. 
+					x wrap-around is broken 
+					x align behavior with faster/slower 
+					x create step left/right buttons 
+					x create step size (frames) spinbox 
+						x calculate step value 
+					? implement auto home 
+						x do timer-based button presses 
+						x do 4 homes (consecutive clicks): x) first beat in RR x) first RR x) first track x) full init 
+					x do double-clicks for up/down left/right 
+						$ instead of double-click do push&hold 
+					x do not wrap around rate 
+					x track offset when switching tracks 
+						x read-in track BPM 
+						x count offset from nearest beat 
+				x Transport Controls 
+					! play button resets selection when pressed for the second time 
+						x invert selection on stop 
+					x ensure continuous playback for all navigation 
+					x remove not used parameters from GetNNNXXX() 
+		$ see how an app ext can process key presses 
+		x update docs 
+		/ test 
+	x research 
+		x cursor 
+			x move 
+		x scrolling 
+		x zoom 
+		x selection 
+		x play controls 
+		x how to not jump back after playing back selection 
+	x write GUI 
+		* Transport Controls 
+		x design play controls 
+			x chunk length in beats 
+			x selection start end frame trim 
+			x rate 
+			x next/prev beat 
+				x remove count-in beats 
+				x limit wrap around to beeps with the same rate 
+			x play/pause/stop 
+	x play button 
+		x should check TC state (isPlaying etc..) 
+		x stroboscopic playback 
+			! manipulate playback rate programmatically 
+	x stop button 
+		x if not playing go to home position - 1st track, beat 1.1 
+	x center cursor 
+	x see how we can switch over (move cursor) between copies 
+	! think how to get same piece at two different times in Left and Right screen 
+	$ find out how-to move cursor back and forth in history or write a script 
+	$ write an app ext to monitor cursor position and display the event under it 
+	- a bug? when playing, a track change will produce a jump 
+		* workaround is to click pause prior to changing tracks 
+	x find optimal slow rate (currently 25%) 
+		x create a new test project under "Vegas - Vegas" 
+		x create some samples 
+			x sync up AV 
+			x rotate 180 deg 
+			x slow down 
+		x update navigation code for new rates 
+			x rename faster/slower buttons 
+			x scale frame/step values on rate change 
+			? see if we can autodetect rates 
+				* just divide/multiply by 2 
+			x remove 3 rates limitation 
+				x pull out rates code 
+			x choose between: 
+				x 100/50/25/10/5 
+				x 100/50/10 
+				x 100/50/25/12.5/6.25 
+					* this one 
+					x add rates to excel calc 
+					x check how Transcribe!/AviSynth handle fractional rates 
+						* both ok 
+					! label 1x/2x/4x/8x/16x 
+	? fix the bug with switching tracks in "02 - Example 2 (A minor arpeggio)" 
+		* can't reproduce 
+	x modify code to simplify BPM labels 
+! write LayoutTrack.cs (abandoned in favor of count-in feature in Navigate.cs) 
+	x think which script to use as a model (SpreadBeeps.cs) 
+	x create files and icons 
+	- input 
+		x two tracks, one audio and the other audio/video 
+		x check the selection to have enough events 
+		x check the selection to be in increments of chunk size 
+		x check that there's something to cut 
+			x video needs quantization 
+		x implement "enough extra space" check 
+			x calculatethe number of chunks x) iterate over chunks 
+			x calculate the size of the laid out chunk 
+			x calculate extra space 
+			x make sure there not a single event in the extra space 
+		x implement selection 
+	x write GUI (model after GenBeeps.cs) 
+		x Chunk Size (1-16) x) Pre/Post Count (2-4) x) Margins (1-4) 
+		x cut at the middle (for chunk size > 1) 
+			x update checkbox 
+		x Include Head x) Include Tail 
+	- for in/out count generate real rulers 
+	- remove debug prints 
+  x establish one project directory, one version of ffmpeg, keep only source FLV files, 
+    under svn keep only source FLV and VEG project files x) add Uncompress option to windows explorer 
+	/ read through /) "Optimizing Performance" and x) "Using Dynamic RAM Previews" 
+      x compare x) slow down / ?) speed up quality with Transcribe!/Cool Edit 
+	x see how we can use Transcribe!'s superior stretch algorithm 
+  x see how we can the following: 
+	x manually 
+		x audio 
+		  x slow down Right-click, Properties, Time stretch, double New length 
+		  x speed up Right-click, Properties, Time stretch, half New length 
+		x video 
+		  x slow down Right-click, Properties, half Playback rate; double event's length (with the mouse) 
+		  x speed up Right-click, Properties, double Playback rate; half event's length (with the mouse) 
+	x programatically 
+		x audio 
+		  x slow down audioEvent.Length = audioEvent.Length + audioEvent.Length; audioEvent.AdjustPlaybackRate(0.5, true); 
+		  x speed up audioEvent.Length = Timecode.FromNanos((int)Math.Round(audioEvent.Length.Nanos / 2.0)); audioEvent.AdjustPlaybackRate(2.0, true); 
+		x video 
+		  x slow down See audio 
+		  x speed up See audio 
+    x see what happens to the event positions 
+	x mind alternative media and playback rates 
+	x learn to make copies of bunches of (partials) audio and video tracks ?) vertically and x) horizontally 
+		x see how "Insert Time" works 
+	x draft a layout 
+		x LMargin LBeep Body RBeep RMargin 
+		x see how-to make a "still frame" (event copy/paste or manipulate event's media) 
+		x manually layout tracks  
+			x build a layout with x) full measure x) 1/2 measure x) full measure with offset x) 1/2 measure with offset 
+		x lay out one full measure given 124 ruler/video/audio/beep tracks 
+			/ think how-to properly split audio and video tracks 
+			x move Quantization demo project into a separate folder 
+			/ render down ruler track, compare with pre-rendered track 
+				$ find out why the rendered track is lagging 2 frames behind 
+					x move ruler track 2 frames left for now 
+	- add to demo 
+	! "Funky Su - Guitar Jam": move beep.1.wav etc under project folder 
+- is there an occasional bug with matching a video track (the event will contain multiple copies of its first frame)? 
+- see why FillRulers.cs reports things like these: 
+148.000 148.000 0.000 F          11 B        9 B . 
+192.000 192.000 0.000 S          5 T        4 T . 
+x brush up and commit "01 - Example 1 (E diminished arpeggio)" project 
+x transcribe Ex1b 
+x create "02 - Example 2 (A minor arpeggio)" project 
+	x update "Appendix H. A typical workflow" documentation section 
+	x fix project: 
+		x sync up audio/video 
+		x throw away x) Take2 x) splits 
+		x add Take4 from Relentless website 
+			x when normalizing, shouldn't have stretched video 
+				* have fixed that 
+			x create x) close-ups and x) beep track 
+		x slow down tracks 
+			? check if slow down scripts break AV sync 
+				? by ?) 50% ?) 6.25% 
+				? check at ?) 10s ?) 100s 
+			! employ MainConcept Reference 
+				x check if MCR breaks AV sync 
+					* it freaking does 
+					x create a test project in "Vegas - Vegas" 
+				! check Vegas locking up 
+			x render in Vegas using "Sony AVC/MVC" plugin 
+				x check for AV desync 
+					* no desync 
+					x add to test project 
+				x modify RenderAll.cs to convert a batch of AVIs to MP4s 
+		? clean up project and recommit 
+		x create render project 
+			x double-check beep/audio tracks alignment 
+		x create master project 
+		$ test project 
+			* Test Plan 
+			$ Audio 
+			$ Selection 
+			$ Navigation 
+				? saw 32f in Step textbox 
+				? beat left/right buttons take me between the beats 
+				? selection distorts when switching rate, sometimes 
+				x Init (home position) 
+				x Faster/Slower 
+					x Take1 misaligned at 6.25% 
+						x re$render 
+					* 1 frame off 
+						$ find out why 
+			$ TC 
+x extend beep spread range up to 1600% 
+	x update docs 
+x create "03 - Example 3 (A minor arpeggios)" project 
+	x estimate time in number of sessions 
+		x 1 2 (close-ups completed) 3 (beep and slowed down tracks completed) 4 (render project completed) 5 (done)  
+	x add Take2 
+	x fix bug w/ track levels between LR hands 
+	x fix bug: incorrect offset when switching rate 
+		x update docs 
+		* made 100% 25% 6.25% rates standard 
+x create "04 - Example 4" project 
+	x progress (in number of 45-90min sessions): 1 2 (beep tracks completed) 3 (slowed down tracks completed) 4 5  
+	x add Take2 
+	x transcribe example 
+		x create Finale.mus 
+		* start with Take1, 6.25% rate 
+		x left hand 
+			x notate frets and fingers in std tab 
+				x do middle shred section 
+				x do x) beginning and x) ending 
+		x right hand 
+			x notate pick strokes 
+				! try by ear first 
+					* too long and hard 
+		x check LRH 
+			x against Take2,3 
+			x check against 25% rate 
+		x check against published scores 
+		$ Finale Challenges 
+			* abandon Finale for pencil&paper 
+			x learn how-to enter frets and fingers 
+				x learn how-to edit frets 
+				x enter double digit fret numbers 
+			x how-to playback selectively 
+			x learn to copy multiple notes 
+			x learn how-to enter hammers and pulls 
+			$ lower pitch by half a step during playback 
+			$ automatically build std notation staff 
+		x add ghosted (3rd) stave; 3 states (staves) now include: pressed, released, muted (not fully pressed/not fully released) 
+			! split 3rd stave into Gho Pre and Gho Rel 
+				* there are only 3 states (see above) 
+x Ex1a,2,3 
+	/ rethink finger rolling (Ex2,3) 
+	! notate difficult places in multiple staves (Ex2,3) 
+	x rewrite tabs 
+	x rewrite breakdown and exercises 
+	! write out alternative Seg2,3 (Ex3) 
+x move stuff from 1.txt to guitar wizardry file 
+x create "05 - Example 5" project 
+	* 1 (finished Take1 close-ups) 2 (finished all close-ups) 3 (slowed down tracks completed) 4 (render project completed) 5 (done)  
+x create "06 - Example 6 (Echo Lick notated with echo effect)" and "07 - Example 6 (notated without echo effect)" projects 
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (rendering tracks) 4 (done)  
+x create "08 - Example 7" project 
+	* 1 (close-ups) 2 (beep tracks) 3 (slow down tracks and render) 4 (done)  
+x create "09 - Example 8" project 
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done)  
+x create "10 - Example 9" project 
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done)  
+x create "11 - Example 10 (C harmonic minor)" project 
+	* 1 (close-ups) 2 (beep and slow down tracks) 3 (render) 4 (done)  
+x create "12 - Example 11" project 
+	* 1 (close-ups and beep tracks) 2 (slow down tracks) 3 (render) 4 (done)  
+? all things Guitar Rig 
+	! try to remap mic and phones jacks to line-in/line-out 
+	- connect Zoom to mic input 
+		x adjust input and output levels and write down their settings 
+			* Levels->Microphone: 20, "Microphone Boost": 0.0 dB 
+			* Zoom master volume: 10 (40) 
+		- read on input/output impedances 
+	- find out if it's possible to have an effects loop within Guitar Rig's stack 
+	- read on amplifier modeling 
+	x install ASIO 
+		- find out difference in latency ??? 
+	- install VAC 
+	- find and read the article on Windows optimization for real-time audio 
+		- run the two diagnostic tools 
+	- learn to do simple recording in Vegas 
+	- research mouse as MIDI controller 
+	- read Premier Guitar article that mentions Eric Johnson's setup 
+	- My Guitar Rig 
+		- signal chain: Jackson->Yerasov->Eventide->Behringer->Octava->Roland/ThinkPad 
+		- Jackson Performer PS-4 (Jackson) 
+			- INTFs 
+				- bridge passive humbucker output, 8.5 kohm [1, Signal start] 
+		- Yerasov PTERODRIVER PD-5 (Yerasov) 
+			- INTFs 
+				- INPUT, 1 Mohm [2] 
+				- OUTPUT-COMBO [3] 
+				- OUTPUT-MIXER 
+			- CTRLs 
+				- stomp switches 
+					- LO/HI [LO] 
+					- CLEAN/LEAD [CLEAN] 
+				- knobs 
+					- GAIN 
+						- CLEAN [12 o'clock] 
+						- LEAD 
+					- EQ 
+						- BASS [12 o'clock] 
+						- MIDDLE [12 o'clock] 
+						- TREBLE [12 o'clock] 
+					- VOLUME 
+						- CLEAN [12 o'clock] 
+						- LEAD 
+		- Eventide TimeFactor (Eventide) 
+			- INTFs 
+				- Input Impedance 500K ohms, In Lvl Guitar/Line 
+					- Input 1 [4, In Lvl Guitar] 
+					- Input 2 
+				- Output Impedance 470 ohms (Recommended Load Impedance 10K ohms or greater), Out Lvl Amp/Line 
+					- Output 1 [5, Out Lvl Amp] 
+					- Output 2 
+			- CTRLs 
+				- stomp switches 
+					- Active [ORANGE LED] 
+					- Repeat 
+					- Tap 
+				- Encoder [DigitalDelay] 
+				- Tempo ON [120 BPM] 
+				- knobs 
+					- Dry/Wet Mix [WET: 50] 
+					- A/B Dly Mix [A10+B 0] 
+					- Dly Time A [A: 1/4] 
+					- Dly Time B 
+					- Fdbk A [FB-A: 20]  
+					- Fdbk B 
+					- Xnob 
+					- Depth [DMOD: 0] 
+					- Speed 
+					- Filter [FLT: 0] 
+		- Behringer VINTAGER AC108 (Behringer) 
+			- Output stage power: 15 Watts RMS into 4 Ohms 
+			- Loudspeaker: 8" vintage design guitar loudspeaker, Impedance 4 Ohms, Power rating 20 Watts 
+			- INTFs 
+				- Inst. Input [6] 
+				- CD Input, stereo 
+				- Headphones, stereo 
+			- CTRLs 
+				- Gain 
+					- Gain knob 
+					- Gain push switch [OFF] 
+				- EQ 
+					- Bass knob [12 o'clock] 
+					- Treble knob [12 o'clock] 
+					- Shift push switch [OFF] 
+				- Master volume knob [12 o'clock] 
+		- Octava MD 80 (Octava) 
+			- INTFs 
+				- Output, Output Impedance 200 ohms (Recommended Load Impedance 1000 ohms or greater) [7] 
+		- Roland QUAD-CAPTURE USB 2.0 Audio Interface (Roland) 
+			- INTFs, (0 dBu=0.775 Vrms), Head Room 14 dB 
+				- XLR 
+					- Input Impedance 4.8 k ohms (balanced), Nominal Input Level -60 to -6 dBu 
+						- INPUT 1 [8] 
+						- INPUT 2 
+				- TRS 
+					- Input Impedance 15 k ohms (?balanced?), Nominal Input Level -50 to +4 dBu 
+						- INPUT 1, (supports high impedance, Hi-Z) 
+						- INPUT 2 
+					- Output Impedance 2 k ohms (balanced), Nominal Output Level: +0 dBu (balanced) 
+						- OUTPUT 1 
+						- OUTPUT 2 
+					- Output Impedance 47 ohms (stereo) 
+						- PHONES [9, Signal end] 
+			- CTRLs 
+				- switches 
+					- GROUND LIFT, NOR/LIFT [NOR] 
+					- PHANTOM, 48V/OFF [OFF] 
+					- Hi-Z (INPUT 1), ON/OFF 
+				- pushbuttons 
+					- AUTO-SENS [OFF] 
+					- DIRECT MONITOR-MONO [ON] 
+				- knobs 
+					- SENS 1 [27.0] 
+					- SENS 2 [0.0] 
+					- DIRECT MONITOR-PLAYBACK/INPUT MIX [mark 9] 
+					- DIRECT MONITOR-OUTPUT [mark 9] 
+		- Lenovo ThinkPad X200s (ThinkPad) 
+			- Windows 
+				- Sound->Playback: 1-2 QUAD-CAPTURE Default Device->Properties->Levels: 62% (31) 
+				- Sound->Recording: 1-2 QUAD-CAPTURE Default Device->Properties 
+					- Listen->Listen to this device: uncheck 
+					- Levels: 100% 
+			- QUAD-CAPTURE Control Panel 
+				- PREAMP 
+					- AUTO SENS [OFF] 
+					- INPUT 1 
+						- LO-CUT [OFF] 
+						- PHASE [OFF] 
+						- SENS [27.0] 
+					- INPUT 2 
+						- SENS [0.0] 
+				- COMPRESSOR 
+					- INPUT 1 
+						- BYPASS [ON] 
+					- INPUT 2 
+						- BYPASS [ON] 
+				- MIXER 
+					- INPUT 1 [-6.0] 
+					- INPUT 2 [-INF] 
+					- COAX (3/4) [-INF] 
+			- Sony Vegas 
+				- Options->Preferencies->Audio Devices 
+					- Audio device type: QUAD-CAPTURE 
+						- Default stereo and front playback device: 1-2/1-2(2) 
+						- Default audio recording device: 1-2 
+				- Audio Track 
+					- UnFXAudio 
+					- Vol: 5.0 dB 
+					- select mono 1-2 as input 
+				- Recorded Files->Show after every recording session: uncheck 
+		x study Eventide's features: 
+			x tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS) 
+				x relative delay times (mS) 
+				x find out about "tapping on tempo increments bpm" thing 
+					* solved, it is just continuous tapping 
+			x looper 
+		x define default sensible values for each link: 
+			$ assess different configurations in terms of noise/volume (levels)/tone (EQ)/clean vs. distorted/compression 
+			x gains 
+			x EQs 
+			x volumes (levels) 
+			x other 
+		x setup Vegas 
+			$ setup Vegas metronome 
+			$ MIDI sync to Eventide 
+			$ learn about Audio Busses 
+			x create recording template 
+		x install Roland drivers and control panel 
+			x create a shortcut 
+		x install factorlib software 
+		x install&configure: 
+			x timer 
+			x metronome 
+			x tuner 
+			x Digital Level Meter by Paul Marshall 
+		x configure default values for each link 
+		x build a new acronis image 
+	x make a new Acronis image w/ everything installed 
+		x close items in "X200s Software Installation and Configuration Plan" 
+			x merge two files into one residing on X200s; add contents from Raine&Horne 
+			x find and merge birthday files into one 
+				x add to excel calendar 
+		x do a dry run 
+		x books 
+			x Senior 
+				x extract TOC into a txt file w/ handy outliner 
+				x compile a detailed TOC 
+					x enumerate plug-ins 
+						x not all plug-ins have pictures, search for keyword "free", mark with [] 
+					x add subsection titles to TOC 
+					x add box titles to TOC 
+					$ re-adjust plug-in names 
+					x shift page numbers 
+					x add missing page numbers 
+			x Huber 
+				x download TOC and tutorial files 
+			x Petelin 
+				x NOOP 
+		x move practice log to Excel 
+		x fix backups 
+			x open Aussie_X200s archive in Acronis 
+x create Nuances.xls 
+	x watch and make notes x) Sergey Rudnev's two videos covering vibrato and bends x) Guthrie Govan's videos on vibrato and bends 
+	x extract and classify nuances from Ex1-Ex11 
+x create "01 - Example 13 Demon Driver" project 
+	* 1 (close-ups) 2 (close-ups) 3 (close-ups) 4 (beep tracks) 5 (beep tracks) 6 (slow down tracks, half a day) 7 (render) 
+		8 (render) 9 (render)  
+	? create Transcription.tmpl.xls 
+	- transcribe project. Plan 
+		* 1 (Plan, pass 1) 2 (pass 5) 3 (pass 7) 4 (pass 7) 5 (pass 10) 6 (pass 11) 7 (pass 13) 8 (pass 13) 9 (pass 13) 10 (pass 13) 
+			11 (pass 13) 12 (pass 13) 13 (pass 14) 14 (pass 15) 15 (pass 16) 16 (pass 16) 17 (pass 16) 18 (pass 16) 19 (pass 16) 20 (16) 
+			21 (pass 17) 22 (pass 17) 23 (pass 17) 24 (pass 17) 25 (pass 18)  
+		- determine 
+			- name "01 - Example 13 Demon Driver" 
+			- length 30 bars 
+			- tempo 135 BPM 
+			- time signature 4/4 
+			- common subdivision(s) 6 
+				- notes/s 13 
+			- key signature(s) Bm, C#m 
+			- structure 
+				* start length name 
+				- 1.1  1.0 Drums intro 
+				- 2.1  4.2 Verse1 
+				- 6.3  5.2 Verse2 
+				- 12.1 7.3 Gtr solo 
+				- 19.4 4.2 Verse3 
+				- 24.2 6.2 Vrs4 + end 
+		- transcribe takes first, then verses, then guitar solo 
+			* transcribe "the core" first 
+				- note 
+					- pitch (string/fret number) 
+					- position/duration 
+				- LH 
+					- finger number 
+					- movement 
+						- fret -) hammer on -) tap 
+						- lift -) pull off 
+				- RH 
+					- up stroke 
+					- down stroke 
+			- Take1 
+				- pass 1, L 
+				- pass 2, R 
+			- Take2 
+				- pass 3, L, compare with Take1L 
+				- pass 4, R, compare with Take1R 
+			- Verse1 
+				- pass 5, L, compare with Take1L 
+				- pass 6, R, compare with Take2R 
+			- Verse2 
+				- pass 7, L, compare with Verse1, transcribe differences 
+				- pass 8, R, compare with Verse1, transcribe differences 
+			- Verse3 
+				- pass 9, L, compare with Verse1, transcribe differences 
+				- pass 10, R, compare with Verse1, transcribe differences 
+			- Vrs4 + end 
+				- pass 11, L, compare with Verse2, transcribe differences 
+				- pass 12, R, compare with Verse2, transcribe differences 
+			- Gtr solo 
+				- pass 13, L 
+				- pass 14, L, double-check notes falling on down beats 
+				- pass 15, R 
+		- compile sections into final manuscript 
+			- pass 16 
+		- compare everything with Guitar College transcription 
+			- pass 17 
+		* revise nuances 
+			- LH 
+				$ slides 
+					$ (position shifts) 
+				- bends 
+					- vibrato 
+						* classify, push/pull, etc. 
+						- pass 18 
+				$ tremolo arm 
+			- RH 
+				$ (picking position) 
+				$ palm muting 
+				$ pick staccato 
+				$ pickup selector switch 
+x create "02 - Example 14 Rising Force" project 
+	* 1 (close-ups) 2 (beep trks) 3 (slow down trks) 4 (render) 5 (done) 6 (plan, pass 1) 7 (pass 1) 8 (pass 3) 9 (pass 4) 10 (pass 5) 
+	11 (pass 8) 12 (pass 9) 13 (pass 9)  
+	- attributes 
+		- length: 10 bars/18 s 
+		- tempo: 130 BPM 
+		- time signature: 4/4 
+		- subdivisions: 8, 6, 4 
+		- notes/s: 17 
+		- key signature: Em 
+	- core 
+		- pass 1, Take1L (string, fret, finger, position/duration) 
+		- pass 2, Take1R (up, down, LH: fret/lift/hammer on/pull off/release/tap) 
+		- pass 3, Take2L 
+		- pass 4, Take2R 
+	- nuances 
+		- pass 5, VB 
+		- pass 6, slides 
+		- pass 7, RH accents 
+		$ pass N, LH articulation (barre notes isolation) 
+		$ pass N, RH P.M., pick staccato 
+	- pass 8, compare with GC tabs 
+	- pass 9, compile final manuscript 
+x create "03 - Example 15 Trilogy Suite (B harmonic minor)" project 
+	* 1 (close-ups) 2 (close-ups) 3 (beep trks) 4 (beep tks) 5 (slow down trks) 6 (render) 7 (render) 8 (render) 9 (done) 10 (plan, 1) 
+	11 (pass 4) 12 (pass 4) 13 (pass 5) 14 (pass 5) 15 (pass 6/7) 16 (pass 6/7) 17 (pass 8) 18 (pass 10) 19 (pass 10) 20 (pass 12) 
+	21 (pass 13) 22 (pass 13) 23 (pass 14) 24 (pass 17) 25 (pass 18) 26 (pass 18) 27 (pass 18) 28 (pass 18) 29 (pass 19)  
+	- statistics 
+		- length: 1:04/32 bars 
+		- tempo: 125 BPM 
+		- time signature: 4/4 
+		- subdivisions: 6, 9 
+		- notes/s: 13, 19 
+		- key signature: Bm?? 
+		- structure: 
+			Intro    1.1 7.2 
+			Verse    8.3 11.0 
+			Chorus1 19.3 6.2 
+			Chorus2 26.1 7.0 
+			        33.1 
+	x core 
+		LH pass: string, fret, finger, note position/duration 
+		RH pass: up, down, (), pick scratches 
+			(refine LH): 
+				fret for picking (either idling or ringing) 
+				lift for picking (either idling or ringing) 
+				hammer ringing string 
+				vigorously hammer idling string 
+				pull string sideways and release (either idling or ringing) 
+				release ringing string 
+		x pass 1, Take1L 
+		x pass 2, Take2L, compare w/ Take1L 
+		x pass 3, Take2R 
+		x Intro 
+			x pass 4, L, (compare w/ Take2L) 
+			x pass 5, R, (compare w/ Take2R) 
+				x pass 5.0.1, use audio cues (listen), notate scratchy pick attacks with dots 
+				x pass 5.0.2, use AV cues (listen and watch), notate well and poorly pronounced strokes, use () for poor 
+			$ pass 5.1, double-check downbeat notes 
+		x Verse 
+			x pass 6, L 
+			x pass 7, R 
+				? pass 7.1, pick scratches 
+				? pass 7.2, well-off/poor strokes 
+		x Chorus1 
+			x pass 8, L 
+			x pass 9, R 
+		x Chorus2 
+			x pass 10, L, compare w/ L Chorus1 
+			x pass 11, R, compare w/ R Chorus1 
+				x pass 11.1, video, notate pick strokes including () 
+				x pass 11.2, no video, notate pick scratches w/ dots 
+	x nuances 
+		x pass 12, VB 
+			LH pass: technique, pattern 
+		x pass 13, slides 
+			LH pass: position shifts, slide-ON|OFF (beginning and end of note), slide direction UP|DOWN, undef 
+		x pass 14, RH accents (i.e. wrist stroke) 
+		$ pass 15, LH articulation (string muting, i.e. isolating barre notes..) 
+		$ pass 16, RH P.M., pick staccato, x) rakes, tremolo arm 
+	x pass 17, referencing, compare with GC tabs 
+	x pass 18, (final interpretation), compile final manuscript 
+	x pass 19, final check 
+x develop Arrange process 
+	x extract TOC from Petelin book 
+		x beautify TOC 
+	x compile statistics from printed score and Vegas project ("03 - Example 15 Trilogy Suite (B harmonic minor)") 
+		- statistics 
+			- name 
+			- instrument(s) 
+			- tempo(s) 
+			- time signature(s) 
+			- key signature(s) 
+			- length [measure], [s] 
+			- subdivisions 
+			- notes/s 
+			- structure (Arranger Track) 
+				- section name 
+				- section start [measure] 
+				- section length [measure] 
+					- phrase (lick) name 
+					- phrase start [measure], [beat] 
+					- phrase length [measure], [beat] 
+			- repeats 
+			- variations 
+			- note-level statistics (Marker Track) 
+				- note position 
+				- note duration 
+				- note velocity (accents) 
+				- slurs 
+				- notes with attack vs. legato notes 
+				- vb 
+				- slides 
+				- sweep picking, flams, tapping 
+				- pm, pick staccato, rakes, ghost notes, tremolo arm 
+				- let ring 
+	x (Petelin book) skim-read a few first lines of each paragraph from:  
+		x От авторов 
+		x Введение 
+		x intro to each chapter 
+		x Заключение 
+	x compile a list of relevant sections of Petelin book 
+		x map statistics to Cubase features 
+	x develop the process 
+		x compile a list of steps 
+	x create Arrange.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video" 
+		x reset Cubase 
+		x save, Cleanup and commit project 
+- R&D Record process 
+	x Huber book (compile master topic list) 
+		x extract TOC 
+			x add missing bits manually 
+			! check against 8ed TOC 
+			x beautify TOC 
+		x quickly outline the book in your head 
+			x read full intro to each chapter 
+		x compile a list of relevant subsections 
+			x read first few lines of the first few paragraphs of EACH (whoaa) subsection and add Record tag to TOC if it is relevant 
+		x read in full tagged subsections 
+		x find related titles, create cross-references 
+		? create subbook TOC 
+	- Petelin book 
+		- research and link to master topics 
+	- Manual.pdf 
+		x TOCify 
+		- research and link to master topics 
+	- "Cubase Help" 
+		- research and link to master topics 
+	- coolpro2.chm 
+		x TOCify 
+	- "QUAD-CAPTURE manual" 
+		- TOCify <--
+		- research and link to master topics 
+	- "QUAD-CAPTURE driver README" 
+		- TOCify 
+		- research and link to master topics 
+	- "Outboard gear manuals" 
+		- TOCify 
+		x find/download 
+		- add to "My Guitar Rig" list 
+		- add reset procedures 
+		- research and link to master topics 
+	- a set of test waveforms, draw/generate/record/combine 
+		* add up = sum up = combine = group = mix = merge = paste; record = sample 
+		* use (Cubase Sample Editor, )Cool Edit Pro, (Notepad++ ascii2Hex,)FAR, WinMerge, ASCII 
+		x save under "Vegas - Vegas\21. Test waveforms" 
+		- "Cool Edit Pro"(, "Cubase Sample Editor"): outline topics to study tag with Waveform 
+		- listen/meter(peak/rms)/statistics/oscilloscope/spectrum analyzer 
+	- latences test rig, build cables 
+	- develop the process 
+		- do a series of tests 
+			- measure in-the-box latencies in each monitoring mode 
+				* try to slow down CPU when researching ASIO Direct Monitoring 
+			- measure outboard gear gains 
+			- test meter mapping modes 
+		- compile a list of steps 
+	- create Record.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video" 
+		- reset Cubase 
+		- fork off Arrange.tmpl.cpr project 
+		- implement steps 
+		- save, Cleanup and commit project 
+- develop Mix process 
+- add features, fix bugs 
+	- think about subdivision-level navigation 
+		- add subdivision beep tracks 
+		- add divide/multiply by 2/3 buttons 
+	- fix bug with switching rates 
+- print articles from Yngwie's official website 
+- guitar wizardry 
+	x apply Normal style to all text 
+	x headers. Fix case, apply Heading 2, hard-format main header 
+	x insert copyright line 
+	x insert TOC 
+	x create a style for italics 
+	x convert tabs to outlined lists, bullets and normal text 
+		x join paragraphs 
+		x add outer list 
+		x add bullets 
+		x add inner paragraphs 
+		x apply sentence case to chunks of text, add full stops 
+	x replace w/ with with 
+	x replace / and -) with , and and/or 
+	x fix oddities, general editing 
+	x replace some LH/RH with right/left hand 
+	x replace pima with finger names 
+	x complete "Awareness" 
+	- complete "Challenge" 
+x make plugged-in setup for guitar 
+	* moratorium on Ex2,3 until plugged in 
+		$ level PC and guitar volumes 
+	x reassess guitar technique 
+		* moved altogether to guitar wizardry 
+			x create guitar wisdom text file to keep ideas on guitar technique, method etc. 
+				* read articles on guitar technique on Wikipedia 
+		x compare and contrast plugged vs. unplugged 
+! move paper-based Lesson Plans to Excel 
+	* opted for generic lesson plan 
+x improve lighting in the room 
+x check out internal preferences 
+x check svn properties 
+$ fix svn history 
+$ fix svn source code timestamp 
+- start "Yngwie Malmsteen - REH Video" transcription subproject 
+	- see if there's an off the shelf solution to insert markers at scene breaks 
+	- install vegas saurus scripts and check it out 
+? check Yadif Deinterlace for Sony Vegas 
+x learn to do cross-references in Word 
+x add Up button to Explorer 
+	* http://www.techrepublic.com/blog/window-on-windows/add-the-up-button-to-the-explorer-command-bar-in-windows-7/3877 
+ 
+Phone Enlightments 
+ 
+x AddBeep: takes can hold Notes, beat, measure. Then I can press T to circle thru them 
+? write AddFrameBeeps script for Clauderen 
+ 
+--- 
+Measures & &Beats 
+ 
+1.1.000 
+ 
+Gr&id Spacing 
+ 
+&Ruler Marks 
+ 
+Me&asures 
+&Quarter Notes 
+Q&uarter Note Triplets 
+ 
+--- 
+Vegas icon format: 16 X 16 pixels, 32-bit color depth with an alpha channel for transparency. Font: Arial Narrow Condensed, Size: 13, (v) Hinting () Force auto-hinter () Antialiasing 
+--- 
+NETWORK RENDERING HOW-TO 
+x check windows binding order 
+x check firewall on both machines: services.msc 
+x restore config files 
+	192.168.0.2 (owner computer) D:\Program Files\Sony\Vegas Pro 8.0 
+	192.168.0.1 (render host) C:\Program Files\Sony\Vegas Pro 8.0 
+	NetRenderClient.config 
+	NetRenderService.config 
+x remove recursively 
+	(owner computer) C:\Documents and Settings\Andrey\Local Settings\Application Data\Sony\Vegas Pro 
+	(render host) C:\Documents and Settings\Remote\Local Settings\Application Data\Sony\Vegas Pro 
+	(render host) C:\Documents and Settings\Andrey\Local Settings\Application Data\Sony\Vegas Pro 
+x install Divx codec on the render host 
+x install AddRuler scripts/resources on the render host 
+	C:\Program Files\Sony\Vegas Pro 8.0 
+	copy Application Extensions 
+	copy Script Menu\* 
+	add csc.exe to path: C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727 
+	Script Menu\BuildAll.BAT 
+	Application Extensions\CalcTempo.bat 
+	copy Presets\{0FE8789D-0C47-442A-AFB0-0DAF97669317}\* 
+		create elmo preset, search/export/edit/import registry keys 
+x check serial number on the render host 
+x render a clip on owner computer/render host 
+	x 00:02:04.300 clip, video only, xvid: 4:09 local, 0:44 remote (5.7 times faster) 
+x do a simple remote render 
+	x 0:46 
+x try 2 instances of the render service (distributed rendering) 
+	x 1:25 
+	? check for double encoding 
+-  
