@@ -1164,138 +1164,8 @@ x create "12 - Example 11" project
 	- learn to do simple recording in Vegas 
 	- research mouse as MIDI controller 
 	- read Premier Guitar article that mentions Eric Johnson's setup 
-	- My Guitar Rig 
-		- signal chain: Jackson->Yerasov->Eventide->Behringer->Octava->Roland/ThinkPad 
-		- Jackson Performer PS-4 (Jackson) 
-			- INTFs 
-				- bridge passive humbucker output, 8.5 kohm [1, Signal start] 
-		- Yerasov PTERODRIVER PD-5 (Yerasov) 
-			- INTFs 
-				- INPUT, 1 Mohm [2] 
-				- OUTPUT-COMBO [3] 
-				- OUTPUT-MIXER 
-			- CTRLs 
-				- stomp switches 
-					- LO/HI [LO] 
-					- CLEAN/LEAD [CLEAN] 
-				- knobs 
-					- GAIN 
-						- CLEAN [12 o'clock] 
-						- LEAD 
-					- EQ 
-						- BASS [12 o'clock] 
-						- MIDDLE [12 o'clock] 
-						- TREBLE [12 o'clock] 
-					- VOLUME 
-						- CLEAN [12 o'clock] 
-						- LEAD 
-		- Eventide TimeFactor (Eventide) 
-			- INTFs 
-				- Input Impedance 500K ohms, In Lvl Guitar/Line 
-					- Input 1 [4, In Lvl Guitar] 
-					- Input 2 
-				- Output Impedance 470 ohms (Recommended Load Impedance 10K ohms or greater), Out Lvl Amp/Line 
-					- Output 1 [5, Out Lvl Amp] 
-					- Output 2 
-			- CTRLs 
-				- stomp switches 
-					- Active [ORANGE LED] 
-					- Repeat 
-					- Tap 
-				- Encoder [DigitalDelay] 
-				- Tempo ON [120 BPM] 
-				- knobs 
-					- Dry/Wet Mix [WET: 50] 
-					- A/B Dly Mix [A10+B 0] 
-					- Dly Time A [A: 1/4] 
-					- Dly Time B 
-					- Fdbk A [FB-A: 20]  
-					- Fdbk B 
-					- Xnob 
-					- Depth [DMOD: 0] 
-					- Speed 
-					- Filter [FLT: 0] 
-		- Behringer VINTAGER AC108 (Behringer) 
-			- Output stage power: 15 Watts RMS into 4 Ohms 
-			- Loudspeaker: 8" vintage design guitar loudspeaker, Impedance 4 Ohms, Power rating 20 Watts 
-			- INTFs 
-				- Inst. Input [6] 
-				- CD Input, stereo 
-				- Headphones, stereo 
-			- CTRLs 
-				- Gain 
-					- Gain knob 
-					- Gain push switch [OFF] 
-				- EQ 
-					- Bass knob [12 o'clock] 
-					- Treble knob [12 o'clock] 
-					- Shift push switch [OFF] 
-				- Master volume knob [12 o'clock] 
-		- Octava MD 80 (Octava) 
-			- INTFs 
-				- Output, Output Impedance 200 ohms (Recommended Load Impedance 1000 ohms or greater) [7] 
-		- Roland QUAD-CAPTURE USB 2.0 Audio Interface (Roland) 
-			- INTFs, (0 dBu=0.775 Vrms), Head Room 14 dB 
-				- XLR 
-					- Input Impedance 4.8 k ohms (balanced), Nominal Input Level -60 to -6 dBu 
-						- INPUT 1 [8] 
-						- INPUT 2 
-				- TRS 
-					- Input Impedance 15 k ohms (?balanced?), Nominal Input Level -50 to +4 dBu 
-						- INPUT 1, (supports high impedance, Hi-Z) 
-						- INPUT 2 
-					- Output Impedance 2 k ohms (balanced), Nominal Output Level: +0 dBu (balanced) 
-						- OUTPUT 1 
-						- OUTPUT 2 
-					- Output Impedance 47 ohms (stereo) 
-						- PHONES [9, Signal end] 
-			- CTRLs 
-				- switches 
-					- GROUND LIFT, NOR/LIFT [NOR] 
-					- PHANTOM, 48V/OFF [OFF] 
-					- Hi-Z (INPUT 1), ON/OFF 
-				- pushbuttons 
-					- AUTO-SENS [OFF] 
-					- DIRECT MONITOR-MONO [ON] 
-				- knobs 
-					- SENS 1 [27.0] 
-					- SENS 2 [0.0] 
-					- DIRECT MONITOR-PLAYBACK/INPUT MIX [mark 9] 
-					- DIRECT MONITOR-OUTPUT [mark 9] 
-		- Lenovo ThinkPad X200s (ThinkPad) 
-			- Windows 
-				- Sound->Playback: 1-2 QUAD-CAPTURE Default Device->Properties->Levels: 62% (31) 
-				- Sound->Recording: 1-2 QUAD-CAPTURE Default Device->Properties 
-					- Listen->Listen to this device: uncheck 
-					- Levels: 100% 
-			- QUAD-CAPTURE Control Panel 
-				- PREAMP 
-					- AUTO SENS [OFF] 
-					- INPUT 1 
-						- LO-CUT [OFF] 
-						- PHASE [OFF] 
-						- SENS [27.0] 
-					- INPUT 2 
-						- SENS [0.0] 
-				- COMPRESSOR 
-					- INPUT 1 
-						- BYPASS [ON] 
-					- INPUT 2 
-						- BYPASS [ON] 
-				- MIXER 
-					- INPUT 1 [-6.0] 
-					- INPUT 2 [-INF] 
-					- COAX (3/4) [-INF] 
-			- Sony Vegas 
-				- Options->Preferencies->Audio Devices 
-					- Audio device type: QUAD-CAPTURE 
-						- Default stereo and front playback device: 1-2/1-2(2) 
-						- Default audio recording device: 1-2 
-				- Audio Track 
-					- UnFXAudio 
-					- Vol: 5.0 dB 
-					- select mono 1-2 as input 
-				- Recorded Files->Show after every recording session: uncheck 
+	x My Guitar Rig 
+		* moved to "Huber, Runstein - Modern Recording Techniques - 2005.txt"
 		x study Eventide's features: 
 			x tempo, range 30 BPM (2000 mS) - 500 BPM (120 mS) 
 				x relative delay times (mS) 
@@ -1556,7 +1426,7 @@ x develop Arrange process
 		x reset Cubase 
 		x save, Cleanup and commit project 
 - R&D Record process 
-	x Huber book (compile master topic list) 
+	x Huber book (topic master list) 
 		x extract TOC 
 			x add missing bits manually 
 			! check against 8ed TOC 
@@ -1568,6 +1438,7 @@ x develop Arrange process
 		x read in full tagged subsections 
 		x find related titles, create cross-references 
 		? create subbook TOC 
+		x compile "topic master list"
 	- Petelin book 
 		- research and link to master topics 
 	- Manual.pdf 
@@ -1575,33 +1446,43 @@ x develop Arrange process
 		- research and link to master topics 
 	- "Cubase Help" 
 		- research and link to master topics 
-	- coolpro2.chm 
+	x coolpro2.chm 
 		x TOCify 
+		x outline topics for wave editing, tag with [Wav]
+		x study outlined topics (81)
 	- "QUAD-CAPTURE manual" 
-		- TOCify <--
+		x TOCify
 		- research and link to master topics 
 	- "QUAD-CAPTURE driver README" 
-		- TOCify 
+		x TOCify 
 		- research and link to master topics 
 	- "Outboard gear manuals" 
-		- TOCify 
 		x find/download 
-		- add to "My Guitar Rig" list 
-		- add reset procedures 
+			x $fender mini amp$, vic phones, footswitch
+		x TOCify 
+		x add to and update "My Guitar Rig" list
+			x move list to Huber book
+			x rearrange INTFs/CTRLs
+			x double-check/update impedance specs
+			x update signal chain and [Chain], [Power] and [Ctrl] tags
+			x add "power distribution"/ctrl chains
+			x add reset procedures
+			x ?interconnect?, reset and test rig
 		- research and link to master topics 
-	- a set of test waveforms, draw/generate/record/combine 
+	- create a set of test waveforms
 		* add up = sum up = combine = group = mix = merge = paste; record = sample 
 		* use (Cubase Sample Editor, )Cool Edit Pro, (Notepad++ ascii2Hex,)FAR, WinMerge, ASCII 
 		x save under "Vegas - Vegas\21. Test waveforms" 
-		- "Cool Edit Pro"(, "Cubase Sample Editor"): outline topics to study tag with Waveform 
+		- draw/generate/record/combine <--
 		- listen/meter(peak/rms)/statistics/oscilloscope/spectrum analyzer 
-	- latences test rig, build cables 
+	- latences test rig, build cables
 	- develop the process 
 		- do a series of tests 
 			- measure in-the-box latencies in each monitoring mode 
 				* try to slow down CPU when researching ASIO Direct Monitoring 
 			- measure outboard gear gains 
 			- test meter mapping modes 
+			- test record sync; record a track, select it as input and re-record to another track; check for latency
 		- compile a list of steps 
 	- create Record.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video" 
 		- reset Cubase 
