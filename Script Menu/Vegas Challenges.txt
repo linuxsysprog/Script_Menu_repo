@@ -1469,13 +1469,17 @@ x develop Arrange process
 			x add reset procedures
 			x ?interconnect?, reset and test rig
 		- research and link to master topics 
-	- create a set of test waveforms
+	x create a set of test waveforms
 		* add up = sum up = combine = group = mix = merge = paste; record = sample 
 		* use (Cubase Sample Editor, )Cool Edit Pro, (Notepad++ ascii2Hex,)FAR, WinMerge, ASCII 
 		x save under "Vegas - Vegas\21. Test waveforms" 
-		- draw/generate/record/combine <--
-		- listen/meter(peak/rms)/statistics/oscilloscope/spectrum analyzer 
-	- latences test rig, build cables
+		x draw/generate/record/combine
+			* to stop cues from shifting, craft a new part in a separate window and paste into place of the old part
+			* sort (UNIQUE) ASCII output with TextFX plug-in
+		x measure in CEP/Inspector: Peak/RMS/Frequency Analysis
+			* save Measurements in "Test waveforms.txt"
+		x listen to in CEP, watch Waveform/Spectral View, Level Meters, Frequency Analysis, Waveform Statistics
+	- latences test rig, build cables <--
 	- develop the process 
 		- do a series of tests 
 			- measure in-the-box latencies in each monitoring mode 
