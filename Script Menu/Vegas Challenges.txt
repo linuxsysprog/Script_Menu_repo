@@ -1438,25 +1438,26 @@ x develop Arrange process
 		x read in full tagged subsections 
 		x find related titles, create cross-references 
 		? create subbook TOC 
-		x compile "topic master list"
-	- Petelin book 
-		- research and link to master topics 
+		x compile "topic master list" (tags)
+	$ Petelin book 
+		$ research and link to master topics 
 	- Manual.pdf 
 		x TOCify 
-		- research and link to master topics 
+		- research and link to master topics <--
+        - add to "My Guitar Rig" schematic
 	- "Cubase Help" 
 		- research and link to master topics 
 	x coolpro2.chm 
 		x TOCify 
 		x outline topics for wave editing, tag with [Wav]
 		x study outlined topics (81)
-	- "QUAD-CAPTURE manual" 
+	x "QUAD-CAPTURE manual" 
 		x TOCify
-		- research and link to master topics 
-	- "QUAD-CAPTURE driver README" 
+		x research and link to master topics 
+	x "QUAD-CAPTURE driver README" 
 		x TOCify 
-		- research and link to master topics 
-	- "Outboard gear manuals" 
+		x research and link to master topics
+	x "Outboard gear manuals" 
 		x find/download 
 			x $fender mini amp$, vic phones, footswitch
 		x TOCify 
@@ -1468,7 +1469,13 @@ x develop Arrange process
 			x add "power distribution"/ctrl chains
 			x add reset procedures
 			x ?interconnect?, reset and test rig
-		- research and link to master topics 
+		? each individual signal chain schematic should note:
+			in-/outs including not connected, gain/level/metering structures, levels/impedances, balanced/unbalanced
+		x create an overall signal chain schematic in "My Guitar Rig"
+			x replace tabs w/ spaces
+		x add Windows controls to the chain
+		x research and link to master topics
+		$ capture an IR from each piece of gear
 	x create a set of test waveforms
 		* add up = sum up = combine = group = mix = merge = paste; record = sample 
 		* use (Cubase Sample Editor, )Cool Edit Pro, (Notepad++ ascii2Hex,)FAR, WinMerge, ASCII 
@@ -1479,15 +1486,20 @@ x develop Arrange process
 		x measure in CEP/Inspector: Peak/RMS/Frequency Analysis
 			* save Measurements in "Test waveforms.txt"
 		x listen to in CEP, watch Waveform/Spectral View, Level Meters, Frequency Analysis, Waveform Statistics
-	- latences test rig, build cables <--
+	x latences test rig, build cables
 	- develop the process 
+		* read about levels and impedances http://www.crownaudio.com/kb/entry/304/
+		* audio engineering http://www.sengpielaudio.com, Alectrosystems's channel
 		- do a series of tests 
-			- measure in-the-box latencies in each monitoring mode 
+			* move all tests to individual tagged documents
+			- measure in-the-box latencies in each monitoring mode
 				* try to slow down CPU when researching ASIO Direct Monitoring 
 			- measure outboard gear gains 
 			- test meter mapping modes 
 			- test record sync; record a track, select it as input and re-record to another track; check for latency
-		- compile a list of steps 
+            ? install Virtual Audio Cable
+		- compile process checklist
+		- test process checklist
 	- create Record.tmpl.cpr reference project under "Z:\Aussie\My_Music\Yngwie Malmsteen - REH Video" 
 		- reset Cubase 
 		- fork off Arrange.tmpl.cpr project 
