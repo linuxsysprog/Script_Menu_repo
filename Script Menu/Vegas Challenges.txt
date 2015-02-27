@@ -1442,8 +1442,9 @@ x develop Arrange process
 	$ Petelin book 
 		$ research and link to master topics 
 	- Manual.pdf 
+		- convert and print <--
 		x TOCify 
-		- research and link to master topics <--
+		- research and link to master topics
         - add to "My Guitar Rig" schematic
 	- "Cubase Help" 
 		- research and link to master topics 
@@ -1506,6 +1507,14 @@ x develop Arrange process
 		- implement steps 
 		- save, Cleanup and commit project 
 - develop Mix process 
+- PDF
+	- ask print shop
+        - do they accept Postscript, DOC/RTF
+        - max pages/binding margin
+        - printer make/model, printing software name/version
+		- printing settings, i.e. dpi
+	- give Renz Basic_Book_Design.pdf to print out and study
+	- 
 - add features, fix bugs 
 	- think about subdivision-level navigation 
 		- add subdivision beep tracks 
