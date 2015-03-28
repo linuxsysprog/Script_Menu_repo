@@ -1442,9 +1442,10 @@ x develop Arrange process
 	$ Petelin book 
 		$ research and link to master topics 
 	- Manual.pdf 
-		- convert and print <--
+		x convert and print
 		x TOCify 
-		- research and link to master topics
+		- research and link to master topics <--
+		- create and print a PDF with my notes
         - add to "My Guitar Rig" schematic
 	- "Cubase Help" 
 		- research and link to master topics 
