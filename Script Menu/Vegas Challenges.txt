@@ -1441,14 +1441,12 @@ x develop Arrange process
 		x compile "topic master list" (tags)
 	$ Petelin book 
 		$ research and link to master topics 
-	- Manual.pdf 
+	x Manual.pdf 
 		x convert and print
 		x TOCify 
-		- research and link to master topics <--
-		- create and print a PDF with my notes
-        - add to "My Guitar Rig" schematic
-	- "Cubase Help" 
-		- research and link to master topics 
+		x research and link to master topics
+	$ "Cubase Help" 
+		$ research and link to master topics 
 	x coolpro2.chm 
 		x TOCify 
 		x outline topics for wave editing, tag with [Wav]
@@ -1489,6 +1487,69 @@ x develop Arrange process
 			* save Measurements in "Test waveforms.txt"
 		x listen to in CEP, watch Waveform/Spectral View, Level Meters, Frequency Analysis, Waveform Statistics
 	x latences test rig, build cables
+	- create My_Notes.pdf <--
+		- TODOs
+			x import text/graphic content
+				x replace tabs w/ spaces
+				x prepare graphics
+				x add missing content
+					x add headers
+				x reorder content
+			x setup page
+				x size x margins x gutter
+			x format text
+				x create and apply para/table styles
+				x apply case to headers
+			x add TOC
+				x format TOC
+			x design cover
+				x include title/author/copyright/year/diagrams etc
+			x paginate
+				x add section breaks
+				x add page numbers
+				x add breadcrumbs
+			x tidy up
+				? remove rubbish i.e. rogue para breaks
+				x check TOC page number mismatch
+			! print test pages
+			- final print
+		- contents
+			* common sections:
+				* cataloging header
+				* detailed (unnumbered) TOC
+				* (custom) tags
+				* embedded comments (notes)
+				* signal chain
+				* IO specs
+				* proposed tests
+				* description
+			- recording/mixing books
+				- "Z:\Aussie\Allbooks\My_Music\Rec\Huber, Runstein - Modern Recording Techniques - 2005.txt"
+					- "recording process master checklist [Rec]" checklist
+					- "Tagged Documents (individual checklists)" list 
+					- "Signal chains: recording, playback, monitoring, metronome" diagrams
+					- "My Guitar Rig" routing/reset structure
+				- "Z:\Aussie\Allbooks\My_Music\Mix\Mike Senior-Mixing Secrets for the small studio.txt"
+					- plug-in lists
+			- Outboard gear manuals
+				- "Z:\Aussie\Software\Device Drivers\My_Music\1. Voodoo Lab - Pedal Power 2 Plus\pedal_power_2plus_manual.txt"
+				- "Z:\Aussie\Software\Device Drivers\My_Music\2. Peterson - Stomp Classic Pedal Tuner\StrobostompClassicManual_English.txt"
+				- "Z:\Aussie\Software\Device Drivers\My_Music\3. Yerasov - Red Scorpion RS-1\rs-1.txt"
+				- "Z:\Aussie\Software\Device Drivers\My_Music\4. Yerasov - PTERODRIVER PD-5\New Text Document.txt"
+				- "Z:\Aussie\Software\Device Drivers\My_Music\5. Eventide - TimeFactor\TimeFactor Owner's Manual\141131.txt"
+				- "Z:\Aussie\Software\Device Drivers\My_Music\7. VIC FIRTH Headphones\New Text Document.txt"
+				- "Z:\Aussie\Software\Device Drivers\My_Music\8. YERASOVtm FOOTSWITCH model FS-20\New Text Document.txt"
+			- Audio interface manuals
+				- "Z:\Aussie\Software\Device Drivers\My_Music\6. Roland - QUAD-CAPTURE USB 2.0 Audio Interface (UA-55)\QUAD-CAPTURE_e04_W.txt"
+					- Flowchart
+				- "Z:\Aussie\Software\Device Drivers\My_Music\6. Roland - QUAD-CAPTURE USB 2.0 Audio Interface (UA-55)\Readme.txt"
+			- Audio software manuals
+				- "Z:\Aussie\Allbooks\My_Music\Arr\Петелин Р.Ю., Петелин Ю.В. - Steinberg Cubase 5. Запись и редактирование музыки - 2010.txt"
+				- "Z:\Aussie\Allbooks\My_Music\Cubase Portable 5.1.1 (bipper)\Manual.txt"
+					- VST Mixer Diagrams
+				- "Z:\Aussie\Allbooks\My_Music\Wav\coolpro2\coolpro2.txt"
+			? "Z:\Aussie\Software\Applications\X200s Software Installation and Configuration Plan.txt"
+	- create in-the-box diagrams as continuation of "My Guitar Rig" diagrams
 	- develop the process 
 		* read about levels and impedances http://www.crownaudio.com/kb/entry/304/
 		* audio engineering http://www.sengpielaudio.com, Alectrosystems's channel
