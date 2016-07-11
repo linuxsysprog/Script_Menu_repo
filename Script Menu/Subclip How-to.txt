@@ -1,0 +1,35 @@
+- Vegas Pro 11.0
+	- configure
+		- video preview
+			- Preview Quality: Best (Auto)
+			- Simulate Device Aspect Ratio: check
+			- Scale Video to Fit Preview Window: uncheck
+			- Show Transport Bar: uncheck
+		- timeline
+			- Absolute Frames
+			- Grid Spacing->Frames
+			- Quantize to Frames: check
+			- Enable Snapping: check
+			- Snap to Grid: check
+			- Snap to Markers: check
+			- Snap to All Events: check
+	- create new project
+		- File->Close
+		- File->New...
+		- File->Properties...->Video->Match Media Settings
+		- File->Properties...->Video->Full-resolution rendering quality: Best
+		- File->Properties...->Audio->Resample and stretch quality: Best
+		- File->Save As...
+		- drop media
+		- UnFXAudio
+		- Properties...->Video Event->Maintain aspect ratio: check
+		- Video Event Pan/Crop...->Lock Aspect Ratio: check, adjust WidthxHeight
+		- select loop region
+		- File->Render As...
+			-> Render loop region only: check
+			->Video for Windows (*.avi)->720x480 UNCOMPRESSED->Customize Template...
+				->Field order: Upper field first
+				->Pixel aspect ratio: 0.9091 (NTSC DV)
+			-> Render
+		- File->Save
+		- File->Close
