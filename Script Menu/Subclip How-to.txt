@@ -13,7 +13,7 @@
 			- Snap to Grid: check
 			- Snap to Markers: check
 			- Snap to All Events: check
-	- create new project
+	- create source project
 		- File->Close
 		- File->New...
 		- File->Properties...->Video->Match Media Settings
@@ -25,6 +25,7 @@
 		- Properties...->Video Event->Maintain aspect ratio: check
 		- Video Event Pan/Crop...->Lock Aspect Ratio: check, adjust WidthxHeight
 		- select loop region
+		- check and sync up AV if needed
 		- File->Render As...
 			-> Render loop region only: check
 			->Video for Windows (*.avi)->720x480 UNCOMPRESSED->Customize Template...
@@ -33,3 +34,20 @@
 			-> Render
 		- File->Save
 		- File->Close
+	- create Take project
+		- follow steps above
+		- drop "Grid spacing.720x480.18by12.40th.png"
+		- drop media
+		- UnFXAudio
+		- adjust PNG event length to match AVI
+		- mark scene changes
+		- mark left hand jumps
+		- Workspace->Grid spacing: 40 (18x12@720x480)
+		- Enable Snapping
+		- Sync Cursor
+		- mask off crossfades (render as much as you want, no quality degradation)
+		- rotate/zoom/pan
+			- adjust Angle (180deg +/-)
+			- adjust Position 480x320 (150%), 360x240 (200%), 180x120 (400%), 120x80 (600%)
+		- mask off opposite hands
+		- mute PNG track and render
